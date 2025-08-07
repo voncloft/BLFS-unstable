@@ -1,0 +1,22 @@
+# description   : The libadwaita package provides additional GTK4 UI widgets for use in developing user interfaces
+# depends       : appstream gtk sassc vala
+
+name=libadwaita
+version=1.7.6    
+release=1
+source="https://download.gnome.org/sources/libadwaita/1.7/libadwaita-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    sed "s/apiversion/'$version'/" -i ../doc/meson.build 
+    meson configure -D documentation=true             
+    ninja
+    DESTDIR=$PKG ninja install
+}

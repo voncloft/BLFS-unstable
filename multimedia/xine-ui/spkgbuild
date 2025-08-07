@@ -1,0 +1,19 @@
+# description   : The xine User Interface package contains a multimedia player
+# depends       : xinelib sharedmimeinfo
+
+name=xine-ui
+version=0.99.14    
+release=1
+source="https://downloads.sourceforge.net/xine/xine-ui-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    make DESTDIR=$PKG docsdir=/usr/share/doc/xine-ui-$version install
+}

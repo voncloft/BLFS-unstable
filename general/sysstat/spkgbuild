@@ -1,0 +1,22 @@
+# description   : The Sysstat package contains utilities to monitor system performance and usage activity
+# depends       : fcron
+
+name=sysstat
+version=12.7.8    
+release=1
+source="https://sysstat.github.io/sysstat-packages/sysstat-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sa_lib_dir=/usr/lib/sa    \
+    sa_dir=/var/log/sa        \
+    conf_dir=/etc/sysstat     \
+    ./configure --prefix=/usr \
+    --disable-file-attr 
+    make
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install-sysstat
+}

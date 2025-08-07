@@ -1,0 +1,48 @@
+# description   : The ntp package contains a client and server to keep the time synchronized between various computers over a network
+# depends       : iosocketssl
+
+name=ntp
+version=4.2.8p18    
+release=1
+source="https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e "s;pthread_detach(NULL);pthread_detach(0);" \
+    -i configure \
+    sntp/configure
+    ./configure --prefix=/usr      \
+    --bindir=/usr/sbin \
+    --sysconfdir=/etc  \
+    --enable-linuxcaps \
+    --with-lineeditlibs=readline \
+    --docdir=/usr/share/doc/ntp-$version 
+    make
+    make DESTDIR=$PKG install 
+    install -v -o ntp -g ntp -d $PKG/var/lib/ntp
+    mkdir -pv $PKG/etc
+cat > $PKG/etc/ntp.conf << "EOF"
+    # Asia
+    server 0.asia.pool.ntp.org
+    # Australia
+    server 0.oceania.pool.ntp.org
+    # Europe
+    server 0.europe.pool.ntp.org
+    # North America
+    server 0.north-america.pool.ntp.org
+    # South America
+    server 2.south-america.pool.ntp.org
+    driftfile /var/lib/ntp/ntp.drift
+    pidfile   /run/ntpd.pid
+EOF
+cat >> $PKG/etc/ntp.conf << "EOF"
+    # Security session
+    restrict    default limited kod nomodify notrap nopeer noquery
+    restrict -6 default limited kod nomodify notrap nopeer noquery
+    restrict 127.0.0.1
+    restrict ::1
+EOF
+}

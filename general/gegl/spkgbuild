@@ -1,0 +1,20 @@
+# description   : This package provides the GEneric Graphics Library, which is a graph based image processing format
+# depends       : babl jsonglib glib graphviz pygments pygobject
+
+name=gegl
+version=0.4.62    
+release=1
+source="https://download.gimp.org/pub/gegl/0.4/gegl-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    rm -f /usr/lib/gegl-0.4/vector-fill.so
+    DESTDIR=$PKG ninja install
+}

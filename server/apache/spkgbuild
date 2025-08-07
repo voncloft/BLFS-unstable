@@ -1,0 +1,45 @@
+# description   : The Apache HTTPD package contains an open-source HTTP server
+# depends       : aprutil pcre2
+
+name=apache
+version=2.4.65    
+release=1
+source="https://archive.apache.org/dist/httpd/httpd-$version.tar.bz2
+https://www.linuxfromscratch.org/patches/blfs/svn/httpd-blfs_layout-1.patch
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../httpd-blfs_layout-1.patch             
+    sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in       
+    sed -e '/HTTPD_ROOT/s:${ap_prefix}:/etc/httpd:'       \
+    -e '/SERVER_CONFIG_FILE/s:${rel_sysconfdir}/::'   \
+    -e '/AP_TYPES_CONFIG_FILE/s:${rel_sysconfdir}/::' \
+    -i configure  
+    ./configure --enable-authnz-fcgi                    \
+    --enable-layout=BLFS                    \
+    --enable-mods-shared="all cgi"          \
+    --enable-mpms-shared=all                \
+    --enable-suexec=shared                  \
+    --with-apr=/usr/bin/apr-1-config        \
+    --with-apr-util=/usr/bin/apu-1-config   \
+    --with-suexec-bin=/usr/lib/httpd/suexec \
+    --with-suexec-caller=apache             \
+    --with-suexec-docroot=/srv/www          \
+    --with-suexec-uidmin=100                \
+    --with-suexec-userdir=public_html       \
+    --with-suexec-logfile=/var/log/httpd/suexec.log 
+    make
+    groupadd -g 25 apache 
+    useradd -c "Apache Server" -d /srv/www -g apache \
+    -s /bin/false -u 25 apache
+    make DESTDIR=$PKG install  
+    mv -v /usr/sbin/suexec /usr/lib/httpd/suexec 
+    chgrp apache           /usr/lib/httpd/suexec 
+    chmod 4754             /usr/lib/httpd/suexec 
+    chown -v -R apache:apache /srv/www
+    make DESTDIR=$PKG install-httpd
+}

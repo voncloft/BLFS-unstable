@@ -1,0 +1,30 @@
+# description   : The libgcrypt package contains a general purpose crypto library based on the code used in GnuPG
+# depends       : libgpgerror
+
+name=libgcrypt
+version=1.11.2    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make DESTDIR=$PKG                      
+    make DESTDIR=$PKG -C doc html                                                       
+    makeinfo --html --no-split -o doc/gcrypt_nochunks.html doc/gcrypt.texi 
+    makeinfo --plaintext       -o doc/gcrypt.txt           doc/gcrypt.texi
+    make DESTDIR=$PKG install 
+    install -v -dm755   /usr/share/doc/libgcrypt-$version 
+    install -v -m644    README doc/{README.apichanges,fips*,libgcrypt*} \
+    /usr/share/doc/libgcrypt-$version 
+    install -v -dm755   /usr/share/doc/libgcrypt-$version/html 
+    install -v -m644 doc/gcrypt.html/* \
+    /usr/share/doc/libgcrypt-$version/html 
+    install -v -m644 doc/gcrypt_nochunks.html \
+    /usr/share/doc/libgcrypt-$version      
+    install -v -m644 doc/gcrypt.{txt,texi} \
+    /usr/share/doc/libgcrypt-$version
+}

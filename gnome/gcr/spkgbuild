@@ -1,0 +1,29 @@
+# description   : The Gcr package contains libraries used for displaying certificates and accessing key stores
+# depends       : glib libgcrypt p11kit gnupg gtk libsecret libxslt vala
+
+name=gcr
+version=3.41.2    
+release=1
+source="https://download.gnome.org/sources/gcr/3.41/gcr-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '/ssh.add/d; /ssh.agent/d' -i meson.build
+    sed -i 's:"/desktop:"/org:' schema/*.xml 
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D gtk_doc=false    \
+    -D ssh_agent=false  \
+    ..                  
+    ninja
+    sed -e "/install_dir/s@,\$@ / 'gcr-$version'@" \
+    -i ../docs/*/meson.build                  
+    meson configure -D gtk_doc=true               
+    ninja
+    DESTDIR=$PKG ninja install
+}

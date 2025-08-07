@@ -1,0 +1,31 @@
+# description   : GDB, the GNU Project debugger, allows you to see what is going on “inside” another program while it executes -- or what another program was doing at the moment it crashed
+# depends       : six
+
+name=gdb
+version=16.3    
+release=1
+source="https://ftp.gnu.org/gnu/gdb/gdb-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    ../configure --prefix=/usr          \
+    --with-system-readline \
+    --with-python=/usr/bin/python3 
+    make
+    make DESTDIR=$PKG -C gdb/doc doxy
+    pushd gdb/testsuite 
+    make DESTDIR=$PKG  site.exp      
+    echo  "set gdb_test_timeout 30" >> site.exp 
+    make DESTDIR=$PKG check 2>1 | tee gdb-check.log
+    popd
+    make DESTDIR=$PKG -C gdb install 
+    make DESTDIR=$PKG -C gdbserver install
+    install -d /usr/share/doc/gdb-$version 
+    rm -rf gdb/doc/doxy/xml 
+    cp -Rv gdb/doc/doxy /usr/share/doc/gdb-$version
+}

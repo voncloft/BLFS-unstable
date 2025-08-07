@@ -1,0 +1,21 @@
+# description   : The libppd library contains functions for handling legacy printers using PPD description files
+# depends       : libcupsfilters
+
+name=libppd
+version=2.1.1    
+release=1
+source="https://github.com/OpenPrinting/libppd/releases/download/$version/libppd-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr                \
+    --disable-static             \
+    --with-cups-rundir=/run/cups \
+    --enable-ppdc-utils          \
+    --docdir=/usr/share/doc/libppd-$version 
+    make
+    make DESTDIR=$PKG install
+}

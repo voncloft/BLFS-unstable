@@ -1,0 +1,16 @@
+# description   : The tree application is useful to display a dictionary tree's contents, including files, directories, and links
+# depends       : 
+
+name=tree
+version=2.2.1    
+release=1
+source="https://gitlab.com/OldManProgrammer/unix-tree/-/archive/$version/unix-tree-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make
+    make DESTDIR=$PKG PREFIX=/usr MANDIR=/usr/share/man install
+}

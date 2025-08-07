@@ -1,0 +1,21 @@
+# description   : The xfsprogs package contains administration and debugging tools for the XFS file system
+# depends       : inih liburcu
+
+name=xfsprogs
+version=6.15.0    
+release=1
+source="https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make DESTDIR=$PKG DEBUG=-DNDEBUG     \
+    INSTALL_USER=root  \
+    INSTALL_GROUP=root \
+    LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"
+    make DESTDIR=$PKG PKG_DOC_DIR=/usr/share/doc/xfsprogs-$version install     
+    make DESTDIR=$PKG PKG_DOC_DIR=/usr/share/doc/xfsprogs-$version install-dev 
+    rm -rfv /usr/lib/libhandle.{a,la}
+}

@@ -1,0 +1,19 @@
+# description   : GNOME Maps is a map application for GNOME
+# depends       : desktopfileutils geoclue geocodeglib gjs libadwaita libportal libshumate libgweather rest
+
+name=gnome-maps
+version=48.6    
+release=1
+source="https://download.gnome.org/sources/gnome-maps/48/gnome-maps-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

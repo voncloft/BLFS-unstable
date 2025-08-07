@@ -1,0 +1,19 @@
+# description   : Exempi is an implementation of XMP (Adobe's Extensible Metadata Platform)
+# depends       : boost valgrind
+
+name=exempi
+version=2.6.6    
+release=1
+source="https://libopenraw.freedesktop.org/download/exempi-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i -r '/^\s?testadobesdk/d' exempi/Makefile.am 
+    autoreconf -fiv
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

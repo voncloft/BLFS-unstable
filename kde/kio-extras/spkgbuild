@@ -1,0 +1,22 @@
+# description   : The kio-extras package contains additional components to increase the functionality of the KDE resource and network access abstractions
+# depends       : kdeframeworks kdsoapwsdiscoveryclient libproxy plasmaactivitiesstats qcoro libkexiv2
+
+name=kio-extras
+version=25.04.0    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/kio-extras-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

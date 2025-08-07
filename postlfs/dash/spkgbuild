@@ -1,0 +1,21 @@
+# description   : Dash is a POSIX compliant shell
+# depends       : 
+
+name=dash
+version=0.5.12    
+release=1
+source="http://gondor.apana.org.au/~herbert/dash/files/dash-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --bindir=/bin --mandir=/usr/share/man 
+    make
+    ln -svf dash /bin/sh
+    make DESTDIR=$PKG install
+cat >> /etc/shells << "EOF"
+    /bin/dash
+EOF
+}

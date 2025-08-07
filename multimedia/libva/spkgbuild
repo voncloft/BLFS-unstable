@@ -1,0 +1,18 @@
+# description   : The libva package contains a library which provides access to hardware accelerated video processing, using hardware to accelerate video processing in order to offload the central processing unit (CPU) to decode and encode compressed digital video
+# depends       : xorgbuildenvironment libdrm mesa
+
+name=libva
+version=2.22.0    
+release=1
+source="https://github.com/intel/libva/archive/$version/libva-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    cd build 
+    meson setup --prefix=$XORG_PREFIX --buildtype=release 
+    ninja
+    DESTDIR=$PKG ninja install
+}

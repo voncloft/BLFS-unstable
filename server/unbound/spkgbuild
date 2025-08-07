@@ -1,0 +1,30 @@
+# description   : Unbound is a validating, recursive, and caching DNS resolver
+# depends       : 
+
+name=unbound
+version=1.23.1    
+release=1
+source="https://nlnetlabs.nl/downloads/unbound/unbound-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-static  \
+    --with-pidfile=/run/unbound.pid 
+    make
+    make DESTDIR=$PKG doc
+    unbound-anchor
+    groupadd -g 88 unbound 
+    useradd -c "Unbound DNS Resolver" -d /var/lib/unbound -u 88 \
+    -g unbound -s /bin/false unbound
+    make DESTDIR=$PKG install 
+    mv -v /usr/sbin/unbound-host /usr/bin/
+    install -v -m755 -d /usr/share/doc/unbound-$version 
+    install -v -m644 doc/html/* /usr/share/doc/unbound-$version
+    echo "nameserver 127.0.0.1" > /etc/resolv.conf
+    make DESTDIR=$PKG install-unbound
+}

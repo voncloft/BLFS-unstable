@@ -1,0 +1,37 @@
+# description   : The Python 3 package contains the Python development environment
+# depends       : sqlite
+
+name=python
+version=3.13.5    
+release=1
+source="https://www.python.org/ftp/python/$version/Python-$version.tar.xz
+https://www.python.org/ftp/python/doc/$version/python-$version-docs-html.tar.bz2
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e '/Round/{n;n;a\
+    # Only non-negative offsets are allowed\
+    if count < 0:\
+    raise InvalidHeaderError("invalid offset")
+}' -i Lib/tarfile.py
+./configure --prefix=/usr          \
+--enable-shared        \
+--with-system-expat    \
+--enable-optimizations \
+--without-static-libpython 
+make
+make DESTDIR=$PKG test TESTOPTS="--timeout 120"
+make DESTDIR=$PKG install
+install -v -dm755 /usr/share/doc/python-$version/html
+tar --strip-components=1  \
+--no-same-owner       \
+--no-same-permissions \
+-C /usr/share/doc/python-$version/html \
+-xvf ../python-$version-docs-html.tar.bz2
+ln -svfn python-$version /usr/share/doc/python-3
+export PYTHONDOCS=/usr/share/doc/python-3/html
+}

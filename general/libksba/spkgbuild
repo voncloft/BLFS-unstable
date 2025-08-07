@@ -1,0 +1,17 @@
+# description   : The Libksba package contains a library used to make X
+# depends       : libgpgerror
+
+name=libksba
+version=1.6.7    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/libksba/libksba-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

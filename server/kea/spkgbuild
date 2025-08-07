@@ -1,0 +1,39 @@
+# description   : The ISC Kea package contains the server programs for DHCP
+# depends       : boost log4cplus
+
+name=kea 3.0.0 dhcp server
+version=
+release=1
+source="https://downloads.isc.org/isc/kea/3.0.0/kea-3.0.0.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..             \
+    --prefix=/usr        \
+    --sysconfdir=/etc    \
+    --localstatedir=/var \
+    --buildtype=release  \
+    -D crypto=openssl    \
+    -D runstatedir=/run  
+    ninja
+cat > $PKG/etc/kea/kea-ctrl-agent.conf << "EOF"
+EOF
+cat > $PKG/etc/kea/kea-dhcp4.conf << "EOF"
+EOF
+cat > $PKG/etc/kea/kea-dhcp-ddns.conf << "EOF"
+EOF
+    DESTDIR=$PKG ninja install
+    install -dm0750 /var/lib/kea
+    install -dm0750 /var/log/kea
+    make DESTDIR=$PKG install-kea-dhcpd
+    sed -e "s/^dhcp4=.*/dhcp4=yes/" \
+    -e "s/^dhcp6=.*/dhcp6=no/" \
+    -e "s/^dhcp_ddns=.*/dhcp_ddns=yes/" \
+    -e "s/^ctrl_agent=.*/ctrl_agent=no/" \
+    -i /etc/kea/keactrl.conf
+}

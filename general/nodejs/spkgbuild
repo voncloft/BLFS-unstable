@@ -1,0 +1,25 @@
+# description   : Node
+# depends       : which brotli cares icu libuv nghttp2
+
+name=node.js
+version=22.18.0    
+release=1
+source="https://nodejs.org/dist/v$version/node-v$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr          \
+    --shared-brotli        \
+    --shared-cares         \
+    --shared-libuv         \
+    --shared-openssl       \
+    --shared-nghttp2       \
+    --shared-zlib          \
+    --with-intl=system-icu 
+    make
+    make DESTDIR=$PKG install 
+    ln -sf node /usr/share/doc/node-$version
+}

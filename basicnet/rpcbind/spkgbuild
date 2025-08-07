@@ -1,0 +1,22 @@
+# description   : The rpcbind program is a replacement for portmap
+# depends       : libtirpc
+
+name=rpcbind
+version=1.2.8    
+release=1
+source="https://downloads.sourceforge.net/rpcbind/rpcbind-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c
+    ./configure --prefix=/usr                                  \
+    --bindir=/usr/sbin                             \
+    --with-rpcuser=root                            \
+    --enable-warmstarts                            \
+    --without-systemdsystemunitdir                 
+    make
+    make DESTDIR=$PKG install
+}

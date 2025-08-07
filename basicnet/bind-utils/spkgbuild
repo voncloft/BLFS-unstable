@@ -1,0 +1,34 @@
+# description   : BIND Utilities is not a separate package, it is a collection of the client side programs that are included with BIND-9
+# depends       : liburcu libuv json-c nghttp2
+
+name=bind utilities
+version=9.20.11
+release=1
+source="https://ftp.isc.org/isc/bind9/$version/bind-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make DESTDIR=$PKG -C lib/isc      
+    make DESTDIR=$PKG -C lib/dns      
+    make DESTDIR=$PKG -C lib/ns       
+    make DESTDIR=$PKG -C lib/isccfg   
+    make DESTDIR=$PKG -C lib/isccc    
+    make DESTDIR=$PKG -C bin/dig      
+    make DESTDIR=$PKG -C bin/nsupdate 
+    make DESTDIR=$PKG -C bin/rndc     
+    make DESTDIR=$PKG -C doc
+    make DESTDIR=$PKG -C lib/isc      install 
+    make DESTDIR=$PKG -C lib/dns      install 
+    make DESTDIR=$PKG -C lib/ns       install 
+    make DESTDIR=$PKG -C lib/isccfg   install 
+    make DESTDIR=$PKG -C lib/isccc    install 
+    make DESTDIR=$PKG -C bin/dig      install 
+    make DESTDIR=$PKG -C bin/nsupdate install 
+    make DESTDIR=$PKG -C bin/rndc     install 
+    cp -v doc/man/{dig.1,host.1,nslookup.1,nsupdate.1} /usr/share/man/man1 
+    cp -v doc/man/rndc.8 /usr/share/man/man8
+}

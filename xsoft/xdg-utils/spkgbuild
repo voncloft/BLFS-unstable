@@ -1,0 +1,17 @@
+# description   : xdg-utils is a set of command line tools that assist applications with a variety of desktop integration tasks
+# depends       : xmlto lynx links w3m xorgapplications
+
+name=xdg-utils
+version=1.2.1    
+release=1
+source="https://gitlab.freedesktop.org/xdg/xdg-utils/-/archive/v$version/xdg-utils-v$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

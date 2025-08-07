@@ -1,0 +1,18 @@
+# description   : The twm package contains a very minimal window manager
+# depends       : xorgserver
+
+name=twm
+version=1.0.13.1    
+release=1
+source="https://www.x.org/pub/individual/app/twm-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i -e '/^rcdir =/s,^\(rcdir = \).*,\1/etc/X11/app-defaults,' src/Makefile.in 
+    ./configure $XORG_CONFIG 
+    make
+    make DESTDIR=$PKG install
+}

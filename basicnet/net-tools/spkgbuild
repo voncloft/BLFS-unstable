@@ -1,0 +1,24 @@
+# description   : The Net-tools package is a collection of programs for controlling the network subsystem of the Linux kernel
+# depends       : 
+
+name=net-tools
+version=2.10    
+release=1
+source="https://downloads.sourceforge.net/project/net-tools/net-tools-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    export BINDIR='/usr/bin' SBINDIR='/usr/bin' 
+    yes "" | make -j1                           
+    make DESTDIR=$PWD/install -j1 install       
+    rm    install/usr/bin/{nis,yp}domainname    
+    rm    install/usr/bin/{hostname,dnsdomainname,domainname,ifconfig} 
+    rm -r install/usr/share/man/man1            
+    rm    install/usr/share/man/man8/ifconfig.8 
+    unset BINDIR SBINDIR
+    chown -R root:root install 
+    cp -a install/* $PKG
+}

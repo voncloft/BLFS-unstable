@@ -1,0 +1,21 @@
+# description   : The cups-browsed daemon is used to browse the network for remote CUPS queues and IPP network printers and automatically create local queues pointing to them
+# depends       : avahi libcupsfilters libppd
+
+name=cups-browsed
+version=2.1.1    
+release=1
+source="https://github.com/OpenPrinting/cups-browsed/releases/download/$version/cups-browsed-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr                \
+    --with-cups-rundir=/run/cups \
+    --without-rcdir              \
+    --disable-static             \
+    --docdir=/usr/share/doc/cups-browsed-$version 
+    make
+    make DESTDIR=$PKG install
+}

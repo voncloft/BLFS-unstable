@@ -1,0 +1,19 @@
+# description   : The Pixman package contains a library that provides low-level pixel manipulation features such as image compositing and trapezoid rasterization
+# depends       : 
+
+name=pixman
+version=0.46.4    
+release=1
+source="https://www.cairographics.org/releases/pixman-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

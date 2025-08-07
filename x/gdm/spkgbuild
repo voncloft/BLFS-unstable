@@ -1,0 +1,43 @@
+# description   : GDM is a system service that is responsible for providing graphical logins and managing local and remote displays
+# depends       : accountsservice dconf libcanberra gtk linuxpam gnomesession gnomeshell
+
+name=gdm
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/gdm/48/gdm-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -r 's/([(*])bool([) ])/\1boolval\2/' -i common/gdm-settings-utils.*
+    sed -e 's@systemd@elogind@'                                \
+    -e '/elogind/isession  required       pam_loginuid.so' \
+    -i data/pam-lfs/gdm-launch-environment.pam 
+    mkdir build 
+    cd    build 
+    meson setup ..                   \
+    --prefix=/usr              \
+    --buildtype=release        \
+    -D gdm-xsession=true       \
+    -D run-dir=/run/gdm        \
+    -D logind-provider=elogind \
+    -D systemd-journal=false   \
+    -D systemdsystemunitdir=no \
+    -D systemduserunitdir=no   
+    ninja
+    ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
+    su gdm -s /bin/bash                                                \
+    -c "dbus-run-session                                        \
+    gsettings set org.gnome.settings-daemon.plugins.power \
+    sleep-inactive-ac-type                  \
+    nothing"
+    groupadd -g 21 gdm 
+    useradd -c "GDM Daemon Owner" -d /var/lib/gdm -u 21 \
+    -g gdm -s /bin/false gdm 
+    passwd -ql gdm
+    DESTDIR=$PKG ninja install
+    make DESTDIR=$PKG install-gdm
+    sed /initdefault/s/3/5/ -i /etc/inittab
+}

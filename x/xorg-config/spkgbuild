@@ -1,0 +1,61 @@
+# description   : No description available
+# depends       : 
+
+name=xorg-7 testing and configuration
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    echo 4 > /proc/sys/kernel/sysrq
+    xrandr --listproviders
+    xrandr --setprovideroffloadsink
+    DRI_PRIME=1 glxinfo | grep -E "(OpenGL vendor|OpenGL renderer|OpenGL version)"
+    cvt 1600 900
+    cvt 3840 2160 144
+cat > $PKG/etc/udev/rules.d/99-vga-arbiter.rules << EOF
+    # /etc/udev/rules.d/99-vga-arbiter.rules: Set vga_arbiter group/mode
+    ACTION=="add", KERNEL=="vga_arbiter", GROUP="video" MODE="0660"
+EOF
+    usermod -a -G video <user running xorg>
+cat > $PKG/etc/X11/xorg.conf.d/xkb-defaults.conf << "EOF"
+    Section "InputClass"
+    Identifier "XKB Defaults"
+    MatchIsKeyboard "yes"
+    Option "XkbLayout" "fr"
+    Option "XkbOptions" "terminate:ctrl_alt_bksp"
+    EndSection
+EOF
+cat > $PKG/etc/X11/xorg.conf.d/monitor-DP-1.conf << "EOF"
+    Section "Monitor"
+    Identifier  "DP-1"
+    Option      "PreferredMode" "1920x1440"
+    EndSection
+EOF
+cat > $PKG/etc/X11/xorg.conf.d/monitor-DP-1.conf << "EOF"
+    Section "Monitor"
+    Identifier  "DP-1"
+    Modeline    "1600x900_60.00"  118.25  1600 1696 1856 2112  900 903 908 934 -hsync +vsync
+    Option      "PreferredMode"   "1600x900_60.00"
+    EndSection
+EOF
+cat > $PKG/etc/X11/xorg.conf.d/server-layout.conf << "EOF"
+    Section "ServerLayout"
+    Identifier     "DefaultLayout"
+    Screen      0  "Screen0" 0 0
+    Screen      1  "Screen1" LeftOf "Screen0"
+    Option         "Xinerama"
+    EndSection
+EOF
+cat > $PKG/etc/X11/xorg.conf.d/20-tearfree.conf << "EOF"
+    Section "Device"
+    Identifier "Graphics Adapter"
+    Driver     "modesetting"
+    Option     "TearFree" "true"
+    EndSection
+EOF
+}

@@ -1,0 +1,21 @@
+# description   : The libqrencode package provides a fast and compact library for encoding data in a QR Code symbol, a 2D symbology that can be scanned by handheld terminals such as a mobile phone with a CCD sensor
+# depends       : libpng
+
+name=libqrencode
+version=4.1.1    
+release=1
+source="https://github.com/fukuchi/libqrencode/archive/v$version/libqrencode-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sh autogen.sh             
+    ./configure --prefix=/usr 
+    make
+    doxygen
+    make DESTDIR=$PKG install
+    install -vdm 755 /usr/share/doc/libqrencode-$version 
+    mv html/*        /usr/share/doc/libqrencode-$version
+}

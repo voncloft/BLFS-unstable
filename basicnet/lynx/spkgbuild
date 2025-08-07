@@ -1,0 +1,31 @@
+# description   : Lynx is a text based web browser
+# depends       : 
+
+name=lynx
+version=2.9.2    
+release=1
+source="https://invisible-mirror.net/archives/lynx/tarballs/lynx$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr           \
+    --sysconfdir=/etc/lynx  \
+    --with-zlib             \
+    --with-bzlib            \
+    --with-ssl              \
+    --with-screen=ncursesw  \
+    --enable-locale-charset \
+    --datadir=/usr/share/doc/lynx-$version 
+    make
+    make DESTDIR=$PKG install-full
+    chgrp -v -R root $PKG/usr/share/doc/lynx-$version/lynx_doc
+    sed -e '/#LOCALE/     a LOCALE_CHARSET:TRUE'     \
+    -i $PKG/etc/lynx/lynx.cfg
+    sed -e '/#DEFAULT_ED/ a DEFAULT_EDITOR:vi'       \
+    -i $PKG/etc/lynx/lynx.cfg
+    sed -e '/#PERSIST/    a PERSISTENT_COOKIES:TRUE' \
+    -i $PKG/etc/lynx/lynx.cfg
+}

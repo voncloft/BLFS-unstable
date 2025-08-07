@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=part iii. general libraries and utilities
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

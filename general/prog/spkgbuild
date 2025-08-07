@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 13. programming
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 39. office programs
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

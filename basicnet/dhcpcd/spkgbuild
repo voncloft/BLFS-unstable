@@ -1,0 +1,29 @@
+# description   : dhcpcd is an implementation of the DHCP client specified in RFC2131
+# depends       : 
+
+name=dhcpcd
+version=10.2.4    
+release=1
+source="https://github.com/NetworkConfiguration/dhcpcd/releases/download/v$version/dhcpcd-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr                \
+    --sysconfdir=/etc            \
+    --libexecdir=/usr/lib/dhcpcd \
+    --dbdir=/var/lib/dhcpcd      \
+    --runstatedir=/run           \
+    --privsepuser=dhcpcd         
+    make
+    make DESTDIR=$PKG install
+cat > $PKG/etc/resolv.conf.head << "EOF"
+# Vroot
+nameserver 192.168.1.1
+# Google servers
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+EOF
+}

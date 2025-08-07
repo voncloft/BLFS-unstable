@@ -1,0 +1,26 @@
+# description   : The libgusb package contains the GObject wrappers for libusb-1
+# depends       : jsonglib libusb glib hwdata vala
+
+name=libgusb
+version=0.4.9    
+release=1
+source="https://github.com/hughsie/libgusb/releases/download/$version/libgusb-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D docs=false       
+    ninja
+    sed -E "/output|install_dir/s/('libgusb)'/\1-$version'/" \
+    -i ../docs/meson.build                            
+    meson configure -D docs=true                          
+    ninja
+    DESTDIR=$PKG ninja install
+}

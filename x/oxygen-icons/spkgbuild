@@ -1,0 +1,19 @@
+# description   : The oxygen icons theme is a photo-realistic icon style, with a high standard of graphics quality
+# depends       : extracmakemodules qt
+
+name=oxygen-icons
+version=6.0.0    
+release=1
+source="https://download.kde.org/stable/oxygen-icons/oxygen-icons-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/( oxygen/ s/)/scalable )/' CMakeLists.txt
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -W no-dev ..
+    make DESTDIR=$PKG install
+}

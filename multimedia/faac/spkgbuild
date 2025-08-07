@@ -1,0 +1,21 @@
+# description   : The faac application is an encoder for a lossy sound compression scheme specified in MPEG-2 Part 7 and MPEG-4 Part 3 standards and known as Advanced Audio Coding (AAC)
+# depends       : 
+
+name=faac
+version=1.31.1    
+release=1
+source="https://github.com/lfs-book/faac/archive/v$version/faac-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./bootstrap                                
+    ./configure --prefix=/usr --disable-static 
+    make
+    ./frontend/faac -o Front_Left.mp4 /usr/share/sounds/alsa/Front_Left.wav
+    faad Front_Left.mp4
+    aplay Front_Left.wav
+    make DESTDIR=$PKG install
+}

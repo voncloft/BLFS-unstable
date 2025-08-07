@@ -1,0 +1,24 @@
+# description   : FLTK (pronounced \"fulltick\") is a cross-platform C++ GUI toolkit
+# depends       : xorg libraries hicoloricontheme libjpegturbo libpng
+
+name=fltk
+version=1.4.4    
+release=1
+source="https://github.com/fltk/fltk/releases/download/release-$version/fltk-$version-source.tar.gz
+https://github.com/fltk/fltk/releases/download/release-$version/fltk-$version-docs-html.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i -e '/cat./d' documentation/Makefile 
+    ./configure --prefix=/usr --enable-shared  
+    make
+    make DESTDIR=$PKG -C documentation html
+    make DESTDIR=$PKG docdir=/usr/share/doc/fltk-$version install 
+    rm -vf /usr/lib/libfltk*.a
+    make DESTDIR=$PKG -C test          docdir=/usr/share/doc/fltk-$version install-linux 
+    make DESTDIR=$PKG -C documentation docdir=/usr/share/doc/fltk-$version install-linux
+    tar -C /usr/share/doc/fltk-$version --strip-components=4 -xf ../fltk-$version-docs-html.tar.gz
+}

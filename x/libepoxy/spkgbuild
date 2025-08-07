@@ -1,0 +1,19 @@
+# description   : libepoxy is a library for handling OpenGL function pointer management
+# depends       : mesa
+
+name=libepoxy
+version=1.5.10    
+release=1
+source="https://download.gnome.org/sources/libepoxy/1.5/libepoxy-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

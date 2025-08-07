@@ -1,0 +1,23 @@
+# description   : The libwacom package contains a library used to identify graphics tablets from Wacom or various other vendors and their model-specific features
+# depends       : libevdev libgudev libxml2
+
+name=libwacom
+version=2.16.1    
+release=1
+source="https://github.com/linuxwacom/libwacom/releases/download/libwacom-$version/libwacom-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D tests=disabled    
+    ninja
+    rm -rf /usr/share/libwacom
+    DESTDIR=$PKG ninja install
+}

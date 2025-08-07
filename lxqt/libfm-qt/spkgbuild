@@ -1,0 +1,21 @@
+# description   : libfm-qt is the Qt port of libfm, a library providing components to build desktop file managers
+# depends       : cmake libexif menucache qt
+
+name=libfm-qt
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/libfm-qt/releases/download/$version/libfm-qt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

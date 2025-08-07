@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 49. extensible markup language (xml)
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

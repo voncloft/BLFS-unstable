@@ -1,0 +1,179 @@
+# description   : Python modules listed in Python Modules have dependencies that are not referenced by other packages in BLFS
+# depends       : hatchfancypypireadme hatchvcs pytz setuptoolsscm editables pathspec pluggy troveclassifiers hatchling hatchling setuptoolsscm hatchvcs pyprojectmetadata cython setuptoolsscm sphinx smartypants hatchvcs
+
+name=python dependencies
+version=
+release=1
+source="https://files.pythonhosted.org/packages/source/a/alabaster/alabaster-1.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/a/attrs/attrs-25.3.0.tar.gz
+https://files.pythonhosted.org/packages/source/B/Babel/babel-2.17.0.tar.gz
+https://files.pythonhosted.org/packages/source/c/certifi/certifi-2025.1.31.tar.gz
+https://files.pythonhosted.org/packages/source/c/chardet/chardet-5.2.0.tar.gz
+https://files.pythonhosted.org/packages/source/c/charset-normalizer/charset_normalizer-3.4.1.tar.gz
+https://files.pythonhosted.org/packages/source/c/commonmark/commonmark-0.9.1.tar.gz
+https://files.pythonhosted.org/packages/source/e/editables/editables-0.5.tar.gz
+https://files.pythonhosted.org/packages/source/h/hatchling/hatchling-1.27.0.tar.gz
+https://files.pythonhosted.org/packages/source/h/hatch-fancy-pypi-readme/hatch_fancy_pypi_readme-24.1.0.tar.gz
+https://files.pythonhosted.org/packages/source/h/hatch-vcs/hatch_vcs-0.4.0.tar.gz
+https://files.pythonhosted.org/packages/source/i/idna/idna-3.10.tar.gz
+https://files.pythonhosted.org/packages/source/i/imagesize/imagesize-1.4.1.tar.gz
+https://files.pythonhosted.org/packages/source/i/iniconfig/iniconfig-2.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/M/Markdown/markdown-3.8.tar.gz
+https://files.pythonhosted.org/packages/source/m/meson_python/meson_python-0.17.1.tar.gz
+https://files.pythonhosted.org/packages/source/m/msgpack/msgpack-1.1.0.tar.gz
+https://files.pythonhosted.org/packages/source/p/pathspec/pathspec-0.12.1.tar.gz
+https://files.pythonhosted.org/packages/source/p/pluggy/pluggy-1.5.0.tar.gz
+https://files.pythonhosted.org/packages/source/p/pyproject-hooks/pyproject_hooks-1.2.0.tar.gz
+https://files.pythonhosted.org/packages/source/p/pyproject-metadata/pyproject_metadata-0.9.0.tar.gz
+https://files.pythonhosted.org/packages/source/p/pytz/pytz-2025.1.tar.gz
+https://files.pythonhosted.org/packages/source/s/setuptools_scm/setuptools_scm-8.3.0.tar.gz
+https://github.com/leohemsted/smartypants.py/archive/v2.0.1/smartypants.py-2.0.1.tar.gz
+https://files.pythonhosted.org/packages/source/s/snowballstemmer/snowballstemmer-2.2.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-applehelp/sphinxcontrib_applehelp-2.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-devhelp/sphinxcontrib_devhelp-2.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-htmlhelp/sphinxcontrib_htmlhelp-2.1.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-jquery/sphinxcontrib-jquery-4.1.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-jsmath/sphinxcontrib-jsmath-1.0.1.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib-qthelp/sphinxcontrib_qthelp-2.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinxcontrib_serializinghtml/sphinxcontrib_serializinghtml-2.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/t/trove_classifiers/trove_classifiers-2025.4.11.15.tar.gz
+https://files.pythonhosted.org/packages/source/t/typogrify/typogrify-2.1.0.tar.gz
+https://files.pythonhosted.org/packages/source/u/urllib3/urllib3-2.3.0.tar.gz
+https://files.pythonhosted.org/packages/source/w/webencodings/webencodings-0.5.1.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv           
+    testenv/bin/pip3 install 'attrs[tests]'                  
+    PATH=$PWD/testenv/bin:$PATH testenv/bin/python -m pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install pytest-cov freezegun              
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install pytest-cov                        
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install hypothesis                        
+    python3 /usr/bin/pytest commonmark/tests/unit_tests.py
+    python3 commonmark/tests/run_spec_tests.py
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install coverage                          
+    python3 /usr/bin/pytest --ignore=tests/test_syntax/extensions/test_md_in_html.py
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    testenv/bin/pip3 install 'meson_python[test]'  
+    HOME= testenv/bin/python -m pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install testpath                          
+    python3 -m pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    TZ=UTC HOME= pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    sed 's/assertEquals/assertEqual/' -i tests/test_cli.py 
+    cp /usr/bin/smartypants . 
+    pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    sed -i 's/text()/read_/' tests/test_jsmath.py 
+    pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    testenv/bin/pip3 install defusedxml            
+    testenv/bin/python -m pytest
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    sed -i '/calver/s/^/#/;$iversion="2025.4.11.15"' setup.py
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install trustme         \
+    tornado         \
+    python-dateutil \
+    mock            \
+    pysocks         \
+    pytest-timeout  \
+    trio            \
+    hypercorn       \
+    quart           \
+    quart_trio      \
+    httpx           
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 install --no-index --find-links dist --no-user alabaster
+    pip3 install --no-index --find-links dist --no-user attrs
+    pip3 install --no-index --find-links dist --no-user Babel
+    pip3 install --no-index --find-links dist --no-user certifi
+    pip3 install --no-index --find-links dist --no-user chardet
+    pip3 install --no-index --find-links dist --no-user charset-normalizer
+    pip3 install --no-index --find-links dist --no-user commonmark
+    pip3 install --no-index --find-links dist --no-user editables
+    pip3 install --no-index --find-links dist --no-user hatchling
+    pip3 install --no-index --find-links dist --no-user hatch-fancy-pypi-readme
+    pip3 install --no-index --find-links dist --no-user hatch_vcs
+    pip3 install --no-index --find-links dist --no-user idna
+    pip3 install --no-index --find-links dist --no-user imagesize
+    pip3 install --no-index --find-links dist --no-user iniconfig
+    pip3 install --no-index --find-links dist --no-user Markdown
+    pip3 install --no-index --find-links dist --no-user meson_python
+    pip3 install --no-index --find-links dist --no-user msgpack
+    pip3 install --no-index --find-links dist --no-user pathspec
+    pip3 install --no-index --find-links dist --no-user pluggy
+    pip3 install --no-index --find-links dist --no-user pyproject_hooks
+    pip3 install --no-index --find-links dist --no-user pyproject-metadata
+    pip3 install --no-index --find-links dist --no-user pytz
+    pip3 install --no-index --find-links dist --no-user setuptools_scm
+    pip3 install --no-index --find-links dist --no-user smartypants
+    pip3 install --no-index --find-links dist --no-user snowballstemmer
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-applehelp
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-devhelp
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-htmlhelp
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-jquery
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-jsmath
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-qthelp
+    pip3 install --no-index --find-links dist --no-user sphinxcontrib-serializinghtml
+    pip3 install --no-index --find-links dist --no-user trove-classifiers
+    pip3 install --no-index --find-links dist --no-user typogrify
+    pip3 install --no-index --find-links dist --no-user urllib3
+    pip3 install --no-index --find-links dist --no-user webencodings
+}

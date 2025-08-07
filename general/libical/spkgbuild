@@ -1,0 +1,29 @@
+# description   : The libical package contains an implementation of the iCalendar protocols and data formats
+# depends       : cmake glib libxml2 vala
+
+name=libical
+version=3.0.20    
+release=1
+source="https://github.com/libical/libical/releases/download/v$version/libical-$version.tar.gz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr  \
+    -D CMAKE_BUILD_TYPE=Release   \
+    -D SHARED_ONLY=yes            \
+    -D ICAL_BUILD_DOCS=false      \
+    -D GOBJECT_INTROSPECTION=true \
+    -D ICAL_GLIB_VAPI=true        \
+    .. 
+    make DESTDIR=$PKG -j1
+    make DESTDIR=$PKG docs
+    make DESTDIR=$PKG install
+    install -vdm755 /usr/share/doc/libical-$version/html 
+    cp -vr apidocs/html/* /usr/share/doc/libical-$version/html
+}

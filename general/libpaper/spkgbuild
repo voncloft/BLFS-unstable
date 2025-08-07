@@ -1,0 +1,23 @@
+# description   : This package is intended to provide a simple way for applications to take actions based on a system or user-specified paper size
+# depends       : 
+
+name=libpaper
+version=2.2.6    
+release=1
+source="https://github.com/rrthomas/libpaper/releases/download/v$version/libpaper-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-static  \
+    --docdir=/usr/share/doc/libpaper-$version 
+    make
+    mkdir -pv ~/.config 
+    echo "a4" > ~/.config/papersize
+    echo "PAPERSIZE=a4" > /etc/profile.d/libpaper.sh
+    make DESTDIR=$PKG install
+}

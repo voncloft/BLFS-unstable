@@ -1,0 +1,26 @@
+# description   : File Roller is an archive manager for GNOME with support for tar, bzip2, bzip3, gzip, zip, jar, compress, lzop, zstd, dmg, and many other archive formats
+# depends       : gtk itstool cpio desktopfileutils jsonglib libarchive libadwaita libportal nautilus
+
+name=file-roller
+version=44.5    
+release=1
+source="https://download.gnome.org/sources/file-roller/44/file-roller-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D packagekit=false \
+    ..                  
+    ninja
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    DESTDIR=$PKG ninja install 
+    chmod -v 0755 /usr/libexec/file-roller/isoinfo.sh
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+}

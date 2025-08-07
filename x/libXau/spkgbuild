@@ -1,0 +1,17 @@
+# description   : The libXau package contains a library implementing the X11 Authorization Protocol
+# depends       : xorgproto
+
+name=libxau
+version=1.0.12    
+release=1
+source="https://www.x.org/pub/individual/lib/libXau-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure $XORG_CONFIG 
+    make
+    make DESTDIR=$PKG install
+}

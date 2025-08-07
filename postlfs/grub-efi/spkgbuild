@@ -1,0 +1,32 @@
+# description   : The GRUB package provides GRand Unified Bootloader
+# depends       : efibootmgr
+
+name=grub
+version=2.12 for EFI    
+release=1
+source="https://ftp.gnu.org/gnu/grub/grub-2.12.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    unset {C,CPP,CXX,LD}FLAGS
+    echo
+    > grub-core/extra_deps.lst
+    ./configure --prefix=/usr        \
+    --sysconfdir=/etc    \
+    --disable-efiemu     \
+    --with-platform=efi  \
+    --target=x86_64      \
+    --disable-werror     
+    make
+    make DESTDIR=$PKG install 
+    mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+    install -vm755 grub-mkfont /usr/bin/ 
+    install -vm644 ascii.h widthspec.h *.pf2 /usr/share/grub/
+    install -vm755 grub-mount /usr/bin/
+    mkdir -pv /usr/share/fonts/unifont 
+    gunzip -c ../unifont-16.0.01.pcf.gz > /usr/share/fonts/unifont/unifont.pcf
+    make DESTDIR=$PKG -C grub-core install
+}

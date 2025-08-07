@@ -1,0 +1,21 @@
+# description   : The libsysstat package contains a library used to query system information and statistics
+# depends       : lxqtbuildtools
+
+name=libsysstat
+version=1.1.0    
+release=1
+source="https://github.com/lxqt/libsysstat/releases/download/$version/libsysstat-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

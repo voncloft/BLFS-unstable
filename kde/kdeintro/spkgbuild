@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=kde preliminaries
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

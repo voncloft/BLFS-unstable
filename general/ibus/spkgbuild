@@ -1,0 +1,33 @@
+# description   : ibus is an Intelligent Input Bus
+# depends       : iso codes libarchive vala dconfdconfeditor4501 glib gtk gtk libnotify
+
+name=ibus
+version=1.5.32    
+release=1
+source="https://github.com/ibus/ibus/archive/$version/ibus-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e 's@/desktop/ibus@/org/freedesktop/ibus@g' \
+    -i data/dconf/org.freedesktop.ibus.gschema.xml
+    if ! [ -e /usr/bin/gtkdocize ]; then
+    sed '/docs/d;/GTK_DOC/d' -i Makefile.am configure.ac
+    fi
+    SAVE_DIST_FILES=1 NOCONFIGURE=1 ./autogen.sh 
+    PYTHON=python3                     \
+    ./configure --prefix=/usr          \
+    --sysconfdir=/etc      \
+    --disable-python2      \
+    --disable-appindicator \
+    --disable-emoji-dict   \
+    --disable-gtk2         \
+    --disable-systemd-services 
+    make
+    gtk-query-immodules-3.0 --update-cache
+    mkdir -p               /usr/share/unicode/ucd 
+    unzip -o ../UCD.zip -d /usr/share/unicode/ucd
+    make DESTDIR=$PKG install
+}

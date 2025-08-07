@@ -1,0 +1,35 @@
+# description   : The cpio package contains tools for archiving
+# depends       : 
+
+name=cpio
+version=2.15    
+release=1
+source="https://ftp.gnu.org/gnu/cpio/cpio-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e "/^extern int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
+    -i src/extern.h
+    sed -e "/^int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
+    -i src/global.c
+    ./configure --prefix=/usr \
+    --enable-mt   \
+    --with-rmt=/usr/libexec/rmt 
+    make DESTDIR=$PKG 
+    makeinfo --html            -o doc/html      doc/cpio.texi 
+    makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi 
+    makeinfo --plaintext       -o doc/cpio.txt  doc/cpio.texi
+    make DESTDIR=$PKG -C doc pdf 
+    make DESTDIR=$PKG -C doc ps
+    make DESTDIR=$PKG install 
+    install -v -m755 -d /usr/share/doc/cpio-$version/html 
+    install -v -m644    doc/html/* \
+    /usr/share/doc/cpio-$version/html 
+    install -v -m644    doc/cpio.{html,txt} \
+    /usr/share/doc/cpio-$version
+    install -v -m644 doc/cpio.{pdf,ps,dvi} \
+    /usr/share/doc/cpio-$version
+}

@@ -1,0 +1,24 @@
+# description   : The Heirloom mailx package (formerly known as the Nail package) contains mailx, a command-line Mail User Agent derived from Berkeley Mail
+# depends       : 
+
+name=mailx
+version=12.5    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/mailx/heirloom-mailx_$version.orig.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/heirloom-mailx-$version-fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i $SRC/heirloom-mailx-$version-fixes-1.patch 
+    sed 's@<openssl@<openssl-1.0/openssl@' \
+    -i openssl.c fio.c makeconfig      
+    make -j1 LDFLAGS+="-L /usr/lib/openssl/" \
+    make DESTDIR=$PKG PREFIX=/usr UCBINSTALL=/usr/bin/install install
+    ln -v -sf mailx $PKG/usr/bin/mail
+    ln -v -sf mailx $PKG/usr/bin/nail
+    install -v -m755 -d     $PKG/usr/share/doc/heirloom-mailx-$version
+    install -v -m644 README $PKG/usr/share/doc/heirloom-mailx-$version
+}

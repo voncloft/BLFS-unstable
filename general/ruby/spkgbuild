@@ -1,0 +1,27 @@
+# description   : The Ruby package contains the Ruby development environment
+# depends       : libyaml
+
+name=ruby
+version=3.4.5    
+release=1
+source="https://cache.ruby-lang.org/pub/ruby/3.4/ruby-$version.tar.xz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr         \
+    --disable-rpath       \
+    --enable-shared       \
+    --without-valgrind    \
+    --without-baseruby    \
+    ac_cv_func_qsort_r=no \
+    --docdir=/usr/share/doc/ruby-$version 
+    make
+    make DESTDIR=$PKG capi
+    cd /path/to/web/app
+    bundle update rake
+    make DESTDIR=$PKG install
+}

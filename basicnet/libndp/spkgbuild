@@ -1,0 +1,20 @@
+# description   : The libndp package provides a wrapper for IPv6 Neighbor Discovery Protocol
+# depends       : 
+
+name=libndp
+version=1.9    
+release=1
+source="http://libndp.org/files/libndp-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr        \
+    --sysconfdir=/etc    \
+    --localstatedir=/var \
+    --disable-static     
+    make
+    make DESTDIR=$PKG install
+}

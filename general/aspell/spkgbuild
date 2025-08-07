@@ -1,0 +1,33 @@
+# description   : The Aspell package contains an interactive spell checking program and the Aspell libraries
+# depends       : which
+
+name=aspell
+version=0.60.8.1    
+release=1
+source="https://ftp.gnu.org/gnu/aspell/aspell-$version.tar.gz
+https://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-2020.12.07-0.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e 's/; i.*size)/, e = end(); i != e; ++i, ++size_)/' \
+    -i modules/speller/default/vector_hash-t.hpp
+    ./configure --prefix=/usr 
+    make
+    tar xf ../aspell6-en-2020.12.07-0.tar.bz2 
+    cd aspell6-en-2020.12.07-0                
+    ./configure 
+    make
+    make DESTDIR=$PKG install 
+    ln -svfn aspell-0.60 /usr/lib/aspell 
+    install -v -m755 -d /usr/share/doc/aspell-$version/aspell{,-dev}.html 
+    install -v -m644 manual/aspell.html/* \
+    /usr/share/doc/aspell-$version/aspell.html 
+    install -v -m644 manual/aspell-dev.html/* \
+    /usr/share/doc/aspell-$version/aspell-dev.html
+    install -v -m 755 scripts/ispell /usr/bin/
+    install -v -m 755 scripts/spell /usr/bin/
+    make DESTDIR=$PKG install
+}

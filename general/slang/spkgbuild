@@ -1,0 +1,21 @@
+# description   : S-Lang (slang) is an interpreted language that may be embedded into an application to make the application extensible
+# depends       : 
+
+name=slang
+version=2.3.3    
+release=1
+source="https://www.jedsoft.org/releases/slang/slang-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr       \
+    --sysconfdir=/etc   \
+    --with-readline=gnu 
+    make DESTDIR=$PKG -j1 RPATH=
+    make DESTDIR=$PKG install_doc_dir=/usr/share/doc/slang-$version   \
+    SLSH_DOC_DIR=/usr/share/doc/slang-$version/slsh \
+    RPATH= install
+}

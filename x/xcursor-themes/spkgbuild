@@ -1,0 +1,17 @@
+# description   : The xcursor-themes package contains the redglass and whiteglass animated cursor themes
+# depends       : xorg applications
+
+name=xcursor-themes
+version=1.0.7    
+release=1
+source="https://www.x.org/pub/individual/data/xcursor-themes-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

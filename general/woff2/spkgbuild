@@ -1,0 +1,23 @@
+# description   : WOFF2 is a library for converting fonts from the TTF format to the WOFF 2
+# depends       : brotli cmake
+
+name=woff2
+version=1.0.2    
+release=1
+source="https://github.com/google/woff2/archive/v$version/woff2-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/output.h/i #include <cstdint>' src/woff2_out.cc
+    mkdir out                                 
+    cd    out                                 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -D CMAKE_SKIP_INSTALL_RPATH=ON ..   
+    make
+    make DESTDIR=$PKG install
+}

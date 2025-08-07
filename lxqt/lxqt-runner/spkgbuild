@@ -1,0 +1,21 @@
+# description   : The lxqt-runner package provides a tool used to launch programs quickly by typing their names
+# depends       : lxqtglobalkeys kwindowsystemforlxqt muparser
+
+name=lxqt-runner
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-runner/releases/download/$version/lxqt-runner-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

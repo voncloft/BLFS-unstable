@@ -1,0 +1,19 @@
+# description   : Ristretto is a fast and lightweight image viewer for the Xfce desktop
+# depends       : libexif libxfce4ui
+
+name=ristretto
+version=0.13.4    
+release=1
+source="https://archive.xfce.org/src/apps/ristretto/0.13/ristretto-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

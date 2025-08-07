@@ -1,0 +1,22 @@
+# description   : Gavl is short for Gmerlin Audio Video Library
+# depends       : 
+
+name=gavl
+version=1.4.0    
+release=1
+source="https://downloads.sourceforge.net/gmerlin/gavl-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i "/stdio/a #include <string.h>" src/fill_test.c
+    LIBS=-lm                         \
+    ./configure --prefix=/usr        \
+    --without-doxygen    \
+    --with-cpuflags=none \
+    --docdir=/usr/share/doc/gavl-$version 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,36 @@
+# description   : Colord is a system service that makes it easy to manage, install, and generate color profiles
+# depends       : dbus glib littlecms libgudev libgusb polkit sqlite vala
+
+name=colord
+version=1.4.8    
+release=1
+source="https://www.freedesktop.org/software/colord/releases/colord-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                  \
+    --prefix=/usr             \
+    --buildtype=release       \
+    -D daemon_user=colord     \
+    -D vapi=true              \
+    -D systemd=false          \
+    -D libcolordcompat=true   \
+    -D argyllcms_sensor=false \
+    -D bash_completion=false  \
+    -D docs=false             \
+    -D man=false              
+    ninja
+    sed -e '/class="manual"/i<refmiscinfo class="source">colord</refmiscinfo>' \
+    -i ../man/*.xml 
+    meson configure -D man=true 
+    ninja
+    groupadd -g 71 colord 
+    useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
+    -g colord -s /bin/false colord
+    DESTDIR=$PKG ninja install
+}

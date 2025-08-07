@@ -1,0 +1,17 @@
+# description   : The sg3_utils package contains low level utilities for devices that use a SCSI command set
+# depends       : 
+
+name=sg3_utils
+version=1.48    
+release=1
+source="https://sg.danny.cz/sg/p/sg3_utils-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

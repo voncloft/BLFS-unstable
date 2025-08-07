@@ -1,0 +1,19 @@
+# description   : Libslirp is a user-mode networking library used by virtual machines, containers or various tools
+# depends       : glib
+
+name=libslirp
+version=4.9.1    
+release=1
+source="https://gitlab.freedesktop.org/slirp/libslirp/-/archive/v$version/libslirp-v$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

@@ -1,0 +1,17 @@
+# description   : Xfwm4 is the window manager for Xfce
+# depends       : libwnck libxfce4ui startupnotification
+
+name=xfwm4
+version=4.20.0    
+release=1
+source="https://archive.xfce.org/src/xfce/xfwm4/4.20/xfwm4-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

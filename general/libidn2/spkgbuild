@@ -1,0 +1,17 @@
+# description   : libidn2 is a package designed for internationalized string handling based on standards from the Internet Engineering Task Force (IETF)'s IDN working group, designed for internationalized domain names
+# depends       : libunistring
+
+name=libidn2
+version=2.3.8    
+release=1
+source="https://ftp.gnu.org/gnu/libidn/libidn2-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

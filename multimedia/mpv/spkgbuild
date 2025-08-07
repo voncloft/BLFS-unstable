@@ -1,0 +1,25 @@
+# description   : mpv is a free media player for the command line
+# depends       : alsalib ffmpeg libass libplacebo mesa pulseaudio libjpegturbo libva libvdpau luajit uchardet vulkanloader
+
+name=mpv
+version=0.40.0    
+release=1
+source="https://github.com/mpv-player/mpv/archive/v$version/mpv-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's/AV_OPT_TYPE_CHANNEL_LAYOUT/AV_OPT_TYPE_CHLAYOUT/' filters/f_lavfi.c
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D x11=enabled      \
+    ..                  
+    ninja
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    DESTDIR=$PKG ninja install
+}

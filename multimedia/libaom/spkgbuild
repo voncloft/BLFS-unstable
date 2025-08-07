@@ -1,0 +1,24 @@
+# description   : The libaom package contains a reference version of the Alliance for Open Media video codec
+# depends       : yasm nasm
+
+name=libaom
+version=3.12.1    
+release=1
+source="https://storage.googleapis.com/aom-releases/libaom-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir aom-build 
+    cd    aom-build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_SHARED_LIBS=1       \
+    -D ENABLE_DOCS=no            \
+    -G Ninja .. 
+    ninja
+    DESTDIR=$PKG ninja install 
+    rm -v /usr/lib/libaom.a
+}

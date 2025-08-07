@@ -1,0 +1,21 @@
+# description   : The jfsutils package contains administration and debugging tools for the jfs file system
+# depends       : 
+
+name=jfsutils
+version=1.1.15    
+release=1
+source="https://jfs.sourceforge.net/project/pub/jfsutils-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/jfsutils-$version-gcc10_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../jfsutils-$version-gcc10_fix-1.patch
+    sed -i "/unistd.h/a#include <sys/types.h>"    fscklog/extract.c 
+    sed -i "/ioctl.h/a#include <sys/sysmacros.h>" libfs/devices.c   
+    ./configure 
+    make
+    make DESTDIR=$PKG install
+}

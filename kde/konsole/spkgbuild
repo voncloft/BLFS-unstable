@@ -1,0 +1,24 @@
+# description   : The Konsole package is a KF6 based terminal emulator
+# depends       : kdeframeworks
+
+name=konsole
+version=25.04.2    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/konsole-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/konsole-adjust_scrollbar-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../konsole-adjust_scrollbar-1.patch
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,20 @@
+# description   : SWIG (Simplified Wrapper and Interface Generator) is a compiler that integrates C and C++ with languages including Perl, Python, Tcl, Ruby, PHP, Java, JavaScript, C#, D, Go, Lua, Octave, R, Racket, Scilab, Scheme, and Ocaml
+# depends       : pcre2
+
+name=swig
+version=4.3.1    
+release=1
+source="https://downloads.sourceforge.net/swig/swig-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr                      \
+    --without-javascript               \
+    --without-maximum-compile-warnings 
+    make
+    make DESTDIR=$PKG install 
+    cp -v -R Doc -T /usr/share/doc/swig-$version
+}

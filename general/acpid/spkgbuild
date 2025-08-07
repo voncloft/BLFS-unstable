@@ -1,0 +1,29 @@
+# description   : The acpid (Advanced Configuration and Power Interface event daemon) is a completely flexible, totally extensible daemon for delivering ACPI events
+# depends       : 
+
+name=acpid
+version=2.0.34    
+release=1
+source="https://downloads.sourceforge.net/acpid2/acpid-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr \
+    --docdir=/usr/share/doc/acpid-$version 
+    make
+cat > $PKG/etc/acpi/events/lid << "EOF"
+EOF
+cat > $PKG/etc/acpi/lid.sh << "EOF"
+EOF
+    chmod +x /etc/acpi/lid.sh
+    mkdir -pv /etc/elogind/logind.conf.d
+    echo
+    > /etc/elogind/logind.conf.d/acpi.conf
+    make DESTDIR=$PKG install                         
+    install -v -m755 -d /etc/acpi/events 
+    cp -r samples /usr/share/doc/acpid-$version
+    make DESTDIR=$PKG install-acpid
+}

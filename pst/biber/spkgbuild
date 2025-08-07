@@ -1,0 +1,17 @@
+# description   : Biber is a BibTeX replacement for users of biblatex, written in Perl, with full Unicode support
+# depends       : autovivification businessisbn businessismn businessissn classaccessor datacompare datadump datauniqid datetimecalendarjulian datetimeformatbuilder encodeeucjpascii encodehanextra encodejis2k fileslurper iostring ipcrun3 linguatranslit listallutils listmoreutils loglog4perl lwpprotocolhttps modulebuild parserecdescent perlioutf8strict regexpcommon sortkey textbibtex textcsv textroman unicodecollate unicodelinebreak xmllibxmlsimple xmllibxslt xmlwriter filewhich testdifferences
+
+name=biber
+version=2.20    
+release=1
+source="https://github.com/plk/biber/archive/v$version/biber-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    perl ./Build.PL 
+    ./Build
+    ./Build install
+}

@@ -1,0 +1,21 @@
+# description   : The Breeze Icons package contains the default icons for KDE Plasma applications, but it can be used for other window environments
+# depends       : extracmakemodules qt
+
+name=breeze-icons
+version=6.13.0    
+release=1
+source="https://download.kde.org/stable/frameworks/6.13/breeze-icons-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D BUILD_TESTING=OFF         \
+    -W no-dev ..                 
+    make
+    make DESTDIR=$PKG install
+}

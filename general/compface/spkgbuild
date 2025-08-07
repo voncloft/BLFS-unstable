@@ -1,0 +1,22 @@
+# description   : Compface provides utilities and a library to convert from/to X-Face format, a 48x48 bitmap format used to carry thumbnails of email authors in a mail header
+# depends       : 
+
+name=compface
+version=1.5.2    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/compface/compface-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    autoreconf
+    sed -e '/compface.h/a #include <unistd.h>' \
+    -i cmain.c                             \
+    -i uncmain.c
+    ./configure --prefix=/usr --mandir=/usr/share/man 
+    make
+    make DESTDIR=$PKG install 
+    install -m755 -v xbm2xface.pl /usr/bin
+}

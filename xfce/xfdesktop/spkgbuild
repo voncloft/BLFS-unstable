@@ -1,0 +1,17 @@
+# description   : Xfdesktop is a desktop manager for the Xfce Desktop Environment
+# depends       : exo libxfce4windowing libwnck libnotify startupnotification thunar
+
+name=xfdesktop
+version=4.20.1    
+release=1
+source="https://archive.xfce.org/src/xfce/xfdesktop/4.20/xfdesktop-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

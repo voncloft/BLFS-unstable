@@ -1,0 +1,27 @@
+# description   : The libavif package contains a library used for encoding and decoding AVIF files
+# depends       : libaom gdkpixbuf
+
+name=libavif
+version=1.3.0    
+release=1
+source="https://github.com/AOMediaCodec/libavif/archive/v$version/libavif-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D AVIF_CODEC_AOM=SYSTEM     \
+    -D AVIF_BUILD_GDK_PIXBUF=ON  \
+    -D AVIF_LIBYUV=OFF           \
+    -G Ninja .. 
+    ninja
+    cmake .. -D AVIF_GTEST=LOCAL -D AVIF_BUILD_TESTS=ON 
+    DESTDIR=$PKG ninja  ninja test
+    DESTDIR=$PKG ninja install
+    gdk-pixbuf-query-loaders --update-cache
+}

@@ -1,0 +1,17 @@
+# description   : The sysmond package (pronounced sys-mon-d) is the daemon portion of the sysmond/sysmon3 client/server application that monitors system values including CPU usage, memory usage, and system temperatures in a compact screen window
+# depends       : 
+
+name=sysmond
+version=1.0.0    
+release=1
+source="https://github.com/lfs-book/sysmond/releases/download/sysmond-$version/sysmond-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install-sysmond
+}

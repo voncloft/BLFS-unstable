@@ -1,0 +1,21 @@
+# description   : The libdaemon package is a lightweight C library that eases the writing of UNIX daemons
+# depends       : 
+
+name=libdaemon
+version=0.14    
+release=1
+source="https://0pointer.de/lennart/projects/libdaemon/libdaemon-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG -C doc doxygen
+    make DESTDIR=$PKG docdir=/usr/share/doc/libdaemon-$version install
+    install -v -m755 -d /usr/share/doc/libdaemon-$version/reference/html 
+    install -v -m644 doc/reference/html/* /usr/share/doc/libdaemon-$version/reference/html 
+    install -v -m644 doc/reference/man/man3/* /usr/share/man/man3
+}

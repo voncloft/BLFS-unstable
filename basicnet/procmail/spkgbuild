@@ -1,0 +1,17 @@
+# description   : The Procmail package contains an autonomous mail processor
+# depends       : chapter21mailserversoftware
+
+name=procmail
+version=3.24    
+release=1
+source="https://github.com/BuGlessRB/procmail/archive/v$version/procmail-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/procmail-$version-consolidated_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i $SRC/procmail-$version-consolidated_fixes-1.patch               
+    make DESTDIR=$PKG CC="gcc -std=gnu17" LOCKINGTEST=/tmp MANDIR=/usr/share/man install 
+}

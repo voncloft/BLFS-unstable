@@ -1,0 +1,21 @@
+# description   : Parole is a DVD/CD/music player for Xfce that uses GStreamer
+# depends       : dbusglib gstpluginsbase gstpluginsgood libxfce4ui libnotify taglib
+
+name=parole
+version=4.20.0    
+release=1
+source="https://archive.xfce.org/src/apps/parole/4.20/parole-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release 
+    ninja
+    DESTDIR=$PKG ninja install
+}

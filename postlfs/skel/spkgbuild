@@ -1,0 +1,27 @@
+# description   : No description available
+# depends       : 
+
+name=configuring for adding users
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    getent passwd
+    | cut -d ':' -f 3,4
+    useradd -m
+    <em class="replaceable"><code><newuser></code></em>
+    groupadd -g
+    <em class="replaceable"><code><GID></code></em>
+    <em class="replaceable"><code><username></code></em>
+    
+    useradd -u
+    <em class="replaceable"><code><UID></code></em>
+    -g
+    <em class="replaceable"><code><username></code></em>
+    <em class="replaceable"><code><username></code></em>
+}

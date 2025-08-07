@@ -1,0 +1,30 @@
+# description   : The dtc package contains the Device Tree Compiler for working with device tree source and binary files and also libfdt, a utility library for reading and manipulating device trees in the binary format
+# depends       : 
+
+name=dtc
+version=1.7.2    
+release=1
+source="https://kernel.org/pub/software/utils/dtc/dtc-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D python=disabled  
+    ninja
+    pushd ../Documentation
+    latexmk -bibtex --pdf dtc-paper 
+    latexmk -bibtex --pdf dtc-paper -c
+    popd
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir ..
+    pip3 install --no-index --find-links dist --no-user libfdt
+    DESTDIR=$PKG ninja install
+    rm /usr/lib/libfdt.a
+    cp -R ../Documentation -T /usr/share/doc/dtc-$version
+}

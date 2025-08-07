@@ -1,0 +1,16 @@
+# description   : The mdadm package contains administration tools for software RAID
+# depends       : 
+
+name=mdadm
+version=4.3    
+release=1
+source="https://www.kernel.org/pub/linux/utils/raid/mdadm/mdadm-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make
+    make DESTDIR=$PKG BINDIR=/usr/sbin install
+}

@@ -1,0 +1,28 @@
+# description   : The libportal package provides a library that contains GIO-style async APIs for most Flatpak portals
+# depends       : glib gtk gtk
+
+name=libportal
+version=0.9.1    
+release=1
+source="https://github.com/flatpak/libportal/releases/download/$version/libportal-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/libportal-$version-qt6.9_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../libportal-$version-qt6.9_fixes-1.patch
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release -D docs=false .. 
+    ninja
+    sed -i "/output/s/-1/-$version/" ../doc/meson.build 
+    meson configure -D docs=true                     
+    ninja
+    if [ -e /usr/include/libportal ]; then
+    rm -rf /usr/include/libportal.old 
+    mv -vf /usr/include/libportal{,.old}
+    fi
+    DESTDIR=$PKG ninja install
+}

@@ -1,0 +1,18 @@
+# description   : libpcap provides functions for user-level packet capture, used in low-level network monitoring
+# depends       : 
+
+name=libpcap
+version=1.10.5    
+release=1
+source="https://www.tcpdump.org/release/libpcap-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    sed -i '/INSTALL_DATA.*libpcap.a\|RANLIB.*libpcap.a/ s/^/#/' Makefile
+    make DESTDIR=$PKG install
+}

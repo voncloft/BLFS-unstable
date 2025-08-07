@@ -1,0 +1,16 @@
+# description   : The hwdata package contains current PCI and vendor id data
+# depends       : 
+
+name=hwdata
+version=0.398    
+release=1
+source="https://github.com/vcrhonek/hwdata/archive/v$version/hwdata-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-blacklist
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,27 @@
+# description   : The SGML Common package contains install-catalog
+# depends       : 
+
+name=sgml-common
+version=0.6.3    
+release=1
+source="https://www.linuxfromscratch.org/patches/blfs/svn/sgml-common-$version-manpage-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../sgml-common-$version-manpage-1.patch 
+    autoreconf -f -i
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    install-catalog --remove /etc/sgml/sgml-ent.cat \
+    /usr/share/sgml/sgml-iso-entities-8879.1986/catalog 
+    install-catalog --remove /etc/sgml/sgml-docbook.cat \
+    /etc/sgml/sgml-ent.cat
+    make DESTDIR=$PKG docdir=/usr/share/doc install 
+    install-catalog --add /etc/sgml/sgml-ent.cat \
+    /usr/share/sgml/sgml-iso-entities-8879.1986/catalog 
+    install-catalog --add /etc/sgml/sgml-docbook.cat \
+    /etc/sgml/sgml-ent.cat
+}

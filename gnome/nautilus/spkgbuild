@@ -1,0 +1,25 @@
+# description   : The Nautilus package contains the GNOME file manager
+# depends       : bubblewrap gexiv2 gnomeautoar gnomedesktop libadwaita libnotify libportal libseccomp tinysparql desktopfileutils exempi glib gstpluginsbase libcloudproviders libexif adwaitaicontheme gvfs
+
+name=nautilus
+version=48.3    
+release=1
+source="https://download.gnome.org/sources/nautilus/48/nautilus-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    ..                  
+    ninja
+    sed "/docdir =/s@\$@ / 'nautilus-$version'@" -i ../meson.build 
+    meson configure -D docs=true 
+    ninja
+    DESTDIR=$PKG ninja install
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+}

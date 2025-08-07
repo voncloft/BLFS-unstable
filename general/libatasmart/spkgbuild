@@ -1,0 +1,17 @@
+# description   : The libatasmart package is a disk reporting library
+# depends       : 
+
+name=libatasmart
+version=0.19    
+release=1
+source="https://0pointer.de/public/libatasmart-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG docdir=/usr/share/doc/libatasmart-$version install
+}

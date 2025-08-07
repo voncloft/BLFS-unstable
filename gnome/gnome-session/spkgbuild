@@ -1,0 +1,35 @@
+# description   : The GNOME Session package contains the GNOME session manager
+# depends       : gnomedesktop jsonglib mesa upower
+
+name=gnome-session
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/gnome-session/48/gnome-session-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed 's@/bin/sh@/bin/sh -l@' -i gnome-session/gnome-session.in
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr              \
+    --buildtype=release        \
+    -D man=false               \
+    -D docbook=false           \
+    -D systemduserunitdir=/tmp \
+    ..                         
+    ninja
+cat > $PKG~/.xinitrc << "EOF"
+EOF
+    startx
+    XDG_SESSION_TYPE=wayland dbus-run-session gnome-session
+    DESTDIR=$PKG ninja install
+    mv -v /usr/share/doc/gnome-session{,-$version}
+    rm -v /usr/share/xsessions/gnome.desktop 
+    rm -v /usr/share/wayland-sessions/gnome.desktop
+    rm -rv /tmp/{*.d,*.target,*.service}
+    sed -e 's@^Exec=@/usr/bin/dbus-run-session @' \
+    -i /usr/share/wayland-sessions/gnome-wayland.desktop
+}

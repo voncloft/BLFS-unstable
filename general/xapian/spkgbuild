@@ -1,0 +1,19 @@
+# description   : Xapian is an open source search engine library
+# depends       : 
+
+name=xapian
+version=1.4.29    
+release=1
+source="https://oligarchy.co.uk/xapian/$version/xapian-core-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/xapian-core-$version 
+    make
+    make DESTDIR=$PKG install
+}

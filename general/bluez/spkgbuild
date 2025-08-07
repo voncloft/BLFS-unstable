@@ -1,0 +1,31 @@
+# description   : The BlueZ package contains the Bluetooth protocol stack for Linux
+# depends       : dbus glib libical
+
+name=bluez
+version=5.83    
+release=1
+source="https://www.kernel.org/pub/linux/bluetooth/bluez-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr         \
+    --sysconfdir=/etc     \
+    --localstatedir=/var  \
+    --enable-library      \
+    --disable-manpages    \
+    --disable-systemd     
+    make
+    make DESTDIR=$PKG install 
+    ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin
+    install -v -dm755 /etc/bluetooth 
+    install -v -m644 src/main.conf /etc/bluetooth/main.conf
+    install -v -dm755 /usr/share/doc/bluez-$version 
+    install -v -m644 doc/*.txt /usr/share/doc/bluez-$version
+    install -m644 ./obexd/src/org.bluez.obex.service /usr/share/dbus-1/services
+cat > $PKG/etc/bluetooth/rfcomm.conf << "EOF"
+cat > $PKG/etc/bluetooth/uart.conf << "EOF"
+    make DESTDIR=$PKG install-bluetooth
+}

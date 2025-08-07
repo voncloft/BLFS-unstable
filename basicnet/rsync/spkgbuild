@@ -1,0 +1,36 @@
+# description   : The rsync package contains the rsync utility
+# depends       : popt
+
+name=rsync
+version=3.4.1    
+release=1
+source="https://www.samba.org/ftp/rsync/src/rsync-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-xxhash \
+    --without-included-zlib 
+    make
+    sed -i '/typedef/d' wildtest.c 
+    make DESTDIR=$PKG install
+    install -v -m755 -d          $PKG/usr/share/doc/rsync-$version/api 
+    install -v -m644 dox/html/*  $PKG/usr/share/doc/rsync-$version/api
+    mkdir -pv $PKG/etc
+cat > $PKG/etc/rsyncd.conf << "EOF"
+    # This is a basic rsync configuration file
+    # It exports a single module without user authentication.
+    motd file = /home/rsync/welcome.msg
+    use chroot = yes
+    [localhost]
+    path = /home/rsync
+    comment = Default rsync module
+    read only = yes
+    list = yes
+    uid = rsyncd
+    gid = rsyncd
+EOF
+}

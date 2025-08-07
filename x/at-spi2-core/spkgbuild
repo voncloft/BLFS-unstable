@@ -1,0 +1,24 @@
+# description   : The At-Spi2 Core package contains a comprehensive accessibility framework for the Assistive Technologies available on the GNOME platform
+# depends       : dbus glib gsettingsdesktopschemas xorglibraries
+
+name=at-spi2-core
+version=2.56.4    
+release=1
+source="https://download.gnome.org/sources/at-spi2-core/2.56/at-spi2-core-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                  \
+    --prefix=/usr             \
+    --buildtype=release       \
+    -D gtk2_atk_adaptor=false \
+    -D systemd_user_dir=/tmp  
+    ninja
+    DESTDIR=$PKG ninja install 
+    rm /tmp/at-spi-dbus-bus.service
+}

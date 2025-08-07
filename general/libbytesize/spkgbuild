@@ -1,0 +1,17 @@
+# description   : The libbytesize package is a library which facilitates the common operations with sizes in bytes
+# depends       : pcre2 pygments
+
+name=libbytesize
+version=2.11    
+release=1
+source="https://github.com/storaged-project/libbytesize/releases/download/$version/libbytesize-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

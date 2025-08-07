@@ -1,0 +1,17 @@
+# description   : The Little Color Management System is a small-footprint color management engine, with special focus on accuracy and performance
+# depends       : 
+
+name=little cms
+version=2.17    
+release=1
+source="https://github.com/mm2/Little-CMS/releases/download/lcms$version/lcms2-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

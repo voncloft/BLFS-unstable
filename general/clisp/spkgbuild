@@ -1,0 +1,29 @@
+# description   : GNU Clisp is a Common Lisp implementation which includes an interpreter, compiler, debugger, and many extensions
+# depends       : libsigsegv
+
+name=clisp
+version=2.49    
+release=1
+source="https://ftp.gnu.org/gnu/clisp/latest/clisp-$version.tar.bz2
+https://www.linuxfromscratch.org/patches/blfs/svn/clisp-$version-readline7_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    case $(uname -m) in
+    i?86) export CFLAGS="${CFLAGS:--O2 -g} -falign-functions=4" ;;
+    esac
+    sed -i -e '/socket/d' -e '/"streams"/d' tests/tests.lisp
+    patch -Np1 -i ../clisp-$version-readline7_fixes-1.patch
+    mkdir build 
+    cd    build 
+    ../configure --srcdir=../                       \
+    --prefix=/usr                      \
+    --docdir=/usr/share/doc/clisp-$version \
+    --with-libsigsegv-prefix=/usr 
+    ulimit -S -s 16384 
+    make DESTDIR=$PKG -j1
+    make DESTDIR=$PKG install
+}

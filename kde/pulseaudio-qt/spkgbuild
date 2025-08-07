@@ -1,0 +1,24 @@
+# description   : This package is a Qt-style wrapper for PulseAudio-17
+# depends       : kdeframeworks pulseaudio
+
+name=pulseaudio-qt
+version=1.7.0    
+release=1
+source="https://download.kde.org/stable/pulseaudio-qt/pulseaudio-qt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_PREFIX_PATH=$QT6DIR        \
+    -D CMAKE_SKIP_INSTALL_RPATH=ON      \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    .. 
+    make
+    make DESTDIR=$PKG install
+}

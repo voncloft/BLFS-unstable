@@ -1,0 +1,39 @@
+# description   : Audacious is an audio player
+# depends       : gtk qt mpg123 ffmpeg neon
+
+name=audacious
+version=4.5    
+release=1
+source="https://distfiles.audacious-media-player.org/audacious-$version.tar.bz2
+https://distfiles.audacious-media-player.org/audacious-plugins-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D gtk=true         \
+    -D qt=true          \
+    -D buildstamp=BLFS  \
+    -D libarchive=true  
+    ninja
+    tar -xf ../../audacious-plugins-$version.tar.bz2 
+    cd audacious-plugins-$version                    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D gtk=true         \
+    -D qt=true          \
+    -D opus=false       \
+    -D wavepack=false   
+    ninja
+    DESTDIR=$PKG ninja install
+    DESTDIR=$PKG ninja install
+}

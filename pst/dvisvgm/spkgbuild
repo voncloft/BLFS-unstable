@@ -1,0 +1,22 @@
+# description   : The dvisvgm package converts DVI, EPS and PDF files to SVG format
+# depends       : brotli ghostscript potrace texlive woff2
+
+name=dvisvgm
+version=3.5    
+release=1
+source="https://github.com/mgieseki/dvisvgm/releases/download/$version/dvisvgm-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') 
+    sed -i 's/python/3/' tests/Makefile.in         
+    ./configure                                     \
+    --bindir=$TEXLIVE_PREFIX/bin/${TEXARCH}     \
+    --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man \
+    --with-kpathsea=$TEXLIVE_PREFIX             
+    make
+    make DESTDIR=$PKG install
+}

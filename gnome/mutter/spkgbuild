@@ -1,0 +1,30 @@
+# description   : Mutter is the window manager for GNOME
+# depends       : docutils gnomesettingsdaemon graphene libei libxcvt libxkbcommon pipewire desktopfileutils glib libdisplayinfo startupnotification libinput wayland waylandprotocols xwayland blocaled
+
+name=mutter
+version=48.4    
+release=1
+source="https://download.gnome.org/sources/mutter/48/mutter-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed "/tests_c_args =/s/$/ + ['-U', 'G_DISABLE_ASSERT']/" -i src/tests/meson.build 
+    sed "/c_args:/a '-U', 'G_DISABLE_ASSERT'," -i src/tests/cogl/unit/meson.build
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr            \
+    --buildtype=release      \
+    -D tests=disabled        \
+    -D profiler=false        \
+    -D bash_completion=false \
+    ..                       
+    ninja
+    meson configure -D tests=enabled 
+    DESTDIR=$PKG ninja test
+    mutter --wayland -- vte-2.91
+    MUTTER_DEBUG_DUMMY_MODE_SPECS=1920x1080 mutter --wayland --nested -- vte-2.91
+    DESTDIR=$PKG ninja install
+}

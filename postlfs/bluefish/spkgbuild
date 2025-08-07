@@ -1,0 +1,21 @@
+# description   : Bluefish is a GTK+ text editor targeted towards programmers and web designers, with many options to write websites, scripts and programming code
+# depends       : gtk desktopfileutils
+
+name=bluefish
+version=2.2.17    
+release=1
+source="https://www.bennewitz.com/bluefish/stable/source/bluefish-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '/infbrowser/d' -i src/Makefile.am 
+    autoreconf
+    ./configure --prefix=/usr --docdir=/usr/share/doc/bluefish-$version 
+    make
+    make DESTDIR=$PKG install
+    gtk-update-icon-cache -t -f --include-image-data /usr/share/icons/hicolor 
+    update-desktop-database
+}

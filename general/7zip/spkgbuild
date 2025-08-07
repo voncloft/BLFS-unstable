@@ -1,0 +1,31 @@
+# description   : 7zip is a file archiver that archives with high compression ratios
+# depends       : 
+
+name=7zip
+version=25.01    
+release=1
+source="https://github.com/ip7z/7zip/archive/$version/7zip-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    (for i in Bundles/{Alone,Alone7z,Format7zF,SFXCon} UI/Console; do
+    make DESTDIR=$PKG -C CPP/7zip/$i -f ../../cmpl_gcc.mak || exit
+    done)
+    install -vDm755 CPP/7zip/Bundles/Alone{/b/g/7za,7z/b/g/7zr} \
+    CPP/7zip/Bundles/Format7zF/b/g/7z.so        \
+    CPP/7zip/UI/Console/b/g/7z                  \
+    -t /usr/lib/7zip/                           
+    install -vm755 CPP/7zip/Bundles/SFXCon/b/g/7zCon \
+    /usr/lib/7zip/7zCon.sfx           
+    (for i in 7z 7za 7zr; do
+cat > $PKG/usr/bin/$i << EOF || exit
+    #!/bin/sh
+    exec /usr/lib/7zip/$i "\$@"
+EOF
+    chmod 755 /usr/bin/$i || exit
+    done) 
+    cp -rv DOC -T /usr/share/doc/7zip-$version
+}

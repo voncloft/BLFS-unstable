@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=important notes about upgrading database server software
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

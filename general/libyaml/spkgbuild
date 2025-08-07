@@ -1,0 +1,17 @@
+# description   : The yaml package contains a C library for parsing and emitting YAML (YAML Ain't Markup Language) code
+# depends       : 
+
+name=libyaml
+version=0.2.5    
+release=1
+source="https://github.com/yaml/libyaml/releases/download/$version/yaml-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

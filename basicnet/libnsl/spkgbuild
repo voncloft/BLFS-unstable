@@ -1,0 +1,17 @@
+# description   : The libnsl package contains the public client interface for NIS(YP)
+# depends       : libtirpc
+
+name=libnsl
+version=2.0.1    
+release=1
+source="https://github.com/thkukuk/libnsl/releases/download/v$version/libnsl-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --sysconfdir=/etc --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

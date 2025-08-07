@@ -1,0 +1,36 @@
+# description   : The DocBook DSSSL Stylesheets package contains DSSSL stylesheets
+# depends       : sgmlcommon docbookdtd docbookdtd opensp openjade
+
+name=docbook-dsssl
+version=1.79    
+release=1
+source="https://downloads.sourceforge.net/docbook/docbook-dsssl-$version.tar.bz2
+https://downloads.sourceforge.net/docbook/docbook-dsssl-doc-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    tar -xf ../docbook-dsssl-doc-$version.tar.bz2 --strip-components=1
+    install -v -m755 bin/collateindex.pl /usr/bin                      
+    install -v -m644 bin/collateindex.pl.1 /usr/share/man/man1         
+    install -v -d -m755 /usr/share/sgml/docbook/dsssl-stylesheets-$version 
+    cp -v -R * /usr/share/sgml/docbook/dsssl-stylesheets-$version          
+    install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat \
+    /usr/share/sgml/docbook/dsssl-stylesheets-$version/catalog         
+    install-catalog --add /etc/sgml/dsssl-docbook-stylesheets.cat \
+    /usr/share/sgml/docbook/dsssl-stylesheets-$version/common/catalog  
+    install-catalog --add /etc/sgml/sgml-docbook.cat              \
+    /etc/sgml/dsssl-docbook-stylesheets.cat
+    cd /usr/share/sgml/docbook/dsssl-stylesheets-$version/doc/testdata
+    openjade -t rtf -d jtest.dsl jtest.sgm
+    onsgmls -sv test.sgm
+    openjade -t rtf \
+    -d /usr/share/sgml/docbook/dsssl-stylesheets-$version/print/docbook.dsl \
+    test.sgm
+    openjade -t sgml \
+    -d /usr/share/sgml/docbook/dsssl-stylesheets-$version/html/docbook.dsl \
+    test.sgm
+    rm jtest.rtf test.rtf c1.htm
+}

@@ -1,0 +1,17 @@
+# description   : Xfburn is a GTK+ 3 GUI frontend for Libisoburn
+# depends       : libburn libisofs libxfce4ui
+
+name=xfburn
+version=0.8.0    
+release=1
+source="https://archive.xfce.org/src/apps/xfburn/0.8/xfburn-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

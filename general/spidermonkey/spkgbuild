@@ -1,0 +1,35 @@
+# description   : SpiderMonkey is Mozilla's JavaScript and WebAssembly Engine, written in C++ and Rust
+# depends       : cbindgen icu which llvm
+
+name=spidermonkey from firefox
+version=140.1.0    
+release=1
+source="https://archive.mozilla.org/pub/firefox/releases/$versionesr/source/firefox-$versionesr.source.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
+    mkdir obj 
+    cd    obj 
+    ../js/src/configure --prefix=/usr            \
+    --disable-debug-symbols  \
+    --disable-jemalloc       \
+    --enable-readline        \
+    --enable-rust-simd       \
+    --with-intl-api          \
+    --with-system-icu        \
+    --with-system-zlib       
+    make
+    make DESTDIR=$PKG -C js/src check-jstests \
+    JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled" | tee jstest.log
+    make DESTDIR=$PKG -C js/src check-jit-test
+    rm -fv /usr/lib/libmozjs-140.so
+    make DESTDIR=$PKG install 
+    rm -v /usr/lib/libjs_static.ajs 
+    sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js140-config
+    ln -sfv js/ProfilingCategoryList.h /usr/include/mozjs-140 
+    sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h
+}

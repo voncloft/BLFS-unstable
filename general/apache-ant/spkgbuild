@@ -1,0 +1,26 @@
+# description   : The Apache Ant package is a Java-based build tool
+# depends       : javabinary openjdk glib
+
+name=apache-ant
+version=1.10.15    
+release=1
+source="https://archive.apache.org/dist/ant/source/apache-ant-$version-src.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./bootstrap.sh
+    bootstrap/bin/ant -f fetch.xml -Ddest=optional
+    ./build.sh -Ddist.dir=$PWD/ant-$version dist
+    cp -rv ant-$version /opt/            
+    chown -R root:root /opt/ant-$version 
+    ln -sfv ant-$version /opt/ant
+cat > $PKG/etc/profile.d/ant.sh << EOF
+    # Begin /etc/profile.d/ant.sh
+    pathappend /opt/ant/bin
+    export ANT_HOME=/opt/ant
+    # End /etc/profile.d/ant.sh
+EOF
+}

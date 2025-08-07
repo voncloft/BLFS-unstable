@@ -1,0 +1,17 @@
+# description   : The LSB-Tools package includes tools for Linux Standards Base (LSB) conformance
+# depends       : 
+
+name=lsb-tools
+version=0.12    
+release=1
+source="https://github.com/lfs-book/LSB-Tools/releases/download/v$version/LSB-Tools-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make
+    make DESTDIR=$PKG install
+    rm /usr/sbin/lsbinstall
+}

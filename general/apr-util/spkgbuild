@@ -1,0 +1,23 @@
+# description   : The Apache Portable Runtime Utility Library provides a predictable and consistent interface to underlying client library interfaces
+# depends       : apr
+
+name=apr-util
+version=1.6.3    
+release=1
+source="https://archive.apache.org/dist/apr/apr-util-$version.tar.bz2
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr       \
+    --with-apr=/usr     \
+    --with-gdbm=/usr    \
+    --with-openssl=/usr \
+    --with-crypto 
+    make
+    make DESTDIR=$PKG install
+}

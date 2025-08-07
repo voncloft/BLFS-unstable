@@ -1,0 +1,26 @@
+# description   : PulseAudio is a sound system for POSIX OSes, meaning that it is a proxy for sound applications
+# depends       : libsndfile alsalib dbus glib speex xorglibraries
+
+name=pulseaudio
+version=17.0    
+release=1
+source="https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D database=gdbm    \
+    -D doxygen=false    \
+    -D bluez5=disabled  \
+    -D tests=false      \
+    ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+    rm /usr/share/dbus-1/system.d/pulseaudio-system.conf
+}

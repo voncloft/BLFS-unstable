@@ -1,0 +1,26 @@
+# description   : The libsecret package contains a GObject based library for accessing the Secret Service API
+# depends       : glib libgcrypt gnutls vala gnomekeyring
+
+name=libsecret
+version=0.21.7    
+release=1
+source="https://download.gnome.org/sources/libsecret/0.21/libsecret-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir bld 
+    cd    bld 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D gtk_doc=false    \
+    ..                  
+    ninja
+    sed "s/api_version_major/'$version'/"            \
+    -i ../docs/reference/libsecret/meson.build 
+    meson configure -D gtk_doc=true                
+    ninja
+    DESTDIR=$PKG ninja install
+}

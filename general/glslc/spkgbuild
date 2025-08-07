@@ -1,0 +1,26 @@
+# description   : The glslc program is Google's command line compiler for OpenGL Shading Language/High Level Shading Language (GLSL/HLSL) to Standard Portable Intermediate Representation (SPIR-V)
+# depends       : cmake glslang spirvtools
+
+name=glslc from shaderc
+version=2025.3    
+release=1
+source="https://github.com/google/shaderc/archive/v$version/shaderc-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '/build-version/d'   -i glslc/CMakeLists.txt            
+    sed '/third_party/d'     -i CMakeLists.txt                  
+    sed 's|SPIRV|glslang/|' -i libshaderc_util/src/compiler.cc 
+    echo '"$version"' > glslc/src/build-version.inc
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D SHADERC_SKIP_TESTS=ON     \
+    -G Ninja ..
+    ninja
+    install -vm755 glslc/glslc /usr/bin
+}

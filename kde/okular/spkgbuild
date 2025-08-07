@@ -1,0 +1,24 @@
+# description   : Okular is a document viewer for KDE
+# depends       : kdeframeworks plasmaactivities libkexiv2 libtiff phonon poppler
+
+name=okular
+version=25.04.0    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/okular-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    SKIP_OPTIONAL='Discount;DjVuLibre;EPub;LibSpectre;LibZip'
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -D FORCE_NOT_REQUIRED_DEPENDENCIES="$SKIP_OPTIONAL" \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

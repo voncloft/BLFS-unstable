@@ -1,0 +1,17 @@
+# description   : The libgstgtk4 package contains a library that binds the gstreamer multimedia framework to GTK-4
+# depends       : git gstpluginsbase gtk rustc
+
+name=libgstgtk4 from gst-plugins-rs
+version=1.26.4    
+release=1
+source="https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-$version/gst-plugins-rs-gstreamer-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    cd video/gtk4 
+    cargo build --release
+    install -vm755 ../../target/release/libgstgtk4.so /usr/lib/gstreamer-1.0
+}

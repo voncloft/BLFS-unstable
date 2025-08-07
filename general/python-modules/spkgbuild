@@ -1,0 +1,183 @@
+# description   : The Python module packages add useful objects to the Python language
+# depends       : pyprojecthooks setuptoolsscm msgpack requests dbuspython dbus glib mesonpython patchelf chardet doxygen doxygen markdown pygments typogrify six webencodings libxslt cython mesonpython pyprojectmetadata pygobject atspi2core cairo hatchling glib pycairo setuptoolsscm iniconfig pluggy setuptoolsscm cython libyaml commonmark sphinx charsetnormalizer idna urllib3 makeca p11kit six certifi urllib3 alabaster babel docutils imagesize pygments requests snowballstemmer sphinxcontribapplehelp sphinxcontribdevhelp sphinxcontribhtmlhelp sphinxcontribjsmath sphinxcontribqthelp sphinxcontribserializinghtml sphinx sphinxcontribjquery
+
+name=python modules
+version=
+release=1
+source="https://files.pythonhosted.org/packages/source/a/asciidoc/asciidoc-10.2.1.tar.gz
+https://files.pythonhosted.org/packages/source/b/build/build-1.2.2.post1.tar.gz
+https://files.pythonhosted.org/packages/source/c/cssselect/cssselect-1.3.0.tar.gz
+https://github.com/psf/cachecontrol/archive/v0.14.3/cachecontrol-0.14.3.tar.gz
+https://github.com/cython/cython/releases/download/3.1.2/cython-3.1.2.tar.gz
+https://files.pythonhosted.org/packages/source/p/python-dbusmock/python_dbusmock-0.36.0.tar.gz
+https://dbus.freedesktop.org/releases/dbus-python/dbus-python-1.4.0.tar.xz
+https://files.pythonhosted.org/packages/source/d/docutils/docutils-0.21.2.tar.gz
+https://files.pythonhosted.org/packages/source/d/doxypypy/doxypypy-0.8.8.7.tar.gz
+https://files.pythonhosted.org/packages/source/d/doxyqml/doxyqml-0.5.3.tar.gz
+https://files.pythonhosted.org/packages/source/g/gi-docgen/gi_docgen-2025.4.tar.gz
+https://files.pythonhosted.org/packages/source/h/html5lib/html5lib-1.1.tar.gz
+https://files.pythonhosted.org/packages/source/l/lxml/lxml-6.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/M/Mako/mako-1.3.10.tar.gz
+https://files.pythonhosted.org/packages/source/n/numpy/numpy-2.3.2.tar.gz
+https://files.pythonhosted.org/packages/source/p/ply/ply-3.11.tar.gz
+https://files.pythonhosted.org/packages/source/p/psutil/psutil-7.0.0.tar.gz
+https://github.com/encukou/py3c/archive/v1.4/py3c-1.4.tar.gz
+https://download.gnome.org/sources/pyatspi/2.46/pyatspi-2.46.1.tar.xz
+https://github.com/pygobject/pycairo/releases/download/v1.26.1/pycairo-1.26.1.tar.gz
+https://files.pythonhosted.org/packages/source/p/pygdbmi/pygdbmi-0.11.0.0.tar.gz
+https://files.pythonhosted.org/packages/source/P/Pygments/pygments-2.19.2.tar.gz
+https://download.gnome.org/sources/pygobject/3.52/pygobject-3.52.3.tar.gz
+https://files.pythonhosted.org/packages/source/p/pyparsing/pyparsing-3.2.3.tar.gz
+https://files.pythonhosted.org/packages/source/p/pyserial/pyserial-3.5.tar.gz
+https://files.pythonhosted.org/packages/source/p/pytest/pytest-8.4.1.tar.gz
+https://files.pythonhosted.org/packages/b0/25/7998cd2dec731acbd438fbf91bc619603fc5188de0a9a17699a781840452/pyxdg-0.28.tar.gz
+https://files.pythonhosted.org/packages/source/P/PyYAML/pyyaml-6.0.2.tar.gz
+https://files.pythonhosted.org/packages/source/r/recommonmark/recommonmark-0.7.1.tar.gz
+https://files.pythonhosted.org/packages/source/r/requests/requests-2.32.4.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/requests-use_system_certs-1.patch
+https://github.com/scour-project/scour/archive/v0.38.2/scour-0.38.2.tar.gz
+https://github.com/getsentry/sentry-python/releases/download/2.29.1/sentry_sdk-2.29.1.tar.gz
+https://files.pythonhosted.org/packages/source/s/six/six-1.17.0.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinx/sphinx-8.2.3.tar.gz
+https://files.pythonhosted.org/packages/source/s/sphinx_rtd_theme/sphinx_rtd_theme-3.0.2.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install build[test]                       
+    python3 -m pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 tests/functional/tests.py 
+    python3 tests/unit/tests.py
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir -C setup-args=-Dallow-noblas=true $PWD
+    mkdir -p test                                  
+    cd       test                                  
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install hypothesis                        
+    python3 -c "import numpy, sys; sys.exit(numpy.test() is False)"
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    make DESTDIR=$PKG test-python3 
+    make DESTDIR=$PKG test-python3-cpp
+    ./configure --prefix=/usr --with-python=/usr/bin/python3
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    testenv/bin/pip3 install wcag-contrast-ratio   
+    testenv/bin/python -m pytest
+    mv -v tests/test_gdbus.py{,.nouse}         
+    mv -v tests/test_overrides_gtk.py{,.nouse}
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install railroad-diagrams matplotlib      
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install pytest[dev] xmlschema hypothesis  
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pytest -k 'not (test_integration or test_code or test_headings or test_image or test_links or test_lists)'
+    patch -Np1 -i ../requests-use_system_certs-1.patch
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install --force-reinstall sphinx\<5       
+    pip3 install pytest-mock    \
+    werkzeug\<2    \
+    flask\<2       \
+    pytest-httpbin \
+    pysocks        \
+    trustme                           
+    pip3 install --force-reinstall Markupsafe\<2.1 
+    python3 /usr/bin/pytest tests
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install sphinx[test]                      
+    python3 -m pytest
+    deactivate
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    python3 -m venv --system-site-packages testenv 
+    source testenv/bin/activate                    
+    pip3 install readthedocs-sphinx-ext            
+    python3 /usr/bin/pytest
+    deactivate
+    pip3 install --no-index --find-links dist --no-user asciidoc
+    pip3 install --no-index --find-links dist --no-user build
+    pip3 install --no-index --find-links dist --no-user cssselect
+    pip3 install --no-index --find-links dist --no-user cachecontrol
+    pip3 install --no-index --find-links dist --no-user Cython
+    pip3 install --no-index --find-links dist --no-user python-dbusmock
+    pip3 install --no-index --find-links dist --no-user dbus-python
+    for f in /usr/bin/rst*.py; do
+    rm -fv /usr/bin/$(basename $f .py)
+    done
+    pip3 install --no-index --find-links dist --no-user docutils
+    pip3 install --no-index --find-links dist --no-user doxypypy
+    pip3 install --no-index --find-links dist --no-user doxyqml
+    pip3 install --no-index --find-links dist --no-user gi-docgen
+    pip3 install --no-index --find-links dist --no-user html5lib
+    pip3 install --no-index --find-links dist --no-user lxml
+    pip3 install --no-index --find-links dist --no-user Mako
+    pip3 install --no-index --find-links dist --no-user numpy
+    pip3 install --no-index --find-links dist --no-user ply
+    pip3 install --no-index --find-links dist --no-user psutil
+    make DESTDIR=$PKG prefix=/usr install
+    make DESTDIR=$PKG install
+    DESTDIR=$PKG ninja install
+    pip3 install --no-index --find-links dist --no-user pygdbmi
+    pip3 install --no-index --find-links dist --no-user Pygments
+    DESTDIR=$PKG ninja install
+    pip3 install --no-index --find-links dist --no-user pyparsing
+    pip3 install --no-index --find-links dist --no-user pyserial
+    pip3 install --no-index --find-links dist --no-user pytest
+    pip3 install --no-index --find-links dist --no-user pyxdg
+    pip3 install --no-index --find-links dist --no-user PyYAML
+    pip3 install --no-index --find-links dist --no-user recommonmark
+    pip3 install --no-index --find-links dist --no-user requests
+    pip3 install --no-index --find-links dist --no-user scour
+    pip3 install --no-index --find-links dist --no-user sentry-sdk
+    pip3 install --no-index --find-links dist --no-user six
+    pip3 install roman-numerals-py
+    pip3 install --no-index --find-links dist --no-user sphinx
+    pip3 install --no-index --find-links dist --no-user sphinx_rtd_theme
+}

@@ -1,0 +1,47 @@
+# description   : blocaled is an implementation of the org
+# depends       : polkit libdaemon
+
+name=blocaled
+version=0.7    
+release=1
+source="https://github.com/lfs-book/blocaled/releases/download/v$version/blocaled-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+cat > $PKG/etc/profile.d/i18n.sh << "EOF"
+    # Begin /etc/profile.d/i18n.sh
+    if [ -r /etc/locale.conf ]; then source /etc/locale.conf; fi
+    if [ -n "$LANG" ];              then export LANG; fi
+    if [ -n "$LC_TYPE" ];           then export LC_TYPE; fi
+    if [ -n "$LC_NUMERIC" ];        then export LC_NUMERIC; fi
+    if [ -n "$LC_TIME" ];           then export LC_TIME; fi
+    if [ -n "$LC_COLLATE" ];        then export LC_COLLATE; fi
+    if [ -n "$LC_MONETARY" ];       then export LC_MONETARY; fi
+    if [ -n "$LC_MESSAGES" ];       then export LC_MESSAGES; fi
+    if [ -n "$LC_PAPER" ];          then export LC_PAPER; fi
+    if [ -n "$LC_NAME" ];           then export LC_NAME; fi
+    if [ -n "$LC_ADDRESS" ];        then export LC_ADDRESS; fi
+    if [ -n "$LC_TELEPHONE" ];      then export LC_TELEPHONE; fi
+    if [ -n "$LC_MEASUREMENT" ];    then export LC_MEASUREMENT; fi
+    if [ -n "$LC_IDENTIFICATION" ]; then export LC_IDENTIFICATION; fi
+    # End /etc/profile.d/i18n.sh
+EOF
+cat > $PKG/etc/locale.conf << EOF
+    # Begin /etc/locale.conf
+    LANG=$LANG
+    # End /etc/locale.conf
+EOF
+    source /etc/sysconfig/console 
+    KEYMAP=${KEYMAP:-us}          
+    gdbus call --system                                             \
+    --dest org.freedesktop.locale1                       \
+    --object-path /org/freedesktop/locale1               \
+    --method org.freedesktop.locale1.SetVConsoleKeyboard \
+    "$KEYMAP" "$KEYMAP_CORRECTIONS" true true
+}

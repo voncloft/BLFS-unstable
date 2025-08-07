@@ -1,0 +1,16 @@
+# description   : The Glad package contains a generator for loading Vulkan, OpenGL, EGL, GLES, and GLX contexts
+# depends       : 
+
+name=glad
+version=2.0.8    
+release=1
+source="https://github.com/Dav1dde/glad/archive/v$version/glad-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 install --no-index --find-links dist --no-user glad2
+}

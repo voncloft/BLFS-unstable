@@ -1,0 +1,19 @@
+# description   : libdvdnav is a library that allows easy usage of sophisticated DVD navigation features including DVD menus, multiangle playback, and even interactive DVD games
+# depends       : libdvdread
+
+name=libdvdnav
+version=6.1.1    
+release=1
+source="https://get.videolan.org/libdvdnav/$version/libdvdnav-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/libdvdnav-$version 
+    make
+    make DESTDIR=$PKG install
+}

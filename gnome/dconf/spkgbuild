@@ -1,0 +1,32 @@
+# description   : The DConf package contains a low-level configuration system
+# depends       : dbus glib gtk libhandy libxml2 libxslt vala
+
+name=dconf-0.40.0 / dconf-editor
+version=45.0.1    
+release=1
+source="https://download.gnome.org/sources/dconf/0.40/dconf-0.40.0.tar.xz
+https://download.gnome.org/sources/dconf-editor/45/dconf-editor-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's/install_dir: systemd_userunitdir,//' service/meson.build
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr            \
+    --buildtype=release      \
+    -D bash_completion=false \
+    ..                      
+    ninja
+    cd ..              
+    tar -xf ../dconf-editor-$version.tar.xz 
+    cd dconf-editor-$version                
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+    DESTDIR=$PKG ninja install
+}

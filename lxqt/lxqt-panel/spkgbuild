@@ -1,0 +1,21 @@
+# description   : The lxqt-panel package contains a lightweight X11 desktop panel
+# depends       : layershellqtforlxqt libdbusmenulxqt liblxqt lxqtglobalkeys lxqtmenudata solid forlxqt menucache pulseaudio libstatgrab libsysstat libxkbcommon lmsensors362
+
+name=lxqt-panel
+version=2.2.2    
+release=1
+source="https://github.com/lxqt/lxqt-panel/releases/download/$version/lxqt-panel-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

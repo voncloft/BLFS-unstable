@@ -1,0 +1,17 @@
+# description   : The libxklavier package contains a utility library for X keyboard
+# depends       : glib isocodes libxml2 xorg libraries
+
+name=libxklavier
+version=5.4    
+release=1
+source="https://people.freedesktop.org/~svu/libxklavier-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

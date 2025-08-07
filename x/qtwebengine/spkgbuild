@@ -1,0 +1,27 @@
+# description   : QtWebEngine integrates chromium's web capabilities into Qt
+# depends       : cups html5lib nodejs nss pciutils qt alsalib pulseaudio ffmpeg icu libevent libwebp libxslt opus pipewire
+
+name=qtwebengine
+version=6.9.1    
+release=1
+source="https://download.qt.io/official_releases/qt/6.9/$version/submodules/qtwebengine-everywhere-src-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_MESSAGE_LOG_LEVEL=STATUS             \
+    -D QT_FEATURE_webengine_system_ffmpeg=ON      \
+    -D QT_FEATURE_webengine_system_icu=ON         \
+    -D QT_FEATURE_webengine_system_libevent=ON    \
+    -D QT_FEATURE_webengine_proprietary_codecs=ON \
+    -D QT_FEATURE_webengine_webrtc_pipewire=ON    \
+    -D QT_BUILD_EXAMPLES_BY_DEFAULT=OFF           \
+    -D QT_GENERATE_SBOM=OFF                       \
+    -G Ninja ..                                   
+    ninja
+    DESTDIR=$PKG ninja install
+}

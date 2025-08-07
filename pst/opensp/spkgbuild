@@ -1,0 +1,37 @@
+# description   : The OpenSP package contains a C++ library for using SGML/XML files
+# depends       : sgmlcommon
+
+name=opensp
+version=1.5.2    
+release=1
+source="https://downloads.sourceforge.net/openjade/OpenSP-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/OpenSP-$version-gcc14-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../OpenSP-$version-gcc14-1.patch          
+    sed -i 's/32,/253,/' lib/Syntax.cxx                  
+    sed -i 's/LITLEN          240 /LITLEN          8092/' \
+    unicode/{gensyntax.pl,unicode.syn}               
+    ./configure --prefix=/usr                              \
+    --disable-static                           \
+    --disable-doc-build                        \
+    --enable-default-catalog=/etc/sgml/catalog \
+    --enable-http                              \
+    --enable-default-search-path=/usr/share/sgml 
+    make DESTDIR=$PKG pkgdatadir=/usr/share/sgml/OpenSP-$version
+    make DESTDIR=$PKG pkgdatadir=/usr/share/sgml/OpenSP-$version \
+    docdir=/usr/share/doc/OpenSP-$version      \
+    install 
+    ln -v -sf onsgmls   /usr/bin/nsgmls   
+    ln -v -sf osgmlnorm /usr/bin/sgmlnorm 
+    ln -v -sf ospam     /usr/bin/spam     
+    ln -v -sf ospcat    /usr/bin/spcat    
+    ln -v -sf ospent    /usr/bin/spent    
+    ln -v -sf osx       /usr/bin/sx       
+    ln -v -sf osx       /usr/bin/sgml2xml 
+    ln -v -sf libosp.so /usr/lib/libsp.so
+}

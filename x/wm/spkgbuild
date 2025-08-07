@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 27. window managers
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

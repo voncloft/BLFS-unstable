@@ -1,0 +1,28 @@
+# description   : The Gutenprint (formerly Gimp-Print) package contains high quality drivers for many brands and models of printers for use with Cups-2
+# depends       : cups
+
+name=gutenprint
+version=5.3.5    
+release=1
+source="https://downloads.sourceforge.net/gimp-print/gutenprint-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's|$(PACKAGE)/doc|doc/$(PACKAGE)-$(VERSION)|' \
+    {,doc/,doc/developer/}Makefile.in 
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --without-gimp2  \
+    --without-gimp2-as-gutenprint 
+    make
+    make DESTDIR=$PKG install 
+    install -v -m755 -d /usr/share/doc/gutenprint-$version/api/gutenprint{,ui2} 
+    install -v -m644    doc/gutenprint/html/* \
+    /usr/share/doc/gutenprint-$version/api/gutenprint 
+    install -v -m644    doc/gutenprintui2/html/* \
+    /usr/share/doc/gutenprint-$version/api/gutenprintui2
+    /etc/rc.d/init.d/cups restart
+}

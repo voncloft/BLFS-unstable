@@ -1,0 +1,23 @@
+# description   : The libmbim package contains a GLib-based library for talking to WWAN modems and devices which speak the Mobile Interface Broadband Model (MBIM) protocol
+# depends       : glib
+
+name=libmbim
+version=1.32.0    
+release=1
+source="https://gitlab.freedesktop.org/mobile-broadband/libmbim/-/archive/$version/libmbim-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                 \
+    --prefix=/usr            \
+    --buildtype=release      \
+    -D bash_completion=false \
+    -D man=false             
+    ninja
+    DESTDIR=$PKG ninja install
+}

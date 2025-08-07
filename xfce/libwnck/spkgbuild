@@ -1,0 +1,19 @@
+# description   : The libwnck package contains the Window Navigator Construction Kit
+# depends       : gtk glib startupnotification
+
+name=libwnck
+version=43.2    
+release=1
+source="https://download.gnome.org/sources/libwnck/43/libwnck-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

@@ -1,0 +1,19 @@
+# description   : Cairo is a 2D graphics library with support for multiple output devices
+# depends       : libpng pixman fontconfig glib xorglibraries
+
+name=cairo
+version=1.18.4    
+release=1
+source="https://www.cairographics.org/releases/cairo-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

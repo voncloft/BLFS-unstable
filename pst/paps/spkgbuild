@@ -1,0 +1,20 @@
+# description   : paps is a text to PostScript converter that works through Pango
+# depends       : fmt pango
+
+name=paps
+version=0.8.0    
+release=1
+source="https://github.com/dov/paps/releases/download/v$version/paps-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i -r 's/g_utf8_(next|offset)/(char*) /' src/paps.cc
+    ./configure --prefix=/usr    \
+    --disable-Werror \
+    --mandir=/usr/share/man 
+    make
+    make DESTDIR=$PKG install
+}

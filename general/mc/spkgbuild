@@ -1,0 +1,19 @@
+# description   : MC (Midnight Commander) is a text-mode full-screen file manager and visual shell
+# depends       : glib slang
+
+name=mc
+version=4.8.33    
+release=1
+source="http://ftp.midnight-commander.org/mc-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --enable-charset  
+    make
+    make DESTDIR=$PKG install
+}

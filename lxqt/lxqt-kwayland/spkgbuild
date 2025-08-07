@@ -1,0 +1,24 @@
+# description   : kwayland is a Qt-style API to interact with the wayland-client and wayland-server API
+# depends       : extracmakemodules mesa wayland plasmawaylandprotocols qt
+
+name=kwayland
+version=6.3.4 for lxqt    
+release=1
+source="https://download.kde.org/stable/plasma/6.3.4/kwayland-6.3.4.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D CMAKE_INSTALL_LIBEXECDIR=libexec \
+    -D KDE_INSTALL_USE_QT_SYS_PATHS=ON  \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev ..                        
+    make
+    make DESTDIR=$PKG install
+}

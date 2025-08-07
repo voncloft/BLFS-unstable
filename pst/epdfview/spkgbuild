@@ -1,0 +1,24 @@
+# description   : ePDFView-gtk3 is a fork of the old ePDFView program
+# depends       : gtk poppler
+
+name=epdfview-gtk3
+version=20200814    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/epdfview-gtk3/epdfview-gtk3-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr           \
+    --buildtype=release     \
+    -D enable-printing=true \
+    ..                      
+    ninja
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    DESTDIR=$PKG ninja install
+}

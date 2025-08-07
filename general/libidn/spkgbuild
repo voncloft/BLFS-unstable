@@ -1,0 +1,24 @@
+# description   : libidn is a package designed for internationalized string handling based on the Stringprep, Punycode and IDNA specifications defined by the Internet Engineering Task Force (IETF) Internationalized Domain Names (IDN) working group, used for internationalized domain names
+# depends       : 
+
+name=libidn
+version=1.43    
+release=1
+source="https://ftp.gnu.org/gnu/libidn/libidn-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    pushd tests  
+    make DESTDIR=$PKG check 
+    popd
+    make DESTDIR=$PKG install 
+    find doc -name "Makefile*" -delete            
+    rm -rf -v doc/{gdoc,idn.1,stamp-vti,man,texi} 
+    mkdir -v       /usr/share/doc/libidn-$version     
+    cp -r -v doc/* /usr/share/doc/libidn-$version
+}

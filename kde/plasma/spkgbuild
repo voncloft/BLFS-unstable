@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 32. kde plasma
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

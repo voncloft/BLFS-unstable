@@ -1,0 +1,21 @@
+# description   : Valgrind is an instrumentation framework for building dynamic analysis tools
+# depends       : 
+
+name=valgrind
+version=3.25.1    
+release=1
+source="https://sourceware.org/pub/valgrind/valgrind-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's|/doc/valgrind||' docs/Makefile.in 
+    ./configure --prefix=/usr \
+    --datadir=/usr/share/doc/valgrind-$version 
+    make
+    sed -e 's@prereq:.*@prereq: false@' \
+    -i {helgrind,drd}/tests/pth_cond_destroy_busy.vgtest
+    make DESTDIR=$PKG install
+}

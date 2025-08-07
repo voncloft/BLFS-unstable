@@ -1,0 +1,17 @@
+# description   : feh is a fast, lightweight image viewer which uses Imlib2
+# depends       : libpng imlib2 giflib curl
+
+name=feh
+version=3.10.3    
+release=1
+source="https://feh.finalrewind.org/feh-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i "s:doc/feh:-$version:" config.mk 
+    make DESTDIR=$PKG PREFIX=/usr
+    make DESTDIR=$PKG PREFIX=/usr install
+}

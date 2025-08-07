@@ -1,0 +1,24 @@
+# description   : The GNOME Keyring package contains a daemon that keeps passwords and other secrets for users
+# depends       : dbus gcr linuxpam libxslt opensshp1
+
+name=gnome-keyring
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/gnome-keyring/48/gnome-keyring-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's:"/desktop:"/org:' schema/*.xml 
+    mkdir build-gkr 
+    cd    build-gkr 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D systemd=disabled \
+    -D ssh-agent=true   
+    ninja
+    DESTDIR=$PKG ninja install
+}

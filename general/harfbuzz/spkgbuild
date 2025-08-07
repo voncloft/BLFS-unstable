@@ -1,0 +1,22 @@
+# description   : The HarfBuzz package contains an OpenType text shaping engine
+# depends       : glib graphite2 texlivesource libreoffice icu freetype
+
+name=harfbuzz
+version=11.3.3    
+release=1
+source="https://github.com/harfbuzz/harfbuzz/releases/download/$version/harfbuzz-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..             \
+    --prefix=/usr        \
+    --buildtype=release  \
+    -D graphite2=enabled 
+    ninja
+    DESTDIR=$PKG ninja install
+}

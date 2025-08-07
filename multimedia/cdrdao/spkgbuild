@@ -1,0 +1,19 @@
+# description   : The Cdrdao package contains CD recording utilities
+# depends       : libao libvorbis libmadb lame
+
+name=cdrdao
+version=1.2.4    
+release=1
+source="https://downloads.sourceforge.net/cdrdao/cdrdao-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --mandir=/usr/share/man 
+    make
+    make DESTDIR=$PKG install 
+    install -v -m755 -d /usr/share/doc/cdrdao-$version 
+    install -v -m644 README /usr/share/doc/cdrdao-$version
+}

@@ -1,0 +1,23 @@
+# description   : The Graphviz package contains graph visualization software
+# depends       : cmake pango cairo xorglibraries fontconfig libpng gegl
+
+name=graphviz
+version=13.1.1    
+release=1
+source="https://gitlab.com/graphviz/graphviz/-/archive/$version/graphviz-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+    -D CMAKE_BUILD_TYPE=Release    \
+    -D CMAKE_SKIP_INSTALL_RPATH=ON \
+    ..                             
+    sed -i '/GZIP/s/:.*$/=/' CMakeCache.txt 
+    make
+    make DESTDIR=$PKG install
+}

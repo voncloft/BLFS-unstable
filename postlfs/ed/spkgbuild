@@ -1,0 +1,17 @@
+# description   : Ed is a line-oriented text editor
+# depends       : libarchive
+
+name=ed
+version=1.22    
+release=1
+source="https://ftp.gnu.org/gnu/ed/ed-$version.tar.lz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

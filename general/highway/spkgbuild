@@ -1,0 +1,23 @@
+# description   : The highway package contains a C++ library that provides portable SIMD/vector intrinsics
+# depends       : cmake
+
+name=highway
+version=1.2.0    
+release=1
+source="https://github.com/google/highway/archive/$version/highway-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_TESTING=OFF         \
+    -D BUILD_SHARED_LIBS=ON      \
+    -G Ninja ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+}

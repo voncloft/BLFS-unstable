@@ -1,0 +1,17 @@
+# description   : Xfconf is the configuration storage system for Xfce
+# depends       : libxfce4util
+
+name=xfconf
+version=4.20.0    
+release=1
+source="https://archive.xfce.org/src/xfce/xfconf/4.20/xfconf-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

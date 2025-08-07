@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=part vii. kde
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

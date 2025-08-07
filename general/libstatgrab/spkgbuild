@@ -1,0 +1,19 @@
+# description   : This is a library that provides cross platform access to statistics about the system on which it's run
+# depends       : 
+
+name=libstatgrab
+version=0.92.1    
+release=1
+source="https://www.mirrorservice.org/sites/ftp.i-scream.org/pub/i-scream/libstatgrab/libstatgrab-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/libstatgrab-$version 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,20 @@
+# description   : Bubblewrap is a setuid implementation of user namespaces, or sandboxing, that provides access to a subset of kernel user namespace features
+# depends       : 
+
+name=bubblewrap
+version=0.11.0    
+release=1
+source="https://github.com/containers/bubblewrap/releases/download/v$version/bubblewrap-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    sed 's@symlink usr/lib64@ro-bind-try /lib64@' -i ../tests/libtest.sh
+    DESTDIR=$PKG ninja install
+}

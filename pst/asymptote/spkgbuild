@@ -1,0 +1,27 @@
+# description   : Asymptote is a powerful descriptive vector graphics language that provides a natural coordinate-based framework for technical drawing
+# depends       : ghostscript texlive curl freeglut gc glew glm libtirpc dvisvgm
+
+name=asymptote
+version=3.05    
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') 
+    ./configure --prefix=$TEXLIVE_PREFIX                          \
+    --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH             \
+    --datarootdir=$TEXLIVE_PREFIX/texmf-dist          \
+    --infodir=$TEXLIVE_PREFIX/texmf-dist/doc/info     \
+    --libdir=$TEXLIVE_PREFIX/texmf-dist               \
+    --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man       \
+    --disable-lsp                                     \
+    --enable-gc=system                                \
+    --with-latex=$TEXLIVE_PREFIX/texmf-dist/tex/latex \
+    --with-context=$TEXLIVE_PREFIX/texmf-dist/tex/context/third 
+    make
+    make DESTDIR=$PKG install
+}

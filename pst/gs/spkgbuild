@@ -1,0 +1,36 @@
+# description   : Ghostscript is a versatile processor for PostScript data with the ability to render PostScript to different targets
+# depends       : cups fontconfig freetype littlecms libjpegturbo libpng libtiff openjpeg
+
+name=ghostscript
+version=10.05.1    
+release=1
+source="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/ghostscript-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/ghostscript-$version-gcc15_fixes-1.patch
+https://downloads.sourceforge.net/gs-fonts/ghostscript-fonts-std-8.11.tar.gz
+https://downloads.sourceforge.net/gs-fonts/gnu-gs-fonts-other-6.0.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    rm -rf freetype lcms2mt jpeg libpng openjpeg
+    patch -Np1 -i ../ghostscript-$version-gcc15_fixes-1.patch
+    rm -rf zlib 
+    ./configure --prefix=/usr           \
+    --disable-compile-inits \
+    --with-system-libtiff   
+    make
+    make DESTDIR=$PKG so
+    gs -q -dBATCH /usr/share/ghostscript/$version/examples/tiger.eps
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG soinstall                                     
+    install -v -m644 base/*.h /usr/include/ghostscript 
+    ln -sfvn ghostscript /usr/include/ps
+    mv -v /usr/share/doc/ghostscript/$version /usr/share/doc/ghostscript-$version 
+    rmdir /usr/share/doc/ghostscript                                            
+    cp -r examples/ -T /usr/share/ghostscript/$version/examples
+    tar -xvf ../ghostscript-fonts-std-8.11.tar.gz -C /usr/share/ghostscript --no-same-owner 
+    tar -xvf ../gnu-gs-fonts-other-6.0.tar.gz     -C /usr/share/ghostscript --no-same-owner 
+    fc-cache -v /usr/share/ghostscript/fonts/
+}

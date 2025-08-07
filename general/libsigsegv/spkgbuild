@@ -1,0 +1,19 @@
+# description   : libsigsegv is a library for handling page faults in user mode
+# depends       : 
+
+name=libsigsegv
+version=2.15    
+release=1
+source="https://ftp.gnu.org/gnu/libsigsegv/libsigsegv-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr   \
+    --enable-shared \
+    --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,18 @@
+# description   : The GtkSourceView package contains libraries used for extending the GTK+ text functions to include syntax highlighting
+# depends       : gtk glib
+
+name=gtksourceview
+version=3.24.11    
+release=1
+source="https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's/g_object_ref (buffer)/g_object_ref (GTK_SOURCE_BUFFER (buffer))/' gtksourceview/gtksourceview.c
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

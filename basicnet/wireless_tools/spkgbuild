@@ -1,0 +1,18 @@
+# description   : The Wireless Extension (WE) is a generic API in the Linux kernel allowing a driver to expose configuration and statistics specific to common Wireless LANs to userspace
+# depends       : 
+
+name=wireless tools
+version=29    
+release=1
+source="https://hewlettpackard.github.io/wireless-tools/wireless_tools.$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/wireless_tools-$version-fix_iwlist_scanning-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i $SRC/wireless_tools-$version-fix_iwlist_scanning-1.patch
+    make
+    make DESTDIR=$PKG PREFIX=/usr INSTALL_MAN=/usr/share/man install
+}

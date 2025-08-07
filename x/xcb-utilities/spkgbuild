@@ -1,0 +1,42 @@
+# description   : The XCB utilities provide extensions that developers can use when making X Window software
+# depends       : libxcb xcbutil
+
+name=xcb utilities
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGxcb-utils.md5 << "EOF"
+EOF
+    mkdir xcb-utils 
+    cd    xcb-utils 
+    grep -v '^#' ../xcb-utils.md5 | awk '{print $2}' | wget -i- -c \
+    -B https://xcb.freedesktop.org/dist/ 
+    md5sum -c ../xcb-utils.md5
+    as_root()
+    {
+    if   [ $EUID = 0 ];        then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $*
+    else                            su -c \\"$*\\"
+    fi
+}
+export -f as_root
+bash -e
+for package in $(grep -v '^#' ../xcb-utils.md5 | awk '{print $2}')
+do
+packagedir=${package%.tar.?z*}
+tar -xf $package
+pushd $packagedir
+./configure $XORG_CONFIG
+make
+as_root make install
+popd
+rm -rf $packagedir
+done
+exit
+}

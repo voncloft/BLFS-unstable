@@ -1,0 +1,24 @@
+# description   : The CMake package contains a modern toolset used for generating Makefiles
+# depends       : curl libarchive libuv nghttp2
+
+name=cmake
+version=4.0.3    
+release=1
+source="https://cmake.org/files/v4.0/cmake-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/"lib64"/s/64//' Modules/GNUInstallDirs.cmake 
+    ./bootstrap --prefix=/usr        \
+    --system-libs        \
+    --mandir=/share/man  \
+    --no-system-jsoncpp  \
+    --no-system-cppdap   \
+    --no-system-librhash \
+    --docdir=/share/doc/cmake-$version 
+    make
+    make DESTDIR=$PKG install
+}

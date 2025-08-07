@@ -1,0 +1,65 @@
+# description   : The OpenLDAP package provides an open source implementation of the Lightweight Directory Access Protocol
+# depends       : cyrussasl
+
+name=openldap
+version=2.6.10    
+release=1
+source="https://www.linuxfromscratch.org/patches/blfs/svn/openldap-$version-consolidated-1.patch
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../openldap-$version-consolidated-1.patch 
+    autoconf 
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-static  \
+    --enable-dynamic  \
+    --disable-debug   \
+    --disable-slapd   
+    make DESTDIR=$PKG depend 
+    make
+    make DESTDIR=$PKG install
+    patch -Np1 -i ../openldap-$version-consolidated-1.patch 
+    autoconf 
+    ./configure --prefix=/usr         \
+    --sysconfdir=/etc     \
+    --localstatedir=/var  \
+    --libexecdir=/usr/lib \
+    --disable-static      \
+    --disable-debug       \
+    --with-tls=openssl    \
+    --with-cyrus-sasl     \
+    --without-systemd     \
+    --enable-dynamic      \
+    --enable-crypt        \
+    --enable-spasswd      \
+    --enable-slapd        \
+    --enable-modules      \
+    --enable-rlookups     \
+    --enable-backends=mod \
+    --disable-sql         \
+    --disable-wt          \
+    --enable-overlays=mod 
+    make DESTDIR=$PKG depend 
+    make
+    ldapsearch -x -b '' -s base '(objectclass=*)' namingContexts
+    groupadd -g 83 ldap 
+    useradd  -c "OpenLDAP Daemon Owner" \
+    -d /var/lib/openldap -u 83 \
+    -g ldap -s /bin/false ldap
+    make DESTDIR=$PKG install 
+    sed -e "s/\.la/.so/" -i /etc/openldap/slapd.{conf,ldif}{,.default} 
+    install -v -dm700 -o ldap -g ldap /var/lib/openldap     
+    install -v -dm700 -o ldap -g ldap /etc/openldap/slapd.d 
+    chmod   -v    640     /etc/openldap/slapd.{conf,ldif}   
+    chown   -v  root:ldap /etc/openldap/slapd.{conf,ldif}   
+    install -v -dm755 /usr/share/doc/openldap-$version 
+    cp      -vfr      doc/{drafts,rfc,guide} \
+    /usr/share/doc/openldap-$version
+    make DESTDIR=$PKG install-slapd
+    /etc/rc.d/init.d/slapd start
+}

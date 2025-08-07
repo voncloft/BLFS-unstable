@@ -1,0 +1,17 @@
+# description   : SCons is a tool for building software (and other files) implemented in Python
+# depends       : 
+
+name=scons
+version=4.9.1    
+release=1
+source="https://downloads.sourceforge.net/scons/SCons-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    pip3 install --no-index --find-links dist --no-user SCons 
+    install -v -m664 *.1 /usr/share/man/man1
+}

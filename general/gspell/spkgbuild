@@ -1,0 +1,19 @@
+# description   : The gspell package provides a flexible API to add spell checking to a GTK+ application
+# depends       : enchant icu gtk
+
+name=gspell
+version=1.14.0    
+release=1
+source="https://download.gnome.org/sources/gspell/1.14/gspell-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir gspell-build 
+    cd    gspell-build 
+    meson setup --prefix=/usr --buildtype=release -D gtk_doc=false .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

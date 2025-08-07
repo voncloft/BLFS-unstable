@@ -1,0 +1,16 @@
+# description   : The UnRar package contains a RAR extraction utility used for extracting files from RAR archives
+# depends       : 
+
+name=unrar
+version=7.1.10    
+release=1
+source="https://www.rarlab.com/rar/unrarsrc-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make DESTDIR=$PKG -f makefile
+    install -v -m755 unrar /usr/bin
+}

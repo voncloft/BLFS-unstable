@@ -1,0 +1,27 @@
+# description   : The Evolution package contains an integrated mail, calendar and address book suite designed for the GNOME environment
+# depends       : adwaitaicontheme evolutiondataserver gcr gnomeautoar sharedmimeinfo webkitgtk bogofilter enchant gnomedesktop gspell highlight itstool libcanberra libgweather libnotify openldap seahorse
+
+name=evolution
+version=3.56.2    
+release=1
+source="https://download.gnome.org/sources/evolution/3.56/evolution-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D SYSCONF_INSTALL_DIR=/etc  \
+    -D ENABLE_INSTALLED_TESTS=ON \
+    -D ENABLE_PST_IMPORT=OFF     \
+    -D ENABLE_YTNEF=OFF          \
+    -D ENABLE_CONTACT_MAPS=OFF   \
+    -D ENABLE_MARKDOWN=OFF       \
+    -D ENABLE_WEATHER=ON         \
+    -G Ninja .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

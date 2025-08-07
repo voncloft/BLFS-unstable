@@ -1,0 +1,32 @@
+# description   : The btrfs-progs package contains administration and debugging tools for the B-tree file system (btrfs)
+# depends       : lzo
+
+name=btrfs-progs
+version=6.15    
+release=1
+source="https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr           \
+    --disable-static        \
+    --disable-documentation 
+    make
+    make DESTDIR=$PKG fssum
+    rm -rf tests/misc-tests/041-subvolume-delete-during-send
+    pushd tests
+    ./fsck-tests.sh
+    ./mkfs-tests.sh
+    ./cli-tests.sh
+    ./convert-tests.sh
+    ./misc-tests.sh
+    ./fuzz-tests.sh
+    popd
+    make DESTDIR=$PKG install
+    for i in 5 8; do
+    install Documentation/*.$i /usr/share/man/man$i
+    done
+}

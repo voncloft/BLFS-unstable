@@ -1,0 +1,24 @@
+# description   : The Protobuf package contains utilities and libraries for using data in Google's data interchange format
+# depends       : abseilcpp cmake
+
+name=protobuf
+version=31.1    
+release=1
+source="https://github.com/protocolbuffers/protobuf/releases/download/v$version/protobuf-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr      \
+    -D CMAKE_BUILD_TYPE=Release       \
+    -D CMAKE_SKIP_INSTALL_RPATH=ON    \
+    -D protobuf_BUILD_TESTS=OFF       \
+    -D protobuf_BUILD_SHARED_LIBS=ON  \
+    -G Ninja ..                       
+    ninja
+    DESTDIR=$PKG ninja install
+}

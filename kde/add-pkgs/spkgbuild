@@ -1,0 +1,23 @@
+# description   : No description available
+# depends       : 
+
+name=further kde packages
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    cmake -W no-dev -LH .
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,20 @@
+# description   : The CUPS Filters package is only needed to adapt libcupsfilters-2
+# depends       : libcupsfilters libppd
+
+name=cups-filters
+version=2.0.1    
+release=1
+source="https://github.com/OpenPrinting/cups-filters/releases/download/$version/cups-filters-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/proc_func)()/s/()/(FILE*, FILE*, void*)/' filter/foomatic-rip/process.h
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/cups-filters-$version 
+    make
+    make DESTDIR=$PKG install
+}

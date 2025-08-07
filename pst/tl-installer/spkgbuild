@@ -1,0 +1,16 @@
+# description   : The TeX Live package is a comprehensive TeX document production system
+# depends       : gnupg lwplibwwwperl ghostscript xorglibraries libxcb chapter24graphicalenvironments epdfviewgtk3 freeglut
+
+name=install-tl-unx
+version=
+release=1
+source="https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+https://cpan.metacpan.org/authors/id/S/SR/SREZIC/Tk-804.036.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    TEXLIVE_INSTALL_PREFIX=/opt/texlive ./install-tl
+}

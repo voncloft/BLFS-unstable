@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=setting up a network firewall
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

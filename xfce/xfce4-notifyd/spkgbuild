@@ -1,0 +1,20 @@
+# description   : The Xfce4 Notification Daemon is a small program that implements the \"server-side\" portion of the Freedesktop desktop notifications specification
+# depends       : libnotify libxfce4ui libcanberra sqlite xfce4devtools xfce4panel
+
+name=xfce4-notifyd
+version=0.9.7    
+release=1
+source="https://archive.xfce.org/src/apps/xfce4-notifyd/0.9/xfce4-notifyd-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-systemd 
+    make
+    notify-send -i info Information "Hi ${USER}, This is a Test"
+    make DESTDIR=$PKG install
+}

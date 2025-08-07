@@ -1,0 +1,23 @@
+# description   : The libmpeg2 package contains a library for decoding MPEG-2 and MPEG-1 video streams
+# depends       : 
+
+name=libmpeg2
+version=0.5.1    
+release=1
+source="https://download.videolan.org/contrib/libmpeg2/libmpeg2-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's/static const/static/' libmpeg2/idct_mmx.c 
+    ./configure --prefix=/usr    \
+    --enable-shared  \
+    --disable-static 
+    make
+    make DESTDIR=$PKG install 
+    install -v -m755 -d /usr/share/doc/libmpeg2-$version 
+    install -v -m644 README doc/libmpeg2.txt \
+    /usr/share/doc/libmpeg2-$version
+}

@@ -1,0 +1,22 @@
+# description   : Brasero is an application used to burn CDs and DVDs on the GNOME Desktop
+# depends       : gstpluginsbase itstool libcanberra libnotify glib libburn libisoburn libisofs nautilus tinysparql totemplparser dvdrwtools gvfs
+
+name=brasero
+version=3.12.3    
+release=1
+source="https://download.gnome.org/sources/brasero/3.12/brasero-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/brasero-$version-upstream_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../brasero-$version-upstream_fixes-1.patch
+    ./configure --prefix=/usr                \
+    --enable-compile-warnings=no \
+    --enable-cxx-warnings=no     \
+    --disable-nautilus           
+    make
+    make DESTDIR=$PKG install
+}

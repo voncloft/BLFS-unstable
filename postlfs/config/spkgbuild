@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 3. after lfs configuration issues
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

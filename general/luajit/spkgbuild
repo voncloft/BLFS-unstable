@@ -1,0 +1,17 @@
+# description   : The luajit package contains a Just-In-Time compiler for Lua
+# depends       : 
+
+name=luajit
+version=20250212    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/luajit/luajit-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make DESTDIR=$PKG PREFIX=/usr amalg
+    make DESTDIR=$PKG PREFIX=/usr install 
+    rm -v /usr/lib/libluajit-5.1.a
+}

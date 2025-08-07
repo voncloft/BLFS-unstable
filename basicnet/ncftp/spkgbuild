@@ -1,0 +1,20 @@
+# description   : The NcFTP package contains a powerful and flexible interface to the Internet standard File Transfer Protocol
+# depends       : 
+
+name=ncftp
+version=3.3.0    
+release=1
+source="https://www.ncftp.com/public_ftp/ncftp/ncftp-$version-src.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    CC=/usr/bin/gcc \
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make DESTDIR=$PKG -C libncftp shared 
+    make
+    make DESTDIR=$PKG -C libncftp soinstall 
+    make DESTDIR=$PKG install
+}

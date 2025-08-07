@@ -1,0 +1,19 @@
+# description   : Creating a JVM from source requires a set of circular dependencies
+# depends       : alsalib cups giflib little cms xorglibraries
+
+name=java
+version=24.0.2    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/OpenJDK/OpenJDK-$version/OpenJDK-$version+12-i686-bin.tar.xz
+https://anduin.linuxfromscratch.org/BLFS/OpenJDK/OpenJDK-$version/OpenJDK-$version+12-x86_64-bin.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    install -vdm755 /opt/OpenJDK-$version-bin 
+    mv -v * /opt/OpenJDK-$version-bin         
+    chown -R root:root /opt/OpenJDK-$version-bin
+    ln -sfn OpenJDK-$version-bin /opt/jdk
+}

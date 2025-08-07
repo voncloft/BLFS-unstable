@@ -1,0 +1,45 @@
+# description   : The Xorg font packages provide some scalable fonts and supporting packages for Xorg applications
+# depends       : xcursorthemes
+
+name=xorg fonts
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGfont-7.md5 << "EOF"
+EOF
+    mkdir font 
+    cd font 
+    grep -v '^#' ../font-7.md5 | awk '{print $2}' | wget -i- -c \
+    -B https://www.x.org/pub/individual/font/ 
+    md5sum -c ../font-7.md5
+    as_root()
+    {
+    if   [ $EUID = 0 ];        then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $*
+    else                            su -c \\"$*\\"
+    fi
+}
+export -f as_root
+bash -e
+for package in $(grep -v '^#' ../font-7.md5 | awk '{print $2}')
+do
+packagedir=${package%.tar.?z*}
+tar -xf $package
+pushd $packagedir
+./configure $XORG_CONFIG
+make
+as_root make install
+popd
+as_root rm -rf $packagedir
+done
+exit
+install -v -d -m755 /usr/share/fonts                               
+ln -svfn $XORG_PREFIX/share/fonts/X11/OTF /usr/share/fonts/X11-OTF 
+ln -svfn $XORG_PREFIX/share/fonts/X11/TTF /usr/share/fonts/X11-TTF
+}

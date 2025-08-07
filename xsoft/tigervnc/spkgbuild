@@ -1,0 +1,57 @@
+# description   : Tigervnc is an advanced VNC (Virtual Network Computing) implementation
+# depends       : cmake fltk gnutls libgcrypt libjpegturbo pixman xorgapplications xinit xorg legacyfonts imagemagick47
+
+name=tigervnc
+version=1.15.0    
+release=1
+source="https://github.com/TigerVNC/tigervnc/archive/v$version/tigervnc-$version.tar.gz
+https://www.x.org/pub/individual/xserver/xorg-server-21.1.18.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/tigervnc-$version-configuration_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../tigervnc-$version-configuration_fixes-1.patch
+    sed -i "s/maximize)/::/"         vncviewer/DesktopWindow.cxx 
+    sed -i "/FL_MINOR_VERSION/s/3/4/" CMakeLists.txt
+    # Put code in place
+    mkdir -p unix/xserver 
+    tar -xf ../xorg-server-21.1.18.tar.xz \
+    --strip-components=1              \
+    -C unix/xserver                   
+    ( cd unix/xserver 
+    patch -Np1 -i ../xserver21.patch ) 
+    # Build viewer
+    cmake -G "Unix Makefiles"          \
+    -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D INSTALL_SYSTEMD_UNITS=OFF \
+    -W no-dev .                  
+    make DESTDIR=$PKG 
+    # Build server
+    pushd unix/xserver 
+    autoreconf -fiv  
+    CPPFLAGS="-I/usr/include/drm"       \
+    ./configure $XORG_CONFIG            \
+    --disable-xwayland    --disable-dri        --disable-dmx         \
+    --disable-xorg        --disable-xnest      --disable-xvfb        \
+    --disable-xwin        --disable-xephyr     --disable-kdrive      \
+    --disable-devel-docs  --disable-config-hal --disable-config-udev \
+    --disable-unit-tests  --disable-selective-werror                 \
+    --disable-static      --enable-dri3                              \
+    --without-dtrace      --enable-dri2        --enable-glx          \
+    --with-pic 
+    make DESTDIR=$PKG  
+    popd
+    #Install viewer
+    make DESTDIR=$PKG install 
+    mv  /usr/share/doc/tigervnc /usr/share/doc/tigervnc-$version
+    #Install server
+    ( cd unix/xserver/hw/vnc  make install ) 
+    [ -e /usr/bin/Xvnc ] || ln -svf $XORG_PREFIX/bin/Xvnc /usr/bin/Xvnc
+    sed -i 's/pam_systemd.so/pam_elogind.so/' /etc/pam.d/tigervnc
+    install -m755 --owner=root ../vncserver /usr/bin 
+    cp ../vncserver.1 /usr/share/man/man1
+}

@@ -1,0 +1,24 @@
+# description   : The DocBook-utils package is a collection of utility scripts used to convert and analyze SGML documents in general, and DocBook files in particular
+# depends       : openjade docbookdsssl docbookdtd sgmlspm lynx links
+
+name=docbook-utils
+version=0.6.14    
+release=1
+source="https://sourceware.org/ftp/docbook-tools/new-trials/SOURCES/docbook-utils-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/docbook-utils-$version-grep_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../docbook-utils-$version-grep_fix-1.patch 
+    sed -i 's:/html::' doc/HTML/Makefile.in                
+    ./configure --prefix=/usr --mandir=/usr/share/man      
+    make
+    make DESTDIR=$PKG docdir=/usr/share/doc install
+    for doctype in html ps dvi man pdf rtf tex texi txt
+    do
+    ln -svf docbook2$doctype /usr/bin/db2$doctype
+    done
+}

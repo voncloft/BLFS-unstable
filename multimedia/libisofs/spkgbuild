@@ -1,0 +1,20 @@
+# description   : libisofs is a library to create an ISO-9660 filesystem with extensions like RockRidge or Joliet
+# depends       : 
+
+name=libisofs
+version=1.5.6    
+release=1
+source="https://files.libburnia-project.org/releases/libisofs-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    doxygen doc/doxygen.conf
+    make DESTDIR=$PKG install
+    install -v -dm755 /usr/share/doc/libisofs-$version 
+    install -v -m644 doc/html/* /usr/share/doc/libisofs-$version
+}

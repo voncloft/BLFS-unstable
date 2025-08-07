@@ -1,0 +1,20 @@
+# description   : Links is a text and graphics mode WWW browser
+# depends       : libevent
+
+name=links
+version=2.30    
+release=1
+source="http://links.twibright.com/download/links-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --mandir=/usr/share/man 
+    make
+    make DESTDIR=$PKG install 
+    install -v -d -m755 $PKG/usr/share/doc/links-$version 
+    install -v -m644 doc/links_cal/* KEYS BRAILLE_HOWTO \
+    $PKG/usr/share/doc/links-$version
+}

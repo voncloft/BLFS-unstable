@@ -1,0 +1,61 @@
+# description   : qemu is a full virtualization solution for Linux on x86 hardware containing virtualization extensions (Intel VT or AMD-V)
+# depends       : glib pixman alsalib dtc libslirp sdl2
+
+name=qemu
+version=10.0.3    
+release=1
+source="https://download.qemu.org/qemu-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    grep -E '^flags.*(vmx|svm)' /proc/cpuinfo
+    if [ $(uname -m) = i686 ]; then
+    QEMU_ARCH=i386-softmmu
+    else
+    QEMU_ARCH=x86_64-softmmu
+    fi
+    mkdir -vp build 
+    cd        build 
+    ../configure --prefix=/usr            \
+    --sysconfdir=/etc        \
+    --localstatedir=/var     \
+    --target-list=$QEMU_ARCH \
+    --audio-drv-list=alsa    \
+    --disable-pa             \
+    --enable-slirp           \
+    --docdir=/usr/share/doc/qemu-$version 
+    unset QEMU_ARCH 
+    make
+    VDISK_SIZE=
+    VDISK_FILENAME=
+    qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE
+    qemu -enable-kvm                           \
+    -drive file=$VDISK_FILENAME           \
+    -cdrom Fedora-16-x86_64-Live-LXDE.iso \
+    -boot d                               \
+    -m
+    qemu -enable-kvm                  \
+    -smp 4                       \
+    -cpu host                    \
+    -m 1G                        \
+    -drive file=$VDISK_FILENAME  \
+    -cdrom grub-img.iso          \
+    -boot order=c,once=d,menu=on \
+    -net nic,netdev=net0         \
+    -netdev user,id=net0         \
+    -device ac97                 \
+    -vga std                     \
+    -serial mon:stdio            \
+    -name "fedora-16"
+    usermod -a -G kvm
+    <em class="replaceable"><code><username></code></em>
+    make DESTDIR=$PKG install
+    chgrp kvm  /usr/libexec/qemu-bridge-helper 
+    chmod 4750 /usr/libexec/qemu-bridge-helper
+    ln -sv qemu-system-`uname -m` /usr/bin/qemu
+    install -vdm 755 /etc/qemu 
+    echo allow br0 > /etc/qemu/bridge.conf
+}

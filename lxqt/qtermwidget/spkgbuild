@@ -1,0 +1,21 @@
+# description   : As the name suggests, the qtermwidget package is a terminal widget for Qt
+# depends       : qt
+
+name=qtermwidget
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/qtermwidget/releases/download/$version/qtermwidget-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

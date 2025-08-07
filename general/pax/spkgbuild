@@ -1,0 +1,17 @@
+# description   : pax is an archiving utility created by POSIX and defined by the POSIX
+# depends       : 
+
+name=pax
+version=20240817    
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    bash Build.sh
+    install -v pax /usr/bin 
+    install -v -m644 pax.1 /usr/share/man/man1
+}

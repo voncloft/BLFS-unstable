@@ -1,0 +1,45 @@
+# description   : The Exim package contains a Mail Transport Agent written by the University of Cambridge, released under the GNU Public License
+# depends       : libnsl filefcntllock pcre2
+
+name=exim
+version=4.98.2    
+release=1
+source="https://ftp.exim.org/pub/exim/exim4/exim-$version.tar.xz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e 's,^BIN_DIR.*$,BIN_DIRECTORY=/usr/sbin,'    \
+    -e 's,^CONF.*$,CONFIGURE_FILE=/etc/exim.conf,' \
+    -e 's,^EXIM_USER.*$,EXIM_USER=exim,'           \
+    -e '/# USE_OPENSSL/s,^#,,' src/EDITME > Local/Makefile 
+    printf "USE_GDBM = yes\nDBMLIB = -lgdbm\n" >> Local/Makefile
+    sed -i '/# SUPPORT_PAM=yes/s,^#,,' Local/Makefile
+    echo "EXTRALIBS=-lpam" >> Local/Makefile
+    make
+    groupadd -g 31 exim 
+    useradd -d /dev/null -c "Exim Daemon" -g exim -s /bin/false -u 31 exim
+    make DESTDIR=$PKG install                                    
+    install -v -m644 doc/exim.8 /usr/share/man/man8 
+    install -vdm 755    /usr/share/doc/exim-$version 
+    cp      -Rv doc/*   /usr/share/doc/exim-$version 
+    ln -sfv exim /usr/sbin/sendmail                 
+    install -v -d -m750 -o exim -g exim /var/spool/exim
+    chmod -v a+wt /var/mail
+cat >> /etc/aliases << "EOF"
+    postmaster: root
+    MAILER-DAEMON: root
+EOF
+    /usr/sbin/exim -bd -q15m
+cat > $PKG/etc/pam.d/exim << "EOF"
+    # Begin /etc/pam.d/exim
+    auth    include system-auth
+    account include system-account
+    session include system-session
+    # End /etc/pam.d/exim
+EOF
+    make DESTDIR=$PKG install-exim
+}

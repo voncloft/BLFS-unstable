@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 44. video utilities
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

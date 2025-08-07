@@ -1,0 +1,53 @@
+# description   : The Xorg Input Drivers page contains the instructions for building Xorg input drivers that are necessary in order for Xorg Server to respond user inputs
+# depends       : libevdev mtdev xorgserver libevdev mtdev libinput xorgserver libevdev xorgserver xorgserver
+
+name=xorg input drivers
+version=
+release=1
+source="https://www.freedesktop.org/software/libevdev/libevdev-1.13.4.tar.xz
+https://www.x.org/pub/individual/driver/xf86-input-evdev-2.11.0.tar.xz
+https://gitlab.freedesktop.org/libinput/libinput/-/archive/1.29.0/libinput-1.29.0.tar.gz
+https://www.x.org/pub/individual/driver/xf86-input-libinput-1.5.0.tar.xz
+https://www.x.org/pub/individual/driver/xf86-input-synaptics-1.10.0.tar.xz
+https://github.com/linuxwacom/xf86-input-wacom/releases/download/xf86-input-wacom-1.2.3/xf86-input-wacom-1.2.3.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                  \
+    --prefix=$XORG_PREFIX     \
+    --buildtype=release       \
+    -D documentation=disabled \
+    -D tests=disabled         
+    ninja
+    ./configure $XORG_CONFIG 
+    make
+    mkdir build 
+    cd    build 
+    meson setup ..              \
+    --prefix=$XORG_PREFIX \
+    --buildtype=release   \
+    -D debug-gui=false    \
+    -D tests=false        \
+    -D libwacom=false     \
+    -D udev-dir=/usr/lib/udev 
+    ninja
+    ./configure $XORG_CONFIG 
+    make
+    ./configure $XORG_CONFIG 
+    make
+    ./configure $XORG_CONFIG --with-systemd-unit-dir=no 
+    make
+    DESTDIR=$PKG ninja install
+    make DESTDIR=$PKG install
+    DESTDIR=$PKG ninja install
+    install -v -dm755      /usr/share/doc/libinput-1.29.0/html 
+    cp -rv Documentation/* /usr/share/doc/libinput-1.29.0/html
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,30 @@
+# description   : Autofs controls the operation of the automount daemons
+# depends       : libtirpc rpcsvcproto
+
+name=autofs
+version=5.1.9    
+release=1
+source="https://www.kernel.org/pub/linux/daemons/autofs/v5/autofs-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr             \
+    --with-mapdir=/etc/autofs \
+    --with-libtirpc           \
+    --without-openldap        \
+    --mandir=/usr/share/man   
+    make
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install_samples
+    mv /etc/autofs/auto.master /etc/autofs/auto.master.bak 
+cat > $PKG/etc/autofs/auto.master << "EOF"
+    # Begin /etc/autofs/auto.master
+    /media/auto  /etc/autofs/auto.misc  --ghost
+    #/home        /etc/autofs/auto.home
+    # End /etc/autofs/auto.master
+EOF
+    make DESTDIR=$PKG install-autofs
+}

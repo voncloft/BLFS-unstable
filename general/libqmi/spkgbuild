@@ -1,0 +1,24 @@
+# description   : The libqmi package contains a GLib-based library for talking to WWAN modems and devices which speak the Qualcomm MSM Interface (QMI) protocol
+# depends       : glib libgudev libmbim
+
+name=libqmi
+version=1.36.0    
+release=1
+source="https://gitlab.freedesktop.org/mobile-broadband/libqmi/-/archive/$version/libqmi-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                 \
+    --prefix=/usr            \
+    --buildtype=release      \
+    -D bash_completion=false \
+    -D qrtr=false            \
+    -D man=false             
+    ninja
+    DESTDIR=$PKG ninja install
+}

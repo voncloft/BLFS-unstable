@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=customizing your logon with /etc/issue
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

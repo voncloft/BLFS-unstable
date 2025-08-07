@@ -1,0 +1,23 @@
+# description   : The lxqt-session package contains the default session manager for LXQt
+# depends       : liblxqt qtxdgtools xdguserdirs
+
+name=lxqt-session
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-session/releases/download/$version/lxqt-session-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e '/TryExec/s|=|=/usr/bin/|' \
+    -i xsession/lxqt.desktop.in 
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

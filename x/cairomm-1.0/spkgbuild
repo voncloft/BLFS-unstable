@@ -1,0 +1,23 @@
+# description   : The libcairomm-1
+# depends       : cairo libsigc boost
+
+name=libcairomm-1.0 (cairomm
+version=1.14.5)    
+release=1
+source="https://www.cairographics.org/releases/cairomm-1.14.5.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir bld 
+    cd    bld 
+    meson setup ..             \
+    --prefix=/usr        \
+    --buildtype=release  \
+    -D build-tests=true  \
+    -D boost-shared=true 
+    ninja
+    DESTDIR=$PKG ninja install
+}

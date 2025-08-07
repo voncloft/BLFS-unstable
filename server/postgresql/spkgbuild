@@ -1,0 +1,54 @@
+# description   : PostgreSQL is an advanced object-relational database management system (ORDBMS), derived from the Berkeley Postgres database management system
+# depends       : 
+
+name=postgresql
+version=17.5    
+release=1
+source="https://ftp.postgresql.org/pub/source/v$version/postgresql-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h 
+    ./configure --prefix=/usr \
+    --docdir=/usr/share/doc/postgresql-$version 
+    make
+    make DESTDIR=$PKG DESTDIR=$(pwd)/DESTDIR install
+    install -d -o postgres $(pwd)/DESTDIR/tmp
+    pushd $(pwd)/DESTDIR/tmp
+    /etc/rc.d/init.d/postgresql stop
+    su postgres -c "../usr/bin/initdb -D /srv/pgsql/newdata"
+    su postgres -c "../usr/bin/pg_upgrade \
+    -d /srv/pgsql/data    -b /usr/bin \
+    -D /srv/pgsql/newdata -B ../usr/bin"
+    popd
+    rm -rf /srv/pgsql/data
+    mv /srv/pgsql/newdata /srv/pgsql/data
+    make DESTDIR=$PKG -C contrib/
+    install
+    groupadd -g 41 postgres 
+    useradd -c "PostgreSQL Server" -g postgres -d /srv/pgsql/data \
+    -u 41 postgres
+    make DESTDIR=$PKG install      
+    make DESTDIR=$PKG install-docs
+    install -v -dm700 /srv/pgsql/data 
+    install -v -dm755 /run/postgresql 
+    chown -Rv postgres:postgres /srv/pgsql /run/postgresql
+    su - postgres -c '/usr/bin/initdb -D /srv/pgsql/data'
+    make DESTDIR=$PKG install-postgresql
+    su - postgres -c '/usr/bin/postgres -D /srv/pgsql/data > \
+    /srv/pgsql/data/logfile 2>1 '
+    su - postgres -c '/usr/bin/createdb test' 
+    echo "create table t1 ( name varchar(20), state_province varchar(20) );" \
+    | (su - postgres -c '/usr/bin/psql test ') 
+    echo "insert into t1 values ('Billy', 'NewYork');" \
+    | (su - postgres -c '/usr/bin/psql test ') 
+    echo "insert into t1 values ('Evanidus', 'Quebec');" \
+    | (su - postgres -c '/usr/bin/psql test ') 
+    echo "insert into t1 values ('Jesse', 'Ontario');" \
+    | (su - postgres -c '/usr/bin/psql test ') 
+    echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')
+    su - postgres -c "/usr/bin/pg_ctl stop -D /srv/pgsql/data"
+}

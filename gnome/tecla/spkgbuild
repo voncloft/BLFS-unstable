@@ -1,0 +1,19 @@
+# description   : The Tecla package contains a keyboard layout viewer
+# depends       : libadwaita libxkbcommon
+
+name=tecla
+version=48.0.2    
+release=1
+source="https://download.gnome.org/sources/tecla/48/tecla-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

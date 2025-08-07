@@ -1,0 +1,18 @@
+# description   : The libgpg-error package contains a library that defines common error values for all GnuPG components
+# depends       : 
+
+name=libgpg-error
+version=1.55    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install 
+    install -v -m644 -D README /usr/share/doc/libgpg-error-$version/README
+}

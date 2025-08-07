@@ -1,0 +1,17 @@
+# description   : The libxfce4util package is a basic utility library for the Xfce desktop environment
+# depends       : glib vala
+
+name=libxfce4util
+version=4.20.1    
+release=1
+source="https://archive.xfce.org/src/xfce/libxfce4util/4.20/libxfce4util-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

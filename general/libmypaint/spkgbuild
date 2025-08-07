@@ -1,0 +1,17 @@
+# description   : The libmypaint package, a
+# depends       : jsonc glib
+
+name=libmypaint
+version=1.6.1    
+release=1
+source="https://github.com/mypaint/libmypaint/releases/download/v$version/libmypaint-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

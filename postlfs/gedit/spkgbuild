@@ -1,0 +1,58 @@
+# description   : The Gedit package contains a lightweight UTF-8 text editor for the GNOME Desktop
+# depends       : gsettingsdesktopschemas gtk itstool libhandy libpeas libxml2 gspell gvfs isocodes pygobject
+
+name=gedit
+version=48.1    
+release=1
+source="https://download.gnome.org/sources/gedit/48/gedit-$version.tar.xz
+https://gitlab.gnome.org/World/gedit/libgedit-amtk/-/archive/5.9.1/libgedit-amtk-5.9.1.tar.bz2
+https://gitlab.gnome.org/World/gedit/libgedit-gtksourceview/-/archive/299.5.0/libgedit-gtksourceview-299.5.0.tar.bz2
+https://gitlab.gnome.org/World/gedit/libgedit-gfls/-/archive/0.3.0/libgedit-gfls-0.3.0.tar.bz2
+https://gitlab.gnome.org/World/gedit/libgedit-tepl/-/archive/6.13.0/libgedit-tepl-6.13.0.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    as_root()
+    {
+    if   [ $EUID = 0 ];        then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $*
+    else                            su -c \\"$*\\"
+    fi
+}
+export -f as_root
+grep -A5 Ok: *test.log
+bash -e
+for package in \
+libgedit-amtk-5.9.1.tar.bz2            \
+libgedit-gtksourceview-299.5.0.tar.bz2 \
+libgedit-gfls-0.3.0.tar.bz2            \
+libgedit-tepl-6.13.0.tar.bz2
+do
+packagedir=${package%.tar*}
+echo "Building $packagedir"
+tar -xf ../$package
+pushd $packagedir
+cd build
+meson setup ..            \
+--prefix=/usr       \
+--buildtype=release \
+-D gtk_doc=false
+ninja
+#ninja test 2>1 | tee ../../$packagedir-test.log
+as_root ninja install
+popd
+rm -rf $packagedir
+done
+exit
+cd build 
+meson setup ..            \
+--prefix=/usr       \
+--buildtype=release \
+-D gtk_doc=false    
+ninja
+DESTDIR=$PKG ninja install
+glib-compile-schemas /usr/share/glib-2.0/schemas
+}

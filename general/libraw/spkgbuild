@@ -1,0 +1,22 @@
+# description   : Libraw is a library for reading RAW files obtained from digital cameras (CRW/CR2, NEF, RAF, DNG, and others)
+# depends       : libjpegturbo jasper littlecms
+
+name=libraw
+version=0.21.4    
+release=1
+source="https://www.libraw.org/data/LibRaw-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --enable-jpeg    \
+    --enable-jasper  \
+    --enable-lcms    \
+    --disable-static \
+    --docdir=/usr/share/doc/libraw-$version 
+    make
+    make DESTDIR=$PKG install
+}

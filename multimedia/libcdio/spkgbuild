@@ -1,0 +1,24 @@
+# description   : The libcdio is a library for CD-ROM and CD image access
+# depends       : 
+
+name=libcdio
+version=2.1.0    
+release=1
+source="https://ftp.gnu.org/gnu/libcdio/libcdio-$version.tar.bz2
+https://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-10.2+2.0.2.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '/CDIO_LSEEK/s/lseek64/lseek/' -i lib/driver/_cdio_generic.c
+    ./configure --prefix=/usr --disable-static 
+    make
+    tar -xf ../libcdio-paranoia-10.2+2.0.2.tar.bz2 
+    cd libcdio-paranoia-10.2+2.0.2 
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install
+}

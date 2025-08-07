@@ -1,0 +1,64 @@
+# description   : PHP is the PHP Hypertext Preprocessor
+# depends       : apache libxml2
+
+name=php
+version=8.4.11    
+release=1
+source="https://www.php.net/distributions/php-$version.tar.xz
+https://www.php.net/distributions/manual/php_manual_en.tar.gz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr                \
+    --sysconfdir=/etc            \
+    --localstatedir=/var         \
+    --datadir=/usr/share/php     \
+    --mandir=/usr/share/man      \
+    --without-pear               \
+    --enable-fpm                 \
+    --with-fpm-user=apache       \
+    --with-fpm-group=apache      \
+    --with-config-file-path=/etc \
+    --with-zlib                  \
+    --enable-bcmath              \
+    --with-bz2                   \
+    --enable-calendar            \
+    --enable-dba=shared          \
+    --with-gdbm                  \
+    --with-gmp                   \
+    --enable-ftp                 \
+    --with-gettext               \
+    --enable-mbstring            \
+    --disable-mbregex            \
+    --with-readline              
+    make
+    wget https://pear.php.net/go-pear.phar
+    php ./go-pear.phar
+    make DESTDIR=$PKG install                                     
+    install -v -m644 php.ini-production /etc/php.ini 
+    install -v -m755 -d /usr/share/doc/php-$version 
+    install -v -m644    CODING_STANDARDS* EXTENSIONS NEWS README* UPGRADING* \
+    /usr/share/doc/php-$version
+    if [ -f /etc/php-fpm.conf.default ]; then
+    mv -v /etc/php-fpm.conf{.default,} 
+    mv -v /etc/php-fpm.d/www.conf{.default,}
+    fi
+    install -v -m644 ../php_manual_en.html.gz \
+    /usr/share/doc/php-$version 
+    gunzip -v /usr/share/doc/php-$version/php_manual_en.html.gz
+    tar -xvf ../php_manual_en.tar.gz \
+    -C /usr/share/doc/php-$version --no-same-owner
+    sed -i 's@php/includes"@\ninclude_path = ".:/usr/lib/php"@' \
+    /etc/php.ini
+    sed -i -e '/proxy_module/s/^#//'      \
+    -e '/proxy_fcgi_module/s/^#//' \
+    /etc/httpd/httpd.conf
+    echo \
+    'ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/srv/www/$1' >> \
+    /etc/httpd/httpd.conf
+    make DESTDIR=$PKG install-php
+}

@@ -1,0 +1,21 @@
+# description   : The lximage-qt package contains a lightweight image viewer and screenshot program
+# depends       : libfmqt
+
+name=lximage-qt
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lximage-qt/releases/download/$version/lximage-qt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_INSTALL_PREFIX=/usr \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

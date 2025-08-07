@@ -1,0 +1,28 @@
+# description   : The p11-kit package provides a way to load and enumerate PKCS #11 (a Cryptographic Token Interface Standard) modules
+# depends       : libtasn1 makeca
+
+name=p11-kit
+version=0.25.5    
+release=1
+source="https://github.com/p11-glue/p11-kit/releases/download/$version/p11-kit-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '20,$ d' -i trust/trust-extract-compat 
+cat >> trust/trust-extract-compat << "EOF"
+EOF
+    mkdir p11-build 
+    cd    p11-build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D trust_paths=/etc/pki/anchors 
+    ninja
+    DESTDIR=$PKG ninja install 
+    ln -sfv /usr/libexec/p11-kit/trust-extract-compat \
+    /usr/bin/update-ca-certificates
+    ln -sfv ./pkcs11/p11-kit-trust.so /usr/lib/libnssckbi.so
+}

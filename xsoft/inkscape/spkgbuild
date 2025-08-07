@@ -1,0 +1,26 @@
+# description   : Inkscape is a what you see is what you get Scalable Vector Graphics editor
+# depends       : boost doubleconversion gc gsl gtkmm libxslt poppler popt imagemagick47 littlecms libcanberra potrace cachecontrol cssselect lxml numpy pyserial scour
+
+name=inkscape
+version=1.4.2    
+release=1
+source="https://inkscape.org/gallery/item/56344/inkscape-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/inkscape-$version-poppler_fixes-3.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../inkscape-$version-poppler_fixes-3.patch
+    mkdir build                       
+    cd    build                       
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -W no-dev                           \
+    ..                                  
+    make
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    make DESTDIR=$PKG install
+}

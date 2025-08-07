@@ -1,0 +1,21 @@
+# description   : The libproxy package is a library that provides automatic proxy configuration management
+# depends       : curl duktape glib gidocgen gsettingsdesktopschemas vala
+
+name=libproxy
+version=0.5.10    
+release=1
+source="https://github.com/libproxy/libproxy/archive/$version/libproxy-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..        \
+    --prefix=/usr   \
+    -D release=true 
+    ninja
+    DESTDIR=$PKG ninja install
+}

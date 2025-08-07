@@ -1,0 +1,27 @@
+# description   : The Vim package, which is an abbreviation for VI IMproved, contains a vi clone with extra features as compared to the original vi
+# depends       : chapter24graphicalenvironments gtk
+
+name=vim
+version=9.1.1552    
+release=1
+source="https://github.com/vim/vim/archive/v$version/vim-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    echo '#define SYS_VIMRC_FILE  "/etc/vimrc"' >>  src/feature.h 
+    echo '#define SYS_GVIMRC_FILE "/etc/gvimrc"' >> src/feature.h 
+    ./configure --prefix=/usr        \
+    --with-features=huge \
+    --enable-gui=gtk3    \
+    --with-tlib=ncursesw 
+    make
+    rsync -avzcP --exclude="/dos/" --exclude="/spell/" \
+    ftp.nluug.nl::Vim/runtime/ ./runtime/
+    make DESTDIR=$PKG -C src installruntime 
+    vim -c ":helptags /usr/share/doc/vim-$version" -c ":q"
+    make DESTDIR=$PKG install
+    ln -snfv ../vim/vim91/doc /usr/share/doc/vim-$version
+}

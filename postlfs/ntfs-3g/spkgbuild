@@ -1,0 +1,24 @@
+# description   : The Ntfs-3g package contains a stable, read-write open source driver for NTFS partitions
+# depends       : 
+
+name=ntfs-3g
+version=2022.10.3    
+release=1
+source="https://github.com/tuxera/ntfs-3g/archive/$version/ntfs-3g-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./autogen.sh 
+    ./configure --prefix=/usr        \
+    --disable-static     \
+    --with-fuse=internal \
+    --docdir=/usr/share/doc/ntfs-3g-$version 
+    make
+    ln -svf ../bin/ntfs-3g /usr/sbin/mount.ntfs 
+    ln -svf ntfs-3g.8 /usr/share/man/man8/mount.ntfs.8
+    chmod -v 777 /mnt/usb
+    make DESTDIR=$PKG install 
+}

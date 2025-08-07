@@ -1,0 +1,43 @@
+# description   : The GPM (General Purpose Mouse daemon) package contains a mouse server for the console and xterm
+# depends       : 
+
+name=gpm
+version=1.20.7    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/gpm/gpm-$version.tar.bz2
+https://www.linuxfromscratch.org/patches/blfs/svn/gpm-$version-consolidated-1.patch
+https://www.linuxfromscratch.org/patches/blfs/svn/gpm-$version-gcc15_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../gpm-$version-consolidated-1.patch                
+    patch -Np1 -i ../gpm-$version-gcc15_fixes-1.patch                 
+    ./autogen.sh                                                    
+    ./configure --prefix=/usr --sysconfdir=/etc ac_cv_path_emacs=no 
+    make
+    make DESTDIR=$PKG -C doc gpm.{dvi,ps} 
+    dvipdfm doc/gpm.dvi -o doc/gpm.pdf
+    make DESTDIR=$PKG install                                          
+    install-info --dir-file=/usr/share/info/dir           \
+    /usr/share/info/gpm.info                 
+    rm -fv /usr/lib/libgpm.a                              
+    ln -sfv libgpm.so.2.1.0 /usr/lib/libgpm.so            
+    install -v -m644 conf/gpm-root.conf /etc              
+    install -v -m755 -d /usr/share/doc/gpm-$version/support 
+    install -v -m644    doc/support/*                     \
+    /usr/share/doc/gpm-$version/support 
+    install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
+    /usr/share/doc/gpm-$version
+    install -vm644 doc/gpm.{dvi,ps,pdf} /usr/share/doc/gpm-$version
+    make DESTDIR=$PKG install-gpm
+cat > $PKG/etc/sysconfig/mouse << "EOF"
+    # Begin /etc/sysconfig/mouse
+    MDEVICE="<em class="replaceable"><code><yourdevice></em>"
+    PROTOCOL="<em class="replaceable"><code><yourprotocol></code></em>"
+    GPMOPTS="<em class="replaceable"><code><additional options></code></em>"
+    # End /etc/sysconfig/mouse</code>
+EOF
+}

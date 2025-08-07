@@ -1,0 +1,56 @@
+# description   : Most of TeX Live can be built from source without a pre-existing installation, but xindy (for indexing) needs working versions of latex and pdflatex when configure is run, and the test suite and install for asy (for vector graphics) will fail if TeX has not already been installed
+# depends       : chapter24graphicalenvironments cairo fontconfig freetype graphite2 harfbuzz icu libpaper libpng settingthepathfortexlive
+
+name=texlive
+version=20250308-source    
+release=1
+source="https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2025/texlive-$version.tar.xz
+https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2025/texlive-20250308-texmf.tar.xz
+https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2025/texlive-20250308-extra.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/texlive-$version-upstream_fixes-1.patch
+https://cpan.metacpan.org/authors/id/S/SR/SREZIC/Tk-804.036.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') 
+    patch -Np1 -i ../texlive-$version-upstream_fixes-1.patch 
+    mkdir texlive-build 
+    cd    texlive-build 
+    ../configure CC="gcc -std=gnu17" -C               \
+    --prefix=$TEXLIVE_PREFIX                      \
+    --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH         \
+    --datarootdir=$TEXLIVE_PREFIX                 \
+    --includedir=$TEXLIVE_PREFIX/include          \
+    --infodir=$TEXLIVE_PREFIX/texmf-dist/doc/info \
+    --libdir=$TEXLIVE_PREFIX/lib                  \
+    --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man   \
+    --disable-native-texlive-build                \
+    --disable-static --enable-shared              \
+    --disable-dvisvgm                             \
+    --with-system-cairo                           \
+    --with-system-fontconfig                      \
+    --with-system-freetype2                       \
+    --with-system-gmp                             \
+    --with-system-graphite2                       \
+    --with-system-harfbuzz                        \
+    --with-system-icu                             \
+    --with-system-libpaper                        \
+    --with-system-libpng                          \
+    --with-system-mpfr                            \
+    --with-system-pixman                          \
+    --with-system-zlib                            \
+    --with-banner-add=" - BLFS" 
+    make
+    make DESTDIR=$PKG install-strip 
+    make DESTDIR=$PKG texlinks      
+    mkdir -pv                                $TEXLIVE_PREFIX/tlpkg/TeXLive/ 
+    install -v -m644 ../texk/tests/TeXLive/* $TEXLIVE_PREFIX/tlpkg/TeXLive/ 
+    tar -xf ../../texlive-20250308-extra.tar.xz -C $TEXLIVE_PREFIX/tlpkg --strip-components=2
+    tar -xf ../../texlive-20250308-texmf.tar.xz -C $TEXLIVE_PREFIX --strip-components=1
+    mktexlsr 
+    fmtutil-sys --all
+    ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so{,.6} /usr/lib
+}

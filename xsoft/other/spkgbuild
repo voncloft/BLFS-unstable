@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 23. other server software
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

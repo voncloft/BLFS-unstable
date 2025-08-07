@@ -1,0 +1,17 @@
+# description   : No description available
+# depends       : 
+
+name=ttf and otf fonts
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    install -v -d -m755 /usr/share/fonts/dejavu 
+    install -v -m644 ttf/*.ttf /usr/share/fonts/dejavu 
+    fc-cache -v /usr/share/fonts/dejavu
+}

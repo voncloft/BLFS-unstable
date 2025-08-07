@@ -1,0 +1,22 @@
+# description   : The zxing-cpp package provides an open-source, multi-format linear/matrix barcode image processing library
+# depends       : cmake
+
+name=zxing-cpp
+version=2.3.0    
+release=1
+source="https://github.com/zxing-cpp/zxing-cpp/archive/v$version/zxing-cpp-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D ZXING_EXAMPLES=OFF        \
+    -W no-dev ..                 
+    make
+    make DESTDIR=$PKG install
+}

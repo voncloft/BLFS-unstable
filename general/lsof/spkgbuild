@@ -1,0 +1,18 @@
+# description   : The lsof package is useful to LiSt Open Files for a given running application or process
+# depends       : libtirpc
+
+name=lsof
+version=4.99.5    
+release=1
+source="https://github.com/lsof-org/lsof/releases/download/$version/lsof-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG check
+    make DESTDIR=$PKG install
+}

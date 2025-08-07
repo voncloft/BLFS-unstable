@@ -1,0 +1,20 @@
+# description   : The Gtkmm package provides a C++ interface to GTK-4
+# depends       : gtk pangomm
+
+name=gtkmm
+version=4.18.0    
+release=1
+source="https://download.gnome.org/sources/gtkmm/4.18/gtkmm-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir gtkmm4-build 
+    cd    gtkmm4-build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    mv -v /usr/share/doc/gtkmm-4.0 /usr/share/doc/gtkmm-$version
+    DESTDIR=$PKG ninja install
+}

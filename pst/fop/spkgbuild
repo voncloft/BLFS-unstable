@@ -1,0 +1,41 @@
+# description   : The FOP (Formatting Objects Processor) package contains a print formatter driven by XSL formatting objects (XSL-FO)
+# depends       : apacheant libarchive
+
+name=fop
+version=2.11    
+release=1
+source="https://archive.apache.org/dist/xmlgraphics/fop/source/fop-$version-src.tar.gz
+https://archive.apache.org/dist/maven/maven-3/3.9.4/binaries/apache-maven-3.9.4-bin.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    unzip ../offo-hyphenation.zip 
+    cp offo-hyphenation/hyph/* fop/hyph 
+    rm -rf offo-hyphenation
+    tar -xf ../apache-maven-3.9.4-bin.tar.gz -C /tmp
+    sed -i '\@</javad@i\
+    <arg value="-Xdoclint:none"/>\
+    <arg value="--allow-script-in-comments"/>\
+    <arg value="--ignore-source-errors"/>' \
+    fop/build.xml
+    cd fop 
+    LC_ALL=en_US.UTF-8                     \
+    PATH=$PATH:/tmp/apache-maven-3.9.4/bin \
+    ant package javadocs 
+    mv build/javadocs .
+    rm -rf /tmp/apache-maven-3.9.4
+cat > $PKG~/.foprc << "EOF"
+EOF
+    install -v -d -m755 -o root -g root          /opt/fop-$version 
+    cp -vR build conf examples fop* javadocs lib /opt/fop-$version 
+    chmod a+x /opt/fop-$version/fop                                
+    ln -v -sfn fop-$version /opt/fop
+cat > $PKG/etc/profile.d/fop.sh << "EOF"
+    # Begin /etc/profile.d/fop.sh
+    pathappend /opt/fop
+    # End /etc/profile.d/fop.sh
+EOF
+}

@@ -1,0 +1,17 @@
+# description   : log4cplus is an easy to use C++20 logging API providing thread-safe, flexible, and arbitrarily granular control over log management and configuration
+# depends       : 
+
+name=log4cplus
+version=2.1.2    
+release=1
+source="https://github.com/log4cplus/log4cplus/releases/download/REL_$version/log4cplus-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

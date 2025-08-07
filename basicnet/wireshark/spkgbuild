@@ -1,0 +1,35 @@
+# description   : The Wireshark package contains a network protocol analyzer, also known as a “sniffer
+# depends       : cmake cares glib libgcrypt qt speex libpcap
+
+name=wireshark
+version=4.4.8    
+release=1
+source="https://www.wireshark.org/download/src/all-versions/wireshark-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_INSTALL_DOCDIR=/usr/share/doc/wireshark-$version \
+    -G Ninja \
+    .. 
+    ninja
+    DESTDIR=$PKG ninja install 
+    install -v -m755 -d $PKG/usr/share/doc/wireshark-$version 
+    install -v -m644    ../README.linux ../doc/README.* ../doc/randpkt.txt \
+    $PKG/usr/share/doc/wireshark-$version 
+    pushd $PKG/usr/share/doc/wireshark-$version 
+    for FILENAME in ../../wireshark/*.html; do
+    ln -s -v -f $FILENAME .
+    done 
+    popd
+    unset FILENAME
+    install -v -m644
+    chown -v root:wireshark $PKG/usr/bin/tshark 
+    chmod -v 6550 $PKG/usr/bin/tshark
+}

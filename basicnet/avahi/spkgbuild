@@ -1,0 +1,39 @@
+# documentation : https://www.linuxfromscratch.org/blfs/view/svn/basicnet/avahi.html
+# description   : The Avahi package is a system which facilitates service discovery on a local network
+# depends       : glib gtk3 libdaemon
+
+name=avahi
+version=0.8    
+release=1
+source="https://github.com/lathiat/avahi/releases/download/v$version/avahi-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/avahi-$version-ipv6_race_condition_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    patch -Np1 -i $SRC/avahi-$version-ipv6_race_condition_fix-1.patch
+    sed -i '426a if (events  AVAHI_WATCH_HUP) { \
+    client_free(c); \
+    return; \
+}' avahi-daemon/simple-protocol.c
+	./configure \
+	--prefix=/usr                  \
+	--sysconfdir=/etc              \
+	--localstatedir=/var           \
+	--disable-static               \
+	--disable-libevent             \
+	--disable-mono                 \
+	--disable-monodoc              \
+	--disable-python               \
+	--disable-qt3                  \
+	--disable-qt4                  \
+	--disable-qt5                  \
+	--enable-core-docs             \
+	--with-distro=none             \
+	--with-systemdsystemunitdir=no \
+	--with-dbus-system-address='unix:path=/run/dbus/system_bus_socket' 
+	make
+	make DESTDIR=$PKG install
+	make DESTDIR=$PKG install-avahi
+}

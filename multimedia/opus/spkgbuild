@@ -1,0 +1,21 @@
+# description   : Opus is a lossy audio compression format developed by the Internet Engineering Task Force (IETF) that is particularly suitable for interactive speech and audio transmission over the Internet
+# depends       : 
+
+name=opus
+version=1.5.2    
+release=1
+source="https://downloads.xiph.org/releases/opus/opus-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr        \
+    --buildtype=release  \
+    -D docdir=/usr/share/doc/opus-$version 
+    ninja
+    DESTDIR=$PKG ninja install
+}

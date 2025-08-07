@@ -1,0 +1,30 @@
+# description   : Polkit is a toolkit for defining and handling authorizations
+# depends       : duktape glib libxslt linuxpam
+
+name=polkit
+version=126    
+release=1
+source="https://github.com/polkit-org/polkit/archive/$version/polkit-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                     \
+    --prefix=/usr                \
+    --buildtype=release          \
+    -D man=true                  \
+    -D session_tracking=elogind  \
+    -D systemdsystemunitdir=/tmp \
+    -D tests=true
+    ninja
+    groupadd -fg 27 polkitd 
+    useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
+    -g polkitd -s /bin/false polkitd
+    DESTDIR=$PKG ninja install
+    rm -v /tmp/*.service                 
+    rm -rf /usr/lib/{sysusers,tmpfiles}.d
+}

@@ -1,0 +1,24 @@
+# description   : FAAD2 is a decoder for a lossy sound compression scheme specified in MPEG-2 Part 7 and MPEG-4 Part 3 standards and known as Advanced Audio Coding (AAC)
+# depends       : cmake
+
+name=faad2
+version=2.11.2    
+release=1
+source="https://github.com/knik0/faad2/archive/$version/faad2-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_SHARED_LIBS=ON      \
+    .. 
+    make
+    ./faad -o sample.wav ../../sample.aac
+    aplay sample.wav
+    make DESTDIR=$PKG install
+}

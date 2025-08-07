@@ -1,0 +1,25 @@
+# description   : x265 package provides a library for encoding video streams into the H
+# depends       : cmake nasm
+
+name=x265
+version=4.1    
+release=1
+source="https://bitbucket.org/multicoreware/x265_git/downloads/x265_$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -r '/cmake_policy.*(0025|0054)/d' -i source/CMakeLists.txt
+    mkdir bld 
+    cd    bld 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D GIT_ARCHETYPE=1                  \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -W no-dev                           \
+    ../source                           
+    make
+    make DESTDIR=$PKG install 
+    rm -vf /usr/lib/libx265.a
+}

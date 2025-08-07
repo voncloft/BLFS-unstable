@@ -1,0 +1,18 @@
+# description   : Redland is a set of free software C libraries that provide support for the Resource Description Framework (RDF)
+# depends       : rasqal
+
+name=redland
+version=1.0.17    
+release=1
+source="https://download.librdf.org/source/redland-$version.tar.gz
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

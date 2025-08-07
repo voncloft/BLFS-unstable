@@ -1,0 +1,25 @@
+# description   : CLucene is a C++ version of Lucene, a high performance text search engine
+# depends       : cmake boost
+
+name=clucene
+version=2.3.3.4    
+release=1
+source="https://downloads.sourceforge.net/clucene/clucene-core-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/clucene-$version-contribs_lib-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../clucene-$version-contribs_lib-1.patch 
+    sed -i '/Misc.h/a #include <ctime>' src/core/CLucene/document/DateTools.cpp 
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -D BUILD_CONTRIBS_LIB=ON            \
+    -W no-dev ..                        
+    make
+    make DESTDIR=$PKG install
+}

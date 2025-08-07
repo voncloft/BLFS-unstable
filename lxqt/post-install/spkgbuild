@@ -1,0 +1,22 @@
+# description   : Please follow these instructions before starting LXQt for the first time
+# depends       : openbox xfwm4 plasma icewm breezeicons desktopfileutils
+
+name=lxqt desktop final instructions
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKG~/.xinitrc << "EOF"
+EOF
+    startx
+    startx > ~/.x-session-errors
+    ldconfig                             
+    update-mime-database /usr/share/mime 
+    xdg-icon-resource forceupdate        
+    update-desktop-database -q
+}

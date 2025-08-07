@@ -1,0 +1,30 @@
+# description   : GeoClue is a modular geoinformation service built on top of the D-Bus messaging system
+# depends       : json-glib libsoup avahi libnotify modemmanager vala
+
+name=geoclue
+version=2.7.2    
+release=1
+source="https://gitlab.freedesktop.org/geoclue/geoclue/-/archive/$version/geoclue-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D gtk-doc=false    \
+    ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+cat > $PKG/etc/geoclue/conf.d/90-lfs-google.conf << "EOF"
+    # Begin /etc/geoclue/conf.d/90-lfs-google.conf
+    # This configuration applies for the WiFi source.
+    [wifi]
+    # Set the URL to Google's Geolocation Service.
+    url=https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDxKL42zsPjbke5O8_rPVpVrLrJ8aeE9rQ
+    # End /etc/geoclue/conf.d/90-lfs-google.conf
+EOF
+}

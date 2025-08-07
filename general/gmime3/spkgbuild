@@ -1,0 +1,17 @@
+# description   : The GMime package contains a set of utilities for parsing and creating messages using the Multipurpose Internet Mail Extension (MIME) as defined by the applicable RFCs
+# depends       : glib libgpgerror
+
+name=gmime
+version=3.2.15    
+release=1
+source="https://github.com/jstedfast/gmime/releases/download/$version/gmime-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,21 @@
+# description   : The libei package contains a set of libraries for handling emulated inputs
+# depends       : attrs
+
+name=libei
+version=1.4.1    
+release=1
+source="https://gitlab.freedesktop.org/libinput/libei/-/archive/$version/libei-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release -D tests=disabled 
+    ninja
+    meson configure -D tests=enabled .. 
+    DESTDIR=$PKG ninja test
+    DESTDIR=$PKG ninja install
+}

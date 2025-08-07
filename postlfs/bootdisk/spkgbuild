@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=creating a custom boot device
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

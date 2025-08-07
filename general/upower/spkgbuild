@@ -1,0 +1,25 @@
+# description   : The UPower package provides an interface for enumerating power devices, listening to device events, and querying history and statistics
+# depends       : libgudev libusb
+
+name=upower
+version=1.90.9    
+release=1
+source="https://gitlab.freedesktop.org/upower/upower/-/archive/v$version/upower-v$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..                   \
+    --prefix=/usr              \
+    --buildtype=release        \
+    -D gtk-doc=false           \
+    -D man=false               \
+    -D systemdsystemunitdir=no \
+    -D udevrulesdir=/usr/lib/udev/rules.d 
+    ninja
+    DESTDIR=$PKG ninja install
+}

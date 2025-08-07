@@ -1,0 +1,21 @@
+# description   : The lxqt-archiver package is a simple and lightweight desktop-agnostic Qt file archiver
+# depends       : libfmqt liblxqt jsonglib
+
+name=lxqt-archiver
+version=1.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-archiver/releases/download/$version/lxqt-archiver-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_INSTALL_PREFIX=/usr \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

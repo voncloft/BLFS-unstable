@@ -1,0 +1,20 @@
+# description   : The AudioFile package contains the audio file libraries and two sound file support programs useful to support basic sound file formats
+# depends       : alsalib flac
+
+name=audiofile
+version=0.3.6    
+release=1
+source="https://download.gnome.org/sources/audiofile/0.3/audiofile-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/audiofile-$version-consolidated_patches-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../audiofile-$version-consolidated_patches-1.patch 
+    autoreconf -fiv                             
+    ./configure --prefix=/usr --disable-static  
+    make
+    make DESTDIR=$PKG install
+}

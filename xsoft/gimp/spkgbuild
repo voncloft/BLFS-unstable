@@ -1,0 +1,36 @@
+# description   : The Gimp package contains the GNU Image Manipulation Program which is useful for photo retouching, image composition and image authoring
+# depends       : appstreamglib gegl gexiv2 glibnetworking gtk harfbuzz libmypaint librsvg libtiff libxml2 littlecms mypaintbrushes poppler graphviz ghostscript isocodes libgudev pygobject xdgutils
+
+name=gimp
+version=3.0.4    
+release=1
+source="https://download.gimp.org/gimp/v3.0/gimp-$version.tar.xz
+https://download.gimp.org/pub/gimp/help/gimp-help-3.0.0.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir gimp-build 
+    cd    gimp-build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D headless-tests=disabled 
+    ninja
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    tar -xf ../../gimp-help-3.0.0.tar.bz2 
+    cd gimp-help-3.0.0
+    ALL_LINGUAS="ca cs da de en en_GB es fa fr hr ko lt nl nn pt pt_BR ro sl sv uk zh_CN" \
+    ./configure --prefix=/usr
+    make
+    rm -rf /usr/{lib,share}/gimp/3.0 
+    rm -f  /usr/share/gir-1.0/Gimp-3.0.gir 
+    rm -f  /usr/lib/girepository-1.0/Gimp-3.0.typelib 
+    rm -f  /usr/lib/libgimp*-3.0.so*
+    DESTDIR=$PKG ninja install
+    make DESTDIR=$PKG install 
+    chown -R root:root /usr/share/gimp/3.0/help
+}

@@ -1,0 +1,21 @@
+# description   : The qterminal package contains a Qt widget based terminal emulator for Qt with support for multiple tabs
+# depends       : qtermwidget
+
+name=qterminal
+version=2.2.1    
+release=1
+source="https://github.com/lxqt/qterminal/releases/download/$version/qterminal-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

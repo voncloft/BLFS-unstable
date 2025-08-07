@@ -1,0 +1,17 @@
+# description   : The mpg123 package contains a console-based MP3 player
+# depends       : alsalib
+
+name=mpg123
+version=1.33.2    
+release=1
+source="https://downloads.sourceforge.net/mpg123/mpg123-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

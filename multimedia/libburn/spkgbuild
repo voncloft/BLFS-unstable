@@ -1,0 +1,21 @@
+# description   : libburn is a library for writing preformatted data onto optical media: CD, DVD and BD (Blu-Ray)
+# depends       : 
+
+name=libburn
+version=1.5.6    
+release=1
+source="https://files.libburnia-project.org/releases/libburn-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's/catch_int ()/catch_int (int signum)/' test/poll.c
+    ./configure --prefix=/usr --disable-static 
+    make
+    doxygen doc/doxygen.conf
+    make DESTDIR=$PKG install
+    install -v -dm755 /usr/share/doc/libburn-$version 
+    install -v -m644 doc/html/* /usr/share/doc/libburn-$version
+}

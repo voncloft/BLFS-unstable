@@ -1,0 +1,19 @@
+# description   : This package is a simple
+# depends       : 
+
+name=inih
+version=61    
+release=1
+source="https://github.com/benhoyt/inih/archive/r$version/inih-r$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

@@ -1,0 +1,18 @@
+# description   : The Fetchmail package contains a mail retrieval program
+# depends       : procmail
+
+name=fetchmail
+version=6.5.4    
+release=1
+source="https://downloads.sourceforge.net/fetchmail/fetchmail-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install 
+    chown -v fetchmail:nogroup $PKG/usr/bin/fetchmail
+}

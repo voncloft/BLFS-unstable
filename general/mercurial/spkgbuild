@@ -1,0 +1,31 @@
+# description   : Mercurial is a distributed source control management tool similar to Git and Bazaar
+# depends       : 
+
+name=mercurial
+version=7.0.1    
+release=1
+source="https://www.mercurial-scm.org/release/mercurial-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '152,155d' Makefile
+    TESTFLAGS="-j
+    --with-hg /usr/bin/hg" make check
+    pushd tests  
+    rm -rf tmp 
+    ./run-tests.py --with-hg /usr/bin/hg
+    popd
+cat >> ~/.hgrc << "EOF"
+EOF
+    make DESTDIR=$PKG PREFIX=/usr install
+    mkdir /usr/share/doc/mercurial-$version 
+    cp -R doc/html /usr/share/doc/mercurial-$version
+    install -v -d -m755 /etc/mercurial 
+cat > $PKG/etc/mercurial/hgrc << "EOF"
+    [web]
+    cacerts = /etc/pki/tls/certs/ca-bundle.crt
+EOF
+}

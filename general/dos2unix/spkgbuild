@@ -1,0 +1,16 @@
+# description   : The dos2unix package contains an any-to-any text format converter
+# depends       : 
+
+name=dos2unix
+version=7.5.2    
+release=1
+source="https://downloads.sourceforge.net/dos2unix/dos2unix-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make
+    make DESTDIR=$PKG install
+}

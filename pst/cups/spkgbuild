@@ -1,0 +1,38 @@
+# description   : The Common Unix Printing System (CUPS) is a print spooler and associated utilities
+# depends       : gnutls colord dbus libusb linuxpam xdgutils cupsfilters
+
+name=cups
+version=2.4.12    
+release=1
+source="https://github.com/OpenPrinting/cups/releases/download/v$version/cups-$version-source.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's#@CUPS_HTMLVIEW@#firefox#' desktop/cups.desktop.in
+    ./configure --libdir=/usr/lib            \
+    --with-rcdir=/tmp/cupsinit   \
+    --with-rundir=/run/cups      \
+    --with-system-groups=lpadmin \
+    --with-docdir=/usr/share/cups/doc-$version 
+    make
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor
+    useradd -c "Print Service User" -d /var/spool/cups -g lp -s /bin/false -u 9 lp
+    groupadd -g 19 lpadmin
+    usermod -a -G lpadmin
+    <em class="replaceable"><code><username></code></em>
+    make DESTDIR=$PKG install 
+    ln -svnf ../cups/doc-$version /usr/share/doc/cups-$version
+    rm -rf /tmp/cupsinit
+    echo "ServerName /run/cups/cups.sock" > /etc/cups/client.conf
+cat > $PKG/etc/pam.d/cups << "EOF"
+    # Begin /etc/pam.d/cups
+    auth    include system-auth
+    account include system-account
+    session include system-session
+    # End /etc/pam.d/cups
+EOF
+    make DESTDIR=$PKG install-cups
+}

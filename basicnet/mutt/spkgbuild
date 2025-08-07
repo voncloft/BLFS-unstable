@@ -1,0 +1,31 @@
+# description   : The Mutt package contains a Mail User Agent
+# depends       : lynx links
+
+name=mutt
+version=2.2.14    
+release=1
+source="https://bitbucket.org/mutt/mutt/downloads/mutt-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed  -e 's/ -with_backspaces//' \
+    -e 's/elinks/links/'       \
+    -e 's/-no-numbering -no-references//' \
+    -i doc/Makefile.in
+    ./configure --prefix=/usr                            \
+    --sysconfdir=/etc                        \
+    --with-docdir=/usr/share/doc/mutt-$version \
+    --with-ssl                               \
+    --enable-external-dotlock                \
+    --enable-pop                             \
+    --enable-imap                            \
+    --enable-hcache                          \
+    --enable-sidebar                         
+    make
+    make DESTDIR=$PKG install
+    chown root:mail $PKG/usr/bin/mutt_dotlock 
+    chmod -v 2755 $PKG/usr/bin/mutt_dotlock
+}

@@ -1,0 +1,74 @@
+# description   : No description available
+# depends       : 
+
+name=tuning fontconfig
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir -pv ~/.config/fontconfig 
+cat > $PKG~/.config/fontconfig/fonts.conf << "EOF"
+EOF
+    mkdir -pv ~/.config/fontconfig/conf.d 
+cat > $PKG ~/.config/fontconfig/conf.d/35-prefer-nimbus-for-timesnew.conf << "EOF"
+EOF
+cat > $PKG/etc/fonts/conf.d/70-no-bitmaps.conf << "EOF"
+    <?xml version='1.0'?>
+    <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+    <fontconfig>
+    <!-- Reject bitmap fonts -->
+    <selectfont>
+    <rejectfont>
+    <pattern>
+    <patelt name="scalable"><bool>false</bool></patelt>
+    </pattern>
+    </rejectfont>
+    </selectfont>
+    </fontconfig>
+EOF
+cat > $PKG/etc/fonts/conf.d/09-texlive.conf << "EOF"
+    <?xml version='1.0'?>
+    <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+    <fontconfig>
+    <dir>/opt/texlive/2025/texmf-dist/fonts/opentype/arkandis/berenisadf</dir>
+    <dir>/opt/texlive/2025/texmf-dist/fonts/truetype/paratype</dir>
+    </fontconfig>
+EOF
+cat > $PKG/etc/fonts/local.conf << "EOF"
+    <?xml version='1.0'?>
+    <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
+    <fontconfig>
+    <alias>
+    <family>serif</family>
+    <prefer>
+    <family>DejaVu Serif</family>
+    <family>IPAexMincho</family>
+    <!-- WenQuanYi is preferred as Serif in 65-nonlatin.conf,
+    override that so a real Korean font can be used for Serif -->
+    <family>UnBatang</family>
+    </prefer>
+    </alias>
+    <alias>
+    <family>sans-serif</family>
+    <prefer>
+    <family>DejaVu Sans</family>
+    <family>VL Gothic</family>
+    <!-- This assumes WenQuanYi is good enough for Korean Sans -->
+    </prefer>
+    </alias>
+    <alias>
+    <family>monospace</family>
+    <prefer>
+    <family>DejaVu Sans Mono</family>
+    <family>VL Gothic</family>
+    <!-- This assumes WenQuanYi is good enough for Korean Monospace -->
+    </prefer>
+    </alias>
+    </fontconfig>
+EOF
+}

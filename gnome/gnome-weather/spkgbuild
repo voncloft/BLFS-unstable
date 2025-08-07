@@ -1,0 +1,19 @@
+# description   : GNOME Weather is a small application that allows you to monitor the current weather conditions for your city, or anywhere in the world, and to access updated forecasts provided by various internet services
+# depends       : geoclue gjs libadwaita libgweather
+
+name=gnome-weather
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/gnome-weather/48/gnome-weather-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

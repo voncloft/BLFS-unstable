@@ -1,0 +1,27 @@
+# description   : The ALSA Library package contains the ALSA library used by programs (including ALSA Utilities) requiring access to the ALSA sound interface
+# depends       : 
+
+name=alsa-lib
+version=1.2.14    
+release=1
+source="https://www.alsa-project.org/files/pub/lib/alsa-lib-$version.tar.bz2
+https://www.alsa-project.org/files/pub/lib/alsa-ucm-conf-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed 's/playmidi1//' -i test/Makefile.am 
+    autoreconf -fi
+    ./configure 
+    make
+    make DESTDIR=$PKG doc
+    make DESTDIR=$PKG install 
+    tar -C /usr/share/alsa --strip-components=1 -xf ../alsa-ucm-conf-$version.tar.bz2
+    install -v -d -m755 /usr/share/doc/alsa-lib-$version/html/search 
+    install -v -m644 doc/doxygen/html/*.* \
+    /usr/share/doc/alsa-lib-$version/html 
+    install -v -m644 doc/doxygen/html/search/* \
+    /usr/share/doc/alsa-lib-$version/html/search
+}

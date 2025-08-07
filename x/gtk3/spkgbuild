@@ -1,0 +1,32 @@
+# description   : The GTK3 package contains libraries used for creating graphical user interfaces for applications
+# depends       : atspi2core gdkpixbuf libepoxy pango adwaitaicontheme docbookxslnons hicoloricontheme isocodes libxkbcommon libxslt wayland waylandprotocols glib
+
+name=gtk
+version=3.24.49    
+release=1
+source="https://download.gnome.org/sources/gtk/3.24/gtk-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/gtk-$version-upstream_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../gtk-$version-upstream_fix-1.patch
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D man=true         \
+    -D broadway_backend=true 
+    ninja
+    mkdir -vp ~/.config/gtk-3.0
+cat > $PKG~/.config/gtk-3.0/settings.ini << "EOF"
+EOF
+cat > $PKG~/.config/gtk-3.0/gtk.css << "EOF"
+EOF
+    DESTDIR=$PKG ninja install
+    gtk-query-immodules-3.0 --update-cache
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+}

@@ -1,0 +1,17 @@
+# description   : The keybinder-3
+# depends       : gtk glib
+
+name=keybinder-3.0
+version=0.3.2    
+release=1
+source="https://github.com/kupferlauncher/keybinder/releases/download/keybinder-3.0-v$version/keybinder-3.0-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

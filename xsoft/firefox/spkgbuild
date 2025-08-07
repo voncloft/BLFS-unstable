@@ -1,0 +1,48 @@
+# description   : Firefox is a stand-alone browser based on the Mozilla codebase
+# depends       : cbindgen gtk libnotify libarchive llvm nodejs pulseaudio alsalib python sqlite startupnotification icu libevent libvpx libwebp nasm nss
+
+name=firefox
+version=140.1.0esr    
+release=1
+source="https://archive.mozilla.org/pub/firefox/releases/$version/source/firefox-$version.source.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGmozconfig << "EOF"
+EOF
+    echo "AIzaSyDxKL42zsPjbke5O8_rPVpVrLrJ8aeE9rQ" > google-key
+    mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
+    export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none 
+    export MOZBUILD_STATE_PATH=${PWD}/mozbuild          
+    ./mach build
+    unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE
+    unset MOZBUILD_STATE_PATH
+    export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none 
+    ./mach install
+    mkdir -pv /usr/share/applications 
+    mkdir -pv /usr/share/pixmaps      
+    MIMETYPE="text/xml;text/mml;text/html;"                            
+    MIMETYPE+="application/xhtml+xml;application/vnd.mozilla.xul+xml;" 
+    MIMETYPE+="x-scheme-handler/http;x-scheme-handler/https"           
+cat > $PKG/usr/share/applications/firefox.desktop << EOF 
+    [Desktop Entry]
+    Encoding=UTF-8
+    Name=Firefox Web Browser
+    Comment=Browse the World Wide Web
+    GenericName=Web Browser
+    Exec=firefox %u
+    Terminal=false
+    Type=Application
+    Icon=firefox
+    Categories=GNOME;GTK;Network;WebBrowser;
+    MimeType=$MIMETYPE
+    StartupNotify=true
+    StartupWMClass=firefox
+EOF
+    unset MIMETYPE 
+    ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
+    /usr/share/pixmaps/firefox.png
+}

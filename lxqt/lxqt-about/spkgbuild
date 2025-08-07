@@ -1,0 +1,21 @@
+# description   : The lxqt-about package provides the standalone LXQt “About” dialog
+# depends       : liblxqt
+
+name=lxqt-about
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-about/releases/download/$version/lxqt-about-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

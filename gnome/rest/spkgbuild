@@ -1,0 +1,26 @@
+# description   : The rest package contains a library that was designed to make it easier to access web services that claim to be \"RESTful\"
+# depends       : jsonglib libsoup makeca glib
+
+name=rest
+version=0.9.1    
+release=1
+source="https://download.gnome.org/sources/rest/0.9/rest-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D examples=false   \
+    -D gtk_doc=false    \
+    ..                  
+    ninja
+    sed "/output/s/librest-1.0/rest-$version/" -i ../docs/meson.build 
+    meson configure -D gtk_doc=true                                
+    ninja
+    DESTDIR=$PKG ninja install
+}

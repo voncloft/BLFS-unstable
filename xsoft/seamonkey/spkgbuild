@@ -1,0 +1,49 @@
+# description   : Seamonkey is a browser suite, a descendant of Netscape
+# depends       : cbindgen gtk libarchive python yasm zip icu libevent libwebp llvm nasm nspr nss pulseaudio
+
+name=seamonkey
+version=2.53.20    
+release=1
+source="https://archive.seamonkey-project.org/releases/$version/source/seamonkey-$version.source.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/seamonkey-$version-cxx17-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGmozconfig << "EOF"
+EOF
+    mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
+    (for i in {43..47}; do
+    sed '/ZWJ/s/$/,CLASS_CHARACTER/' -i intl/lwbrk/LineBreaker.cpp || exit $?
+    done) 
+    patch -Np1 -i ../seamonkey-$version-cxx17-1.patch 
+    sed -i 's/icu-i18n/icu-uc /' js/moz.configure
+    sed -e '/ExclusiveData(ExclusiveData/,/^ *}/d' \
+    -i js/src/threading/ExclusiveData.h
+    sed -e '1012 s/stderr=devnull/stderr=subprocess.DEVNULL/' \
+    -e '1013 s/OSError/(OSError, subprocess.CalledProcessError)/' \
+    -i third_party/python/distro/distro.py
+    export PATH_PY311=/opt/python3.11/bin:$PATH 
+    PATH=$PATH_PY311 AUTOCONF=true MACH_USE_SYSTEM_PYTHON=1 ./mach build
+    unset PATH_PY311
+    PATH=$PATH_PY311 MACH_USE_SYSTEM_PYTHON=1 ./mach install 
+    chown -R 0:0 /usr/lib/seamonkey                          
+    cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1
+    mkdir -pv /usr/share/{applications,pixmaps}              
+cat > $PKG/usr/share/applications/seamonkey.desktop << "EOF"
+    [Desktop Entry]
+    Encoding=UTF-8
+    Type=Application
+    Name=Seamonkey
+    Comment=The Mozilla Suite
+    Icon=seamonkey
+    Exec=seamonkey
+    Categories=Network;GTK;Application;Email;Browser;WebBrowser;News;
+    StartupNotify=true
+    Terminal=false
+EOF
+    ln -sfv /usr/lib/seamonkey/chrome/icons/default/default128.png \
+    /usr/share/pixmaps/seamonkey.png
+}

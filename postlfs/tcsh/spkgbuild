@@ -1,0 +1,25 @@
+# description   : The Tcsh package contains “an enhanced but completely compatible version of the Berkeley Unix C shell (csh)
+# depends       : 
+
+name=tcsh
+version=6.24.16    
+release=1
+source="https://astron.com/pub/tcsh/tcsh-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+cat > $PKG~/.cshrc << "EOF"
+EOF
+    make DESTDIR=$PKG install install.man 
+    ln -v -sf tcsh   /bin/csh 
+    ln -v -sf tcsh.1 /usr/share/man/man1/csh.1
+cat >> /etc/shells << "EOF"
+    /bin/tcsh
+    /bin/csh
+EOF
+}

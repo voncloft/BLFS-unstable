@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 48. standard generalized markup language (sgml)
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

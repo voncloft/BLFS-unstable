@@ -1,0 +1,20 @@
+# description   : The Emacs package contains an extensible, customizable, self-documenting real-time display editor
+# depends       : harfbuzz giflib gnutls jansson libtiff
+
+name=emacs
+version=30.1    
+release=1
+source="https://ftp.gnu.org/gnu/emacs/emacs-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor
+    make DESTDIR=$PKG install 
+    chown -v -R root:root /usr/share/emacs/$version 
+    rm -vf /usr/lib/systemd/user/emacs.service
+}

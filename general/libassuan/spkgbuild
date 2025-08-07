@@ -1,0 +1,30 @@
+# description   : The libassuan package contains an inter process communication library used by some of the other GnuPG related packages
+# depends       : libgpgerror
+
+name=libassuan
+version=3.0.2    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/libassuan/libassuan-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make DESTDIR=$PKG                      
+    make DESTDIR=$PKG -C doc html                                                       
+    makeinfo --html --no-split -o doc/assuan_nochunks.html doc/assuan.texi 
+    makeinfo --plaintext       -o doc/assuan.txt           doc/assuan.texi
+    make DESTDIR=$PKG -C doc pdf ps
+    make DESTDIR=$PKG install 
+    install -v -dm755   /usr/share/doc/libassuan-$version/html 
+    install -v -m644 doc/assuan.html/* \
+    /usr/share/doc/libassuan-$version/html 
+    install -v -m644 doc/assuan_nochunks.html \
+    /usr/share/doc/libassuan-$version      
+    install -v -m644 doc/assuan.{txt,texi} \
+    /usr/share/doc/libassuan-$version
+    install -v -m644  doc/assuan.{pdf,ps,dvi} \
+    /usr/share/doc/libassuan-$version
+}

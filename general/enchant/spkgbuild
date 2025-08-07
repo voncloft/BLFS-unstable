@@ -1,0 +1,23 @@
+# description   : The enchant package provides a generic interface into various existing spell checking libraries
+# depends       : glib vala aspell
+
+name=enchant
+version=2.8.12    
+release=1
+source="https://github.com/rrthomas/enchant/releases/download/v$version/enchant-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/enchant-$version 
+    make
+cat > $PKG/tmp/test-enchant.txt << "EOF"
+EOF
+    enchant-2 -d en_GB -l /tmp/test-enchant.txt 
+    enchant-2 -d en_GB -a /tmp/test-enchant.txt
+    make DESTDIR=$PKG install
+}

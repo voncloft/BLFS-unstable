@@ -1,0 +1,19 @@
+# description   : imlib2 is a graphics library for fast file loading, saving, rendering and manipulation
+# depends       : xorg libraries giflib librsvg
+
+name=imlib2
+version=1.12.5    
+release=1
+source="https://downloads.sourceforge.net/enlightenment/imlib2-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+    install -v -m755 -d            /usr/share/doc/imlib2-$version/html 
+    install -v -m644    doc/html/* /usr/share/doc/imlib2-$version/html
+}

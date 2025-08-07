@@ -1,0 +1,19 @@
+# description   : x264 package provides a library for encoding video streams into the H
+# depends       : nasm
+
+name=x264
+version=20250212    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/x264/x264-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr   \
+    --enable-shared \
+    --disable-cli   
+    make
+    make DESTDIR=$PKG install
+}

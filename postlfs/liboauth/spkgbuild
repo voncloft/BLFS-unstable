@@ -1,0 +1,22 @@
+# description   : liboauth is a collection of POSIX-C functions implementing the OAuth Core RFC 5849 standard
+# depends       : curl
+
+name=liboauth
+version=1.0.3    
+release=1
+source="https://downloads.sourceforge.net/liboauth/liboauth-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/liboauth-$version-openssl-1.$version.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../liboauth-$version-openssl-1.$version.patch
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG dox
+    make DESTDIR=$PKG install
+    install -v -dm755 /usr/share/doc/liboauth-$version 
+    cp -rv doc/html/* /usr/share/doc/liboauth-$version
+}

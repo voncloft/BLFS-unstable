@@ -1,0 +1,19 @@
+# description   : The libsigc++ package implements a typesafe callback system for standard C++
+# depends       : boost libxslt
+
+name=libsigc++
+version=2.12.1    
+release=1
+source="https://download.gnome.org/sources/libsigc++/2.12/libsigc++-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir bld 
+    cd    bld 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

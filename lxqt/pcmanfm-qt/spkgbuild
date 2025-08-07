@@ -1,0 +1,29 @@
+# description   : The pcmanfm-qt is a file manager and desktop icon manager (a Qt port of pcmanfm and libfm)
+# depends       : layershellqtforlxqt liblxqt libfmqt lxqtmenudata gvfs oxygenicons
+
+name=pcmanfm-qt
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/pcmanfm-qt/releases/download/$version/pcmanfm-qt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    if [   -e /opt/kf6/lib/libLayerShellQtInterface.so -a \
+    ! -e /usr/lib/libLayerShellQtInterface.so ]; then
+    ln -sv /opt/kf6/lib/libLayerShellQtInterface.so \
+    /usr/lib/libLayerShellQtInterface.so
+    fi
+    make DESTDIR=$PKG install
+    sed -e '/Categories=/s/=/=System;FileTools;/' \
+    -e '/Name=/s/=.*/=File Manager PCManFM-Qt'/ \
+    -i /usr/share/applications/pcmanfm-qt.desktop
+}

@@ -1,0 +1,25 @@
+# description   : The Tidy HTML5 package contains a command line tool and libraries used to read HTML, XHTML and XML files and write cleaned up markup
+# depends       : cmake libxslt
+
+name=tidy-html5
+version=5.8.0    
+release=1
+source="https://github.com/htacg/tidy-html5/archive/$version/tidy-html5-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/tidy-html5-$version-cmake4_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../tidy-html5-$version-cmake4_fixes-1.patch
+    cd build/cmake 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_TAB2SPACE=ON        \
+    ../..    
+    make
+    make DESTDIR=$PKG install 
+    rm -fv /usr/lib/libtidy.a 
+    install -v -m755 tab2space /usr/bin
+}

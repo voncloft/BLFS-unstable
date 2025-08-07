@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 30. kde frameworks 6
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

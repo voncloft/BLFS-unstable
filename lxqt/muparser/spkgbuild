@@ -1,0 +1,21 @@
+# description   : The muparser package is a fast math parser library for C and C++
+# depends       : cmake
+
+name=muparser
+version=2.3.5    
+release=1
+source="https://github.com/beltoforion/muparser/archive/v$version/muparser-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir -v build 
+    cd       build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

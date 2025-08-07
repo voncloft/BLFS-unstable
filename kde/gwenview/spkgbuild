@@ -1,0 +1,22 @@
+# description   : Gwenview is a fast and easy-to-use image viewer for KDE
+# depends       : exiv2 kimageannotator kdeframeworks littlecms libkdcraw
+
+name=gwenview
+version=25.04.0    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/gwenview-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

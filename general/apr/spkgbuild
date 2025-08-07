@@ -1,0 +1,19 @@
+# description   : The Apache Portable Runtime (APR) is a supporting library for the Apache web server
+# depends       : 
+
+name=apr
+version=1.7.6    
+release=1
+source="https://archive.apache.org/dist/apr/apr-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --with-installbuilddir=/usr/share/apr-1/build 
+    make
+    make DESTDIR=$PKG install
+}

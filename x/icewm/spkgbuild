@@ -1,0 +1,34 @@
+# description   : IceWM is a window manager with the goals of speed, simplicity, and not getting in the user's way
+# depends       : cmake imlib2 agraphical environment
+
+name=icewm
+version=3.8.2    
+release=1
+source="https://github.com/ice-wm/icewm/archive/$version/icewm-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D CFGDIR=/etc               \
+    -D ENABLE_LTO=ON             \
+    -D DOCDIR=/usr/share/doc/icewm-$version  \
+    .. 
+    make
+    echo icewm-session > ~/.xinitrc
+    mkdir -pv ~/.icewm                                      
+    cp -v /usr/share/icewm/keys ~/.icewm/keys               
+    cp -v /usr/share/icewm/menu ~/.icewm/menu               
+    cp -v /usr/share/icewm/preferences ~/.icewm/preferences 
+    cp -v /usr/share/icewm/toolbar ~/.icewm/toolbar         
+    cp -v /usr/share/icewm/winoptions ~/.icewm/winoptions
+    icewm-menu-fdo >~/.icewm/menu
+cat > $PKG~/.icewm/startup << "EOF"
+    make DESTDIR=$PKG install
+    rm -v /usr/share/xsessions/icewm.desktop
+}

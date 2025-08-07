@@ -1,0 +1,20 @@
+# description   : The libvdpau package contains a library which implements the VDPAU library
+# depends       : xorg libraries
+
+name=libvdpau
+version=1.5    
+release=1
+source="https://gitlab.freedesktop.org/vdpau/libvdpau/-/archive/$version/libvdpau-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=$XORG_PREFIX .. 
+    ninja
+    DESTDIR=$PKG ninja install
+    [ -e $XORG_PREFIX/share/doc/libvdpau ]  mv -v $XORG_PREFIX/share/doc/libvdpau{,$version}
+}

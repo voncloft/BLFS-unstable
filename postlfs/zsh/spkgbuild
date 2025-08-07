@@ -1,0 +1,42 @@
+# description   : The zsh package contains a command interpreter (shell) usable as an interactive login shell and as a shell script command processor
+# depends       : 
+
+name=zsh
+version=5.9    
+release=1
+source="https://www.zsh.org/pub/zsh-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -e 's/set_from_init_file/texinfo_/' \
+    -i Doc/Makefile.in
+    sed -e 's/^main/int /'      \
+    -e 's/exit(/return(/'    \
+    -i aczsh.m4 configure.ac 
+    sed -e 's/test = /(char**)/' \
+    -i configure.ac           
+    autoconf
+    sed -e 's|/etc/z|/etc/zsh/z|g' \
+    -i Doc/*.*
+    ./configure --prefix=/usr            \
+    --sysconfdir=/etc/zsh    \
+    --enable-etcdir=/etc/zsh \
+    --enable-cap             \
+    --enable-gdbm            
+    make DESTDIR=$PKG                                 
+    makeinfo  Doc/zsh.texi --html      -o Doc/html 
+    makeinfo  Doc/zsh.texi --plaintext -o zsh.txt  
+    makeinfo  Doc/zsh.texi --html --no-split --no-headers -o zsh.html
+    texi2pdf  Doc/zsh.texi -o Doc/zsh.pdf
+    make DESTDIR=$PKG install                                                    
+    make DESTDIR=$PKG infodir=/usr/share/info install.info                       
+    make DESTDIR=$PKG htmldir=/usr/share/doc/zsh-$version/html install.html           
+    install -v -m644 zsh.{html,txt} Etc/FAQ /usr/share/doc/zsh-$version
+    install -v -m644 Doc/zsh.pdf /usr/share/doc/zsh-$version
+cat >> /etc/shells << "EOF"
+    /bin/zsh
+EOF
+}

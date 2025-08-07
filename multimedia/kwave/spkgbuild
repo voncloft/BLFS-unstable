@@ -1,0 +1,22 @@
+# description   : The KWave package contains a KDE Frameworks based Sound Editor application
+# depends       : audiofile fftw id3lib kdeframeworks alsalib flac libogg pulseaudio
+
+name=kwave
+version=25.04.0    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/kwave-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

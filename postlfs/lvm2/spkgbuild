@@ -1,0 +1,34 @@
+# description   : The LVM2 package is a set of tools that manage logical partitions
+# depends       : libaio
+
+name=lvm2
+version=2.03.34    
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    PATH+=:/usr/sbin                \
+    ./configure --prefix=/usr       \
+    --enable-cmdlib     \
+    --enable-pkgconfig  \
+    --enable-udev_sync  
+    make
+    --with-thin-check=    \
+    --with-thin-dump=     \
+    --with-thin-repair=   \
+    --with-thin-restore=  \
+    --with-cache-check=   \
+    --with-cache-dump=    \
+    --with-cache-repair=  \
+    --with-cache-restore= \
+    make DESTDIR=$PKG -C tools install_tools_dynamic 
+    make DESTDIR=$PKG -C udev  install               
+    make DESTDIR=$PKG -C libdm install
+    LC_ALL=en_US.UTF-8 make check_local
+    make DESTDIR=$PKG install
+    rm -fv /usr/lib/udev/rules.d/69-dm-lvm.rules
+}

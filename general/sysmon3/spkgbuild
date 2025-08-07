@@ -1,0 +1,17 @@
+# description   : The sysmon3 package (pronounced sys-mon-3) is the client portion of the sysmond/sysmon3 client/server application that monitors system values including CPU usage, memory usage, and system temperatures in a compact screen window
+# depends       : qt sysmond
+
+name=sysmon3
+version=3.0.1    
+release=1
+source="https://github.com/lfs-book/sysmon3/releases/download/sysmon3-$version/sysmon3-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    qmake sysmon3.pro 
+    make
+    install -vm755 sysmon3 /usr/bin
+}

@@ -1,0 +1,22 @@
+# description   : Khelpcenter is an application to show KDE Applications' documentation
+# depends       : kdeframeworks libxml2 xapian qtwebengine
+
+name=khelpcenter
+version=25.04.0    
+release=1
+source="https://download.kde.org/stable/release-service/$version/src/khelpcenter-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

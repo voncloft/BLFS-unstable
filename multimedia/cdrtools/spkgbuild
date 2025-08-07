@@ -1,0 +1,32 @@
+# description   : The Cdrtools package contains CD recording utilities
+# depends       : alsalib
+
+name=cdrtools
+version=3.02a09    
+release=1
+source="https://downloads.sourceforge.net/cdrtools/cdrtools-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i 's|/opt/schily|/usr|g'           DEFAULTS/Defaults.linux 
+    sed -i 's|DEFINSGRP=.*|DEFINSGRP=root|' DEFAULTS/Defaults.linux 
+    sed -i 's|INSDIR=\s*sbin|INSDIR=bin|'   rscsi/Makefile          
+    export GMAKE_NOWARN=true 
+    export CFLAGS="$CFLAGS -std=gnu89 -fno-strict-aliasing" 
+    make DESTDIR=$PKG -j1 INS_BASE=/usr  \
+    DEFINSUSR=root \
+    DEFINSGRP=root \
+    VERSION_OS="LinuxFromScratch"
+    GMAKE_NOWARN=true 
+    make DESTDIR=$PKG INS_BASE=/usr    \
+    DEFINSUSR=root   \
+    DEFINSGRP=root   \
+    MANSUFF_LIB=3cdr \
+    install          
+    install -v -m755 -d /usr/share/doc/cdrtools-$version 
+    install -v -m644 README.* READMEs/* ABOUT doc/*.ps \
+    /usr/share/doc/cdrtools-$version
+}

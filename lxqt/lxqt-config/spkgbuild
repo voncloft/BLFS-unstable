@@ -1,0 +1,21 @@
+# description   : The lxqt-config package provides the LXQt Configuration Center
+# depends       : liblxqt kconfig forlxqt libkscreenforlxqt xorglibinput
+
+name=lxqt-config
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-config/releases/download/$version/lxqt-config-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

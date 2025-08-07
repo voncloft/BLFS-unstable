@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 4. security
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

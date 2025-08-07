@@ -1,0 +1,20 @@
+# description   : Libsndfile is a library of C routines for reading and writing files containing sampled audio data
+# depends       : flac opus libvorbis
+
+name=libsndfile
+version=1.2.2    
+release=1
+source="https://github.com/libsndfile/libsndfile/releases/download/$version/libsndfile-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed '/typedef enum/,/bool ;/d' -i \
+    src/ALAC/alac_{en,de}coder.c
+    ./configure --prefix=/usr    \
+    --docdir=/usr/share/doc/libsndfile-$version 
+    make
+    make DESTDIR=$PKG install
+}

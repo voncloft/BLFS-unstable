@@ -1,0 +1,21 @@
+# description   : The Sshfs package contains a filesystem client based on the SSH File Transfer Protocol
+# depends       : fuse glib opensshp1
+
+name=sshfs
+version=3.7.3    
+release=1
+source="https://github.com/libfuse/sshfs/releases/download/sshfs-$version/sshfs-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    sshfs example.com:/home/userid ~/examplepath
+    fusermount3 -u ~/example
+    DESTDIR=$PKG ninja install
+}

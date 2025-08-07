@@ -1,0 +1,28 @@
+# description   : Brotli provides a general-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling
+# depends       : cmake
+
+name=brotli
+version=1.1.0    
+release=1
+source="https://github.com/google/brotli/archive/v$version/brotli-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..  
+    make
+    cd .. 
+    sed "/c\/.*\.[ch]'/d;\
+    /include_dirs=\[/\
+    i libraries=['brotlicommon','brotlidec','brotlienc']," \
+    -i setup.py 
+    pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir $PWD
+    make DESTDIR=$PKG install
+    pip3 install --no-index --find-links dist --no-user Brotli
+}

@@ -1,0 +1,24 @@
+# description   : The International Components for Unicode (ICU) package is a mature, widely used set of C/C++ libraries providing Unicode and Globalization support for software applications
+# depends       : 
+
+name=icu
+version=77.1    
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ldd <application or library>
+    readelf -d  <application or library> | grep NEEDED
+    case $(uname -m) in
+    i?86) sed -e "s/U_PLATFORM_IS_LINUX_BASED/__X86_64__ \\ /" \
+    -i source/test/intltest/ustrtest.cpp ;;
+    esac
+    cd source                 
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

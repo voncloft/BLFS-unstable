@@ -1,0 +1,34 @@
+# description   : The Cyrus SASL package contains a Simple Authentication and Security Layer implementation, a method for adding authentication support to connection-based protocols
+# depends       : lmdb
+
+name=cyrus sasl
+version=2.1.28    
+release=1
+source="https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-$version/cyrus-sasl-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/cyrus-sasl-$version-gcc15_fixes-1.patch
+https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../cyrus-sasl-$version-gcc15_fixes-1.patch 
+    autoreconf -fiv
+    sed '/saslint/a #include <time.h>'       -i lib/saslutil.c 
+    sed '/plugin_common/a #include <time.h>' -i plugins/cram.c
+    ./configure --prefix=/usr                       \
+    --sysconfdir=/etc                   \
+    --enable-auth-sasldb                \
+    --with-dblib=lmdb                   \
+    --with-dbpath=/var/lib/sasl/sasldb2 \
+    --with-sphinx-build=no              \
+    --with-saslauthd=/var/run/saslauthd 
+    make DESTDIR=$PKG -j1
+    make DESTDIR=$PKG install 
+    install -v -dm755                          /usr/share/doc/cyrus-sasl-$version/html 
+    install -v -m644  saslauthd/LDAP_SASLAUTHD /usr/share/doc/cyrus-sasl-$version      
+    install -v -m644  doc/legacy/*.html        /usr/share/doc/cyrus-sasl-$version/html 
+    install -v -dm700 /var/lib/sasl
+    make DESTDIR=$PKG install-saslauthd
+}

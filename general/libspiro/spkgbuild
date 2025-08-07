@@ -1,0 +1,17 @@
+# description   : Libspiro will take an array of spiro control points and convert them into a series of bezier splines which can then be used in the myriad of ways the world has come to use beziers
+# depends       : 
+
+name=libspiro
+version=20220722    
+release=1
+source="https://github.com/fontforge/libspiro/releases/download/$version/libspiro-dist-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

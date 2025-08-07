@@ -1,0 +1,20 @@
+# description   : The libxcb package provides an interface to the X Window System protocol, which replaces the current Xlib interface
+# depends       : libxau xcbproto libxdmcp mesa
+
+name=libxcb
+version=1.17.0    
+release=1
+source="https://xorg.freedesktop.org/archive/individual/lib/libxcb-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure $XORG_CONFIG      \
+    --without-doxygen \
+    --docdir='${datadir}'/doc/libxcb-$version 
+    LC_ALL=en_US.UTF-8 make
+    make DESTDIR=$PKG install
+    chown -Rv root:root $XORG_PREFIX/share/doc/libxcb-$version
+}

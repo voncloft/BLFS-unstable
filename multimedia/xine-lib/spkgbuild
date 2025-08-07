@@ -1,0 +1,26 @@
+# description   : The Xine Libraries package contains xine libraries
+# depends       : agraphical environment ffmpeg alsalib pulseaudio jack libdvdnav
+
+name=xine-lib
+version=1.2.13    
+release=1
+source="https://downloads.sourceforge.net/xine/xine-lib-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/xine-lib-$version-upstream_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../xine-lib-$version-upstream_fixes-1.patch
+    ./configure --prefix=/usr          \
+    --disable-vcd          \
+    --with-external-dvdnav \
+    --docdir=/usr/share/doc/xine-lib-$version 
+    make
+    doxygen doc/Doxyfile
+    make DESTDIR=$PKG install
+    install -v -m755 -d /usr/share/doc/xine-lib-$version/api 
+    install -v -m644    doc/api/* \
+    /usr/share/doc/xine-lib-$version/api
+}

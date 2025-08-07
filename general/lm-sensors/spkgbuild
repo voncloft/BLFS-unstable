@@ -1,0 +1,23 @@
+# description   : The lm-sensors package provides userspace support for the hardware monitoring drivers in the Linux kernel
+# depends       : which
+
+name=lm-sensors-3-6-2
+version=
+release=1
+source="https://github.com/hramrach/lm-sensors/archive/V3-6-2/lm-sensors-3-6-2.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make DESTDIR=$PKG PREFIX=/usr        \
+    BUILD_STATIC_LIB=0 \
+    MANDIR=/usr/share/man
+    make DESTDIR=$PKG PREFIX=/usr        \
+    BUILD_STATIC_LIB=0 \
+    MANDIR=/usr/share/man install 
+    install -v -m755 -d /usr/share/doc/lm-sensors-3-6-2 
+    cp -rv              README INSTALL doc/* \
+    /usr/share/doc/lm-sensors-3-6-2
+}

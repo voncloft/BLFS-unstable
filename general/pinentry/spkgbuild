@@ -1,0 +1,20 @@
+# description   : The PIN-Entry package contains a collection of simple PIN or pass-phrase entry dialogs which utilize the Assuan protocol as described by the Ägypten project
+# depends       : libassuan libgpgerror
+
+name=pinentry
+version=1.3.2    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/pinentry/pinentry-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i "/FLTK 1/s/3/4/" configure   
+    sed -i '14456 s/1.3/1.4/' configure
+    ./configure --prefix=/usr          \
+    --enable-pinentry-tty  
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,18 @@
+# description   : The libunwind package contains a portable and efficient C programming interface (API) to determine the call-chain of a program
+# depends       : 
+
+name=libunwind
+version=1.8.2    
+release=1
+source="https://github.com/libunwind/libunwind/releases/download/v$version/libunwind-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/func.s/s/s//' tests/Gtest-nomalloc.c
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install
+}

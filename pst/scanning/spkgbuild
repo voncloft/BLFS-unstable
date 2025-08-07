@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=chapter 47. scanning
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

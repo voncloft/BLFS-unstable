@@ -1,0 +1,23 @@
+# description   : VLC is a media player, streamer, and encoder
+# depends       : alsalib desktopfileutils ffmpeg liba52 libgcrypt libmadb lua chapter24graphicalenvironments
+
+name=vlc
+version=3.0.21    
+release=1
+source="https://download.videolan.org/vlc/$version/vlc-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/vlc-$version-taglib-1.patch
+https://www.linuxfromscratch.org/patches/blfs/svn/vlc-$version-fedora_ffmpeg7-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../vlc-$version-taglib-1.patch         
+    patch -Np1 -i ../vlc-$version-fedora_ffmpeg7-1.patch
+    BUILDCC=gcc ./configure --prefix=/usr --disable-libplacebo 
+    make
+    gtk-update-icon-cache -qtf /usr/share/icons/hicolor 
+    update-desktop-database -q
+    make DESTDIR=$PKG docdir=/usr/share/doc/vlc-$version install
+}

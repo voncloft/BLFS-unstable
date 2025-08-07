@@ -1,0 +1,28 @@
+# description   : Evince is a document viewer for multiple document formats
+# depends       : adwaitaicontheme gsettingsdesktopschemas gtk itstool libhandy libxml2 openjpeg gnomekeyring glib libarchive libsecret poppler
+
+name=evince
+version=48.1    
+release=1
+source="https://download.gnome.org/sources/evince/48/evince-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    CPPFLAGS+=" -I/opt/texlive/2025/include -DNO_DEBUG" \
+    meson setup --prefix=/usr                \
+    --buildtype=release          \
+    -D gtk_doc=false             \
+    --wrap-mode=nodownload       \
+    -D systemduserunitdir=no ..  
+    ninja
+    sed "/docs_dir/s@\$@ / 'evince-$version'@" -i ../help/meson.build 
+    meson configure -D gtk_doc=true                                 
+    ninja
+    DESTDIR=$PKG ninja install
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+}

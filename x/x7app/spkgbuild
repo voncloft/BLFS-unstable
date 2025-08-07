@@ -1,0 +1,43 @@
+# description   : The Xorg applications provide the expected applications available in previous X Window implementations
+# depends       : libpng mesa xbitmaps xcbutil
+
+name=xorg applications
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGapp-7.md5 << "EOF"
+EOF
+    mkdir app 
+    cd app 
+    grep -v '^#' ../app-7.md5 | awk '{print $2}' | wget -i- -c \
+    -B https://www.x.org/pub/individual/app/ 
+    md5sum -c ../app-7.md5
+    as_root()
+    {
+    if   [ $EUID = 0 ];        then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $*
+    else                            su -c \\"$*\\"
+    fi
+}
+export -f as_root
+bash -e
+for package in $(grep -v '^#' ../app-7.md5 | awk '{print $2}')
+do
+packagedir=${package%.tar.?z*}
+tar -xf $package
+pushd $packagedir
+./configure $XORG_CONFIG
+make
+as_root make install
+popd
+rm -rf $packagedir
+done
+exit
+as_root rm -f $XORG_PREFIX/bin/xkeystone
+}

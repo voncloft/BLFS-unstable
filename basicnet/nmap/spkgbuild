@@ -1,0 +1,23 @@
+# description   : Nmap is a utility for network exploration and security auditing
+# depends       : buildpost1 liblinear libpcap libssh2 lua pcre2 pygobject
+
+name=nmap
+version=7.97    
+release=1
+source="https://nmap.org/dist/nmap-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -ri Makefile.in \
+    -e 's#-m build# --no-isolation#'  \
+    -e '/pip install/s#(ZENMAP|NDIFF)DIR\)/#dist/*.whl#'
+    ./configure --prefix=/usr 
+    make
+    sed -e '/import imp/d'                \
+    -e 's/^ndiff = .*$/import ndiff/' \
+    -i ndiff/ndifftest.py
+    make DESTDIR=$PKG install
+}

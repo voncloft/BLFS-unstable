@@ -1,0 +1,16 @@
+# description   : The xdotool package provides the capabilities to simulate keyboard input and mouse activity, move and resize windows, etc
+# depends       : xorg libraries
+
+name=xdotool
+version=3.20211022.1    
+release=1
+source="https://github.com/jordansissel/xdotool/releases/download/v$version/xdotool-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    make DESTDIR=$PKG WITHOUT_RPATH_FIX=1
+    make DESTDIR=$PKG PREFIX=/usr INSTALLMAN=/usr/share/man install
+}

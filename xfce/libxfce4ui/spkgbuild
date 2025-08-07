@@ -1,0 +1,17 @@
+# description   : The libxfce4ui package contains GTK+ 3 widgets that are used by other Xfce applications
+# depends       : gtk xfconf startupnotification
+
+name=libxfce4ui
+version=4.20.1    
+release=1
+source="https://archive.xfce.org/src/xfce/libxfce4ui/4.20/libxfce4ui-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+}

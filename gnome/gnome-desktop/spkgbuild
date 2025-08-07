@@ -1,0 +1,21 @@
+# description   : The GNOME Desktop package contains a library that provides an API shared by several applications on the GNOME Desktop
+# depends       : gsettingsdesktopschemas gtk gtk iso codes itstool libseccomp libxml2 xkeyboardconfig bubblewrap glib
+
+name=gnome-desktop
+version=44.3    
+release=1
+source="https://download.gnome.org/sources/gnome-desktop/44/gnome-desktop-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+}

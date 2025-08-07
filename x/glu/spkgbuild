@@ -1,0 +1,23 @@
+# description   : This package provides the Mesa OpenGL Utility library
+# depends       : mesa
+
+name=glu
+version=9.0.3    
+release=1
+source="https://archive.mesa3d.org/glu/glu-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..              \
+    --prefix=$XORG_PREFIX \
+    -D gl_provider=gl     \
+    --buildtype=release   
+    ninja
+    DESTDIR=$PKG ninja install 
+    rm -vf /usr/lib/libGLU.a
+}

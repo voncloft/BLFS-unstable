@@ -1,0 +1,19 @@
+# description   : The gpgmepp package provides a C++ wrapper to gpgme-2
+# depends       : gpgme
+
+name=gpgmepp
+version=2.0.0    
+release=1
+source="https://www.gnupg.org/ftp/gcrypt/gpgmepp/gpgmepp-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr .. 
+    make
+    make DESTDIR=$PKG install
+}

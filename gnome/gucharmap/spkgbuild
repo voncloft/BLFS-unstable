@@ -1,0 +1,30 @@
+# description   : Gucharmap is a Unicode character map and font viewer
+# depends       : desktopfileutils gsettingsdesktopschemas gtk itstool libarchive pcre2 glib vala
+
+name=gucharmap
+version=16.0.2    
+release=1
+source="https://gitlab.gnome.org/GNOME/gucharmap/-/archive/$version/gucharmap-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build                   
+    cd    build                   
+    mkdir ucd                     
+    pushd ucd                     
+    unzip ../../../UCD.zip      
+    cp -v ../../../Unihan.zip . 
+    popd                          
+    meson setup --prefix=/usr       \
+    --strip             \
+    --buildtype=release \
+    -D ucd_path=./ucd   \
+    -D docs=false       \
+    ..                  
+    ninja
+    rm  -fv /usr/share/glib-2.0/schemas/org.gnome.Charmap.enums.xml 
+    DESTDIR=$PKG ninja install
+}

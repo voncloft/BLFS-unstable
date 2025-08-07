@@ -1,0 +1,29 @@
+# description   : Transmission is a cross-platform, open source BitTorrent client
+# depends       : curl libevent libpsl librsvg gtkmm qt
+
+name=transmission
+version=4.0.6    
+release=1
+source="https://github.com/transmission/transmission/releases/download/$version/transmission-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/transmission-$version-build_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../transmission-$version-build_fix-1.patch
+    sed -e 's/2.8/4.0/' -i third-party/dht/CMakeLists.txt \
+    third-party/libnatpmp/CMakeLists.txt
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_INSTALL_DOCDIR=/usr/share/doc/transmission-$version \
+    .. 
+    make
+    make DESTDIR=$PKG install
+    rsvg-convert                                               \
+    /usr/share/icons/hicolor/scalable/apps/transmission.svg \
+    -o /usr/share/pixmaps/transmission.png
+}

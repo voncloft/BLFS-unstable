@@ -1,0 +1,17 @@
+# description   : The Garcon package contains a freedesktop
+# depends       : libxfce4ui gtk
+
+name=garcon
+version=4.20.0    
+release=1
+source="https://archive.xfce.org/src/xfce/garcon/4.20/garcon-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+}

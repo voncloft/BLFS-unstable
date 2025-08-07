@@ -1,0 +1,42 @@
+# description   : The Xwayland package is an Xorg server running on top of the wayland server
+# depends       : libxcvt pixman waylandprotocols xorg applications xorgfonts libepoxy libtirpc mesa
+
+name=xwayland
+version=24.1.8    
+release=1
+source="https://www.x.org/pub/individual/xserver/xwayland-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i '/install_man/,$d' meson.build 
+    mkdir build 
+    cd    build 
+    meson setup ..              \
+    --prefix=$XORG_PREFIX \
+    --buildtype=release   \
+    -D xkb_output_dir=/var/lib/xkb 
+    ninja
+    mkdir tools 
+    pushd tools 
+    git clone https://gitlab.freedesktop.org/mesa/piglit.git --depth 1 
+cat > $PKGpiglit/piglit.conf << EOF                                    
+    git clone https://gitlab.freedesktop.org/xorg/test/xts --depth 1   
+    export DISPLAY=:22           
+    ../hw/vfb/Xvfb $DISPLAY 
+    VFB_PID=$!                   
+    cd xts                       
+    CFLAGS=-fcommon ./autogen.sh 
+    make DESTDIR=$PKG                         
+    kill $VFB_PID                
+    unset DISPLAY VFB_PID        
+    popd
+    XTEST_DIR=$(pwd)/tools/xts PIGLIT_DIR=$(pwd)/tools/piglit ninja test
+    install -vm755 hw/vfb/Xvfb /usr/bin
+    DESTDIR=$PKG ninja install 
+cat >> /etc/sysconfig/createfiles << "EOF"
+    /tmp/.X11-unix dir 1777 root root
+EOF
+}

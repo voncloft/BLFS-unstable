@@ -1,0 +1,23 @@
+# description   : The GNOME Shell is the core user interface of the GNOME Desktop environment
+# depends       : evolutiondataserver gcr gjs gnomedesktop ibus mutter polkit startupnotification desktopfileutils gnomeautoar gnomebluetooth gstpluginsbase networkmanager powerprofilesdaemon adwaitaicontheme dconf gdm gnomecontrolcenter libgweather gnomemenus
+
+name=gnome-shell
+version=48.4    
+release=1
+source="https://download.gnome.org/sources/gnome-shell/48/gnome-shell-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    --buildtype=release \
+    -D systemd=false    \
+    -D tests=false      \
+    ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+}
