@@ -1,0 +1,18 @@
+# description   : The GNOME Shell Extensions package contains a collection of extensions providing additional and optional functionality to the GNOME Shell
+# depends       : libgtop
+
+name=gnome-shell-extensions
+version=48.3    
+release=1
+source="https://download.gnome.org/sources/gnome-shell-extensions/48/gnome-shell-extensions-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr ..
+    DESTDIR=$PKG ninja install
+}

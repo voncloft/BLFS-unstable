@@ -2,7 +2,7 @@
 # depends       : cmake pango cairo xorglibraries fontconfig libpng gegl
 
 name=graphviz
-version=13.1.1    
+version=13.1.2    
 release=1
 source="https://gitlab.com/graphviz/graphviz/-/archive/$version/graphviz-$version.tar.bz2"
 

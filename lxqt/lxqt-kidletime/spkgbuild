@@ -2,9 +2,9 @@
 # depends       : extracmakemodules plasmawaylandprotocols qt
 
 name=kidletime
-version=6.13.0 for lxqt    
+version=6.17.0 for lxqt    
 release=1
-source="https://download.kde.org/stable/frameworks/6.13/kidletime-6.13.0.tar.xz"
+source="https://download.kde.org/stable/frameworks/6.17/kidletime-6.17.0.tar.xz"
 
 options="!checksum"
 

@@ -11,6 +11,7 @@ options="!checksum"
 build() {
     cd $name-$version
     
+    sed -i 's/sighandler interrupt_signal/__sighandler_t interrupt_signal/' src/time.c
     ./configure --prefix=/usr 
     make
     make DESTDIR=$PKG install

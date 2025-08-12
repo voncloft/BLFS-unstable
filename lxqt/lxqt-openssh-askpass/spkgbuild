@@ -1,0 +1,21 @@
+# description   : The lxqt-openssh-askpass package is a GUI to query credentials on behalf of other programs
+# depends       : liblxqt
+
+name=lxqt-openssh-askpass
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/lxqt-openssh-askpass/releases/download/$version/lxqt-openssh-askpass-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

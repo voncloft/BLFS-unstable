@@ -1,0 +1,17 @@
+# description   : The GNOME Themes Extra package, formerly known as GNOME Themes Standard, contains various components of the default GNOME theme
+# depends       : gtk librsvg
+
+name=gnome-themes-extra
+version=3.28    
+release=1
+source="https://download.gnome.org/sources/gnome-themes-extra/$version/gnome-themes-extra-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-gtk2-engine 
+    make
+    make DESTDIR=$PKG install
+}

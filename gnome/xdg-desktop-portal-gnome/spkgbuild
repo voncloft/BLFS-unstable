@@ -1,0 +1,24 @@
+# description   : xdg-desktop-portal-gnome is a backend for xdg-desktop-portal, that is using GTK and various pieces of GNOME infrastructure
+# depends       : gnomedesktop gtk libadwaita xdgdesktopportal xdgdesktopportalgtk
+
+name=xdg-desktop-portal-gnome
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/xdg-desktop-portal-gnome/48/xdg-desktop-portal-gnome-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr              \
+    --buildtype=release        \
+    -D systemduserunitdir=/tmp \
+    ..                         
+    ninja
+    DESTDIR=$PKG ninja install
+    rm -vf /tmp/*.service
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+}

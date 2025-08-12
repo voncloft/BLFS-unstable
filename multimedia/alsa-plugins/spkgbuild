@@ -1,0 +1,17 @@
+# description   : The ALSA Plugins package contains plugins for various audio libraries and sound servers
+# depends       : alsalib
+
+name=alsa-plugins
+version=1.2.12    
+release=1
+source="https://www.alsa-project.org/files/pub/plugins/alsa-plugins-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+}

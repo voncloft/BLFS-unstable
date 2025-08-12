@@ -2,9 +2,9 @@
 # depends       : kwaylandforlxqt plasmawaylandprotocols qt
 
 name=libkscreen
-version=6.3.4 for lxqt    
+version=6.4.4 for lxqt    
 release=1
-source="https://download.kde.org/stable/plasma/6.3.4/libkscreen-6.3.4.tar.xz"
+source="https://download.kde.org/stable/plasma/6.4.4/libkscreen-6.4.4.tar.xz"
 
 options="!checksum"
 

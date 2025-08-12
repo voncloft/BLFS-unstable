@@ -1,0 +1,22 @@
+# description   : The smartmontools package contains utility programs (smartctl, smartd) to control/monitor storage systems using the Self-Monitoring, Analysis and Reporting Technology System (S
+# depends       : 
+
+name=smartmontools
+version=7.5    
+release=1
+source="https://downloads.sourceforge.net/smartmontools/smartmontools-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr           \
+    --sysconfdir=/etc       \
+    --with-initscriptdir=no \
+    --with-libsystemd=no    \
+    --docdir=/usr/share/doc/smartmontools-$version 
+    make
+    make DESTDIR=$PKG install
+    make DESTDIR=$PKG install-smartd
+}

@@ -1,0 +1,17 @@
+# description   : The Xfce4 Development Tools are a collection of tools and macros for building some Xfce applications
+# depends       : glib
+
+name=xfce4-dev-tools
+version=4.20.0    
+release=1
+source="http://archive.xfce.org/src/xfce/xfce4-dev-tools/4.20/xfce4-dev-tools-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr 
+    make
+    make DESTDIR=$PKG install
+}

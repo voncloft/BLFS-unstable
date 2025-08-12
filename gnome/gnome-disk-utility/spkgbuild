@@ -1,0 +1,19 @@
+# description   : The GNOME Disk Utility package provides applications used for dealing with storage devices
+# depends       : gnomesettingsdaemon itstool libdvdread libhandy libpwquality libsecret udisks
+
+name=gnome-disk-utility
+version=46.1    
+release=1
+source="https://download.gnome.org/sources/gnome-disk-utility/46/gnome-disk-utility-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release -Dlogind=libelogind .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

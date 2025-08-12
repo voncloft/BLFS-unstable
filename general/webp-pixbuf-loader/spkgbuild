@@ -1,0 +1,20 @@
+# description   : The webp-pixbuf-loader package contains a library that allows gdk-pixbuf to load and process webp images
+# depends       : gdkpixbuf libwebp
+
+name=webp-pixbuf-loader
+version=0.2.7    
+release=1
+source="https://github.com/aruiz/webp-pixbuf-loader/archive/$version/webp-pixbuf-loader-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+    gdk-pixbuf-query-loaders --update-cache
+}

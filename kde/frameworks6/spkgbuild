@@ -1,7 +1,7 @@
 # description   : No description available
 # depends       : extracmakemodules breezeicons docbookxml docbookxslnons libcanberra libgcrypt libical libxslt lmdb qca libqrencode plasmawaylandprotocols pyyaml sharedmimeinfo uri wget aspell avahi modemmanager networkmanager polkitqt vulkanloader zxingcpp kdeframeworks6preinstallationconfiguration doxygen doxypypy doxyqml requests
 
-name=building kde frameworks 6.13.0 (kf6)
+name=building kde frameworks 6.17.0 (kf6)
 version=
 release=1
 source=""
@@ -11,9 +11,9 @@ options="!checksum"
 build() {
     cd $name-$version
     
-    url=https://download.kde.org/stable/frameworks/6.13/
+    url=https://download.kde.org/stable/frameworks/6.17/
     wget -r -nH -nd -A '*.xz' -np $url
-cat > $PKGframeworks-6.13.0.md5 << "EOF"
+cat > $PKGframeworks-6.17.0.md5 << "EOF"
 EOF
     as_root()
     {
@@ -51,13 +51,14 @@ cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
 -D CMAKE_SKIP_INSTALL_RPATH=ON      \
 -D CMAKE_BUILD_TYPE=Release         \
 -D BUILD_TESTING=OFF                \
+-D BUILD_PYTHON_BINDINGS=OFF        \
 -W no-dev ..
 make
 as_root make install
 popd
 as_root rm -rf $packagedir
 as_root /sbin/ldconfig
-done < frameworks-6.13.0.md5
+done < frameworks-6.17.0.md5
 exit
 mv -v /opt/kf6 /opt/kf6.old                         
 install -v -dm755           $KF6_PREFIX/{etc,share} 
@@ -65,6 +66,6 @@ ln -sfv /etc/dbus-1         $KF6_PREFIX/etc
 ln -sfv /usr/share/dbus-1   $KF6_PREFIX/share       
 ln -sfv /usr/share/polkit-1 $KF6_PREFIX/share
 rm -rf $KF6_PREFIX/lib/systemd
-mv -v /opt/kf6 /opt/kf6-6.13.0
-ln -sfvn kf6-6.13.0 /opt/kf6
+mv -v /opt/kf6 /opt/kf6-6.17.0
+ln -sfvn kf6-6.17.0 /opt/kf6
 }

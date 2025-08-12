@@ -1,0 +1,21 @@
+# description   : xdg-desktop-portal-lxqt is a backend for xdg-desktop-portal, that is using the Qt library
+# depends       : libfmqt kwindowsystemforlxqt xdgdesktopportal
+
+name=xdg-desktop-portal-lxqt
+version=1.2.0    
+release=1
+source="https://github.com/lxqt/xdg-desktop-portal-lxqt/releases/download/$version/xdg-desktop-portal-lxqt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

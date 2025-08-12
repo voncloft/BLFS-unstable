@@ -1,0 +1,19 @@
+# description   : The cups-pk-helper package contains a PolicyKit helper used to configure Cups with fine-grained privileges
+# depends       : cups polkit
+
+name=cups-pk-helper
+version=0.2.7    
+release=1
+source="https://www.freedesktop.org/software/cups-pk-helper/releases/cups-pk-helper-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

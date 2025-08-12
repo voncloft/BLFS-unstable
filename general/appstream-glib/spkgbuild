@@ -1,0 +1,22 @@
+# description   : The appstream-glib provides GObjects and helper methods to make it easy to read and write AppStream metadata
+# depends       : curl gdkpixbuf gtk libarchive
+
+name=appstream-glib
+version=0.8.3    
+release=1
+source="http://people.freedesktop.org/~hughsient/appstream-glib/releases/appstream-glib-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D rpm=false        
+    ninja
+    DESTDIR=$PKG ninja install
+}

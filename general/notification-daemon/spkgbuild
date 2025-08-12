@@ -1,0 +1,21 @@
+# description   : The Notification Daemon package contains a daemon that displays passive pop-up notifications
+# depends       : gtk libcanberra gtk
+
+name=notification-daemon
+version=3.20.0    
+release=1
+source="https://download.gnome.org/sources/notification-daemon/3.20/notification-daemon-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-static  
+    make
+    pgrep -l notification-da 
+    notify-send -i info Information "Hi ${USER}, This is a Test"
+    make DESTDIR=$PKG install
+}

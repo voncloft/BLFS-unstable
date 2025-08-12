@@ -1,0 +1,20 @@
+# description   : libatomic_ops provides implementations for atomic memory update operations on a number of architectures
+# depends       : 
+
+name=libatomic_ops
+version=7.8.2    
+release=1
+source="https://github.com/bdwgc/libatomic_ops/releases/download/v$version/libatomic_ops-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --enable-shared  \
+    --disable-static \
+    --docdir=/usr/share/doc/libatomic_ops-$version 
+    make
+    make DESTDIR=$PKG install
+}

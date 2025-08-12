@@ -1,0 +1,21 @@
+# description   : The GNOME Terminal package contains the terminal emulator for GNOME Desktop
+# depends       : dconf gsettingsdesktopschemas itstool libhandy pcre2 vte nautilus
+
+name=gnome-terminal
+version=3.56.0    
+release=1
+source="https://gitlab.gnome.org/GNOME/gnome-terminal/-/archive/$version/gnome-terminal-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    sed -i -r 's:"(/system):"/org/gnome\1:g' src/external.gschema.xml
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install 
+    rm -v /usr/lib/systemd/user/gnome-terminal-server.service
+}

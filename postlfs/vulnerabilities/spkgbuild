@@ -1,0 +1,15 @@
+# description   : All software has bugs
+# depends       : 
+
+name=vulnerabilities
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

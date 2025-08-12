@@ -1,0 +1,25 @@
+# description   : The SPIRV-Tools package contains libraries and utilities for processing SPIR-V modules
+# depends       : cmake spirvheaders
+
+name=spirv-tools
+version=1.4.321.0    
+release=1
+source="https://github.com/KhronosGroup/SPIRV-Tools/archive/vulkan-sdk-$version/SPIRV-Tools-vulkan-sdk-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr     \
+    -D CMAKE_BUILD_TYPE=Release      \
+    -D SPIRV_WERROR=OFF              \
+    -D BUILD_SHARED_LIBS=ON          \
+    -D SPIRV_TOOLS_BUILD_STATIC=OFF  \
+    -D SPIRV-Headers_SOURCE_DIR=/usr \
+    -G Ninja .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

@@ -1,0 +1,22 @@
+# description   : The GStreamer Base Plug-ins is a well-groomed and well-maintained collection of GStreamer plug-ins and elements, spanning the range of possible types of elements one would want to write for GStreamer
+# depends       : gstreamer alsalib cdparanoiaiii glib isocodes libgudev libjpegturbo libogg libpng libvorbis mesa pango waylandprotocols xorglibraries
+
+name=gst-plugins-base
+version=1.26.5    
+release=1
+source="https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..               \
+    --prefix=/usr          \
+    --buildtype=release    \
+    --wrap-mode=nodownload 
+    ninja
+    DESTDIR=$PKG ninja install
+}

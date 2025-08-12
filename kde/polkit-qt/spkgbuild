@@ -1,0 +1,22 @@
+# description   : Polkit-Qt provides an API to PolicyKit in the Qt environment
+# depends       : cmake polkit qt
+
+name=polkit-qt
+version=0.200.0    
+release=1
+source="https://download.kde.org/stable/polkit-qt-1/polkit-qt-1-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D QT_MAJOR_VERSION=6        \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

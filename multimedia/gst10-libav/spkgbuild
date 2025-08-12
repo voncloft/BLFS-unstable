@@ -1,0 +1,21 @@
+# description   : The GStreamer Libav package contains GStreamer plugins for Libav (a fork of FFmpeg)
+# depends       : ffmpeg gstpluginsbase yasm
+
+name=gst-libav
+version=1.26.5    
+release=1
+source="https://gstreamer.freedesktop.org/src/gst-libav/gst-libav-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release 
+    ninja
+    DESTDIR=$PKG ninja install
+}

@@ -2,9 +2,9 @@
 # depends       : extracmakemodules mesa wayland plasmawaylandprotocols qt
 
 name=kwayland
-version=6.3.4 for lxqt    
+version=6.4.4 for lxqt    
 release=1
-source="https://download.kde.org/stable/plasma/6.3.4/kwayland-6.3.4.tar.xz"
+source="https://download.kde.org/stable/plasma/6.4.4/kwayland-6.4.4.tar.xz"
 
 options="!checksum"
 

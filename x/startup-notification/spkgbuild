@@ -1,0 +1,19 @@
+# description   : The startup-notification package contains startup-notification libraries
+# depends       : xorg libraries xcbutil
+
+name=startup-notification
+version=0.12    
+release=1
+source="https://www.freedesktop.org/software/startup-notification/releases/startup-notification-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --disable-static 
+    make
+    make DESTDIR=$PKG install 
+    install -v -m644 -D doc/startup-notification.txt \
+    /usr/share/doc/startup-notification-$version/startup-notification.txt
+}

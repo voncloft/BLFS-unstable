@@ -1,0 +1,25 @@
+# description   : Xfce4 Session is a session manager for Xfce
+# depends       : libwnck libxfce4windowing libxfce4ui desktopfileutils xscreensaver sharedmimeinfo polkitgnome xfdesktop
+
+name=xfce4-session
+version=4.20.2    
+release=1
+source="https://archive.xfce.org/src/xfce/xfce4-session/4.20/xfce4-session-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr       \
+    --sysconfdir=/etc   \
+    --disable-legacy-sm 
+    make
+cat > $PKG~/.xinitrc << "EOF"
+EOF
+    startx
+    startx > ~/.x-session-errors
+    make DESTDIR=$PKG install
+    update-desktop-database 
+    update-mime-database /usr/share/mime
+}

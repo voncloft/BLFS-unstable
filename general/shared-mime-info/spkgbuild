@@ -1,0 +1,22 @@
+# description   : The Shared Mime Info package contains a MIME database
+# depends       : glib libxml2
+
+name=shared-mime-info
+version=2.4    
+release=1
+source="https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/$version/shared-mime-info-$version.tar.gz
+https://anduin.linuxfromscratch.org/BLFS/xdgmime/xdgmime.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    tar -xf ../xdgmime.tar.xz 
+    make DESTDIR=$PKG -C xdgmime
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release -D update-mimedb=true .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

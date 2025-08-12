@@ -1,0 +1,21 @@
+# description   : The libdbusmenu-lxqt package provides a Qt implementation of the DBusMenu protocol
+# depends       : cmake
+
+name=libdbusmenu-lxqt
+version=0.3.0    
+release=1
+source="https://github.com/lxqt/libdbusmenu-lxqt/releases/download/$version/libdbusmenu-lxqt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -W no-dev ..                 
+    make
+    make DESTDIR=$PKG install
+}

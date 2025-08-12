@@ -1,0 +1,19 @@
+# description   : The libcupsfilters library contains filter functions for the data format conversion tasks needed in Printer Applications
+# depends       : cups glib ghostscript mupdf little cms poppler qpdf dejavufonts libexif libjpegturbo libpng libtiff
+
+name=libcupsfilters
+version=2.1.1    
+release=1
+source="https://github.com/OpenPrinting/libcupsfilters/releases/download/$version/libcupsfilters-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/libcupsfilters-$version 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,22 @@
+# description   : The plasma-activities-6
+# depends       : boost kde frameworks
+
+name=plasma-activities
+version=6.4.4    
+release=1
+source="https://download.kde.org/stable/plasma/$version/plasma-activities-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install
+}

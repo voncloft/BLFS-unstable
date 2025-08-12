@@ -1,0 +1,20 @@
+# description   : The libxfce4windowing package contains a windowing concept abstraction library for X11 and Wayland
+# depends       : gtk libdisplayinfo libwnck xfce4devtools
+
+name=libxfce4windowing
+version=4.20.3    
+release=1
+source="https://archive.xfce.org/src/xfce/libxfce4windowing/4.20/libxfce4windowing-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --enable-x11      \
+    --disable-debug   
+    make
+    make DESTDIR=$PKG install
+}

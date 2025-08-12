@@ -1,0 +1,22 @@
+# description   : xdg-desktop-portal is a D-Bus service that allows applications to interact with the desktop in a safe way
+# depends       : fuse gdkpixbuf jsonglib pipewire dbus xdgdesktopportalgtk xdgdesktopportalgnome xdgdesktopportallxqt bubblewrap docutils
+
+name=xdg-desktop-portal
+version=1.20.3    
+release=1
+source="https://github.com/flatpak/xdg-desktop-portal/releases/download/$version/xdg-desktop-portal-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release -D tests=disabled .. 
+    ninja
+    meson configure -D tests=enabled 
+    DESTDIR=$PKG ninja test
+    DESTDIR=$PKG ninja install
+    rm -rvf /usr/lib/systemd
+}

@@ -1,0 +1,23 @@
+# description   : The libvdpau-va-gl package contains a library which implements the VDPAU library
+# depends       : cmake libvdpau libva mesa
+
+name=libvdpau-va-gl
+version=0.4.2    
+release=1
+source="https://github.com/i-rinat/libvdpau-va-gl/archive/v$version/libvdpau-va-gl-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$XORG_PREFIX \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5  \
+    -D CMAKE_BUILD_TYPE=Release          \
+    -W no-dev ..                         
+    make
+    make DESTDIR=$PKG install
+    echo "export VDPAU_DRIVER=va_gl" >> /etc/profile.d/xorg.sh
+}

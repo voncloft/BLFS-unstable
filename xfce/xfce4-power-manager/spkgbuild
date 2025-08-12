@@ -1,0 +1,17 @@
+# description   : The Xfce4 Power Manager is a power manager for the Xfce desktop, Xfce power manager manages the power sources on the computer and the devices that can be controlled to reduce their power consumption (such as LCD brightness level or monitor sleep)
+# depends       : libnotify upower xfce4panel polkit
+
+name=xfce4-power-manager
+version=4.20.0    
+release=1
+source="https://archive.xfce.org/src/xfce/xfce4-power-manager/4.20/xfce4-power-manager-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+}

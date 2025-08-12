@@ -1,0 +1,22 @@
+# description   : This package provides add-on qml files for the Kirigami framework
+# depends       : kdeframeworks vulkanloader
+
+name=kirigami-addons
+version=1.9.0    
+release=1
+source="https://download.kde.org/stable/kirigami-addons/kirigami-addons-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
+    -D CMAKE_BUILD_TYPE=Release         \
+    -D BUILD_TESTING=OFF                \
+    ..                                 
+    make
+    make DESTDIR=$PKG install
+}

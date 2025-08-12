@@ -1,0 +1,18 @@
+# description   : This package provides a custom set of protocol definitions for KDE
+# depends       : extracmakemodules
+
+name=plasma-wayland-protocols
+version=1.18.0    
+release=1
+source="https://download.kde.org/stable/plasma-wayland-protocols/plasma-wayland-protocols-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr ..
+    make DESTDIR=$PKG install
+}

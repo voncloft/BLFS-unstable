@@ -1,0 +1,17 @@
+# description   : The Vorbis Tools package contains command-line tools useful for encoding, playing or editing files using the Ogg codec
+# depends       : libvorbis
+
+name=vorbis-tools
+version=1.4.3    
+release=1
+source="https://downloads.xiph.org/releases/vorbis/vorbis-tools-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --enable-vcut 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,19 @@
+# description   : The SPIRV-Headers package contains headers that allow for applications to use the SPIR-V language and instruction set with Vulkan
+# depends       : cmake
+
+name=spirv-headers
+version=1.4.321.0    
+release=1
+source="https://github.com/KhronosGroup/SPIRV-Headers/archive/vulkan-sdk-$version/SPIRV-Headers-vulkan-sdk-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -G Ninja .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

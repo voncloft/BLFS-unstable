@@ -1,0 +1,25 @@
+# description   : The ALSA Utilities package contains various utilities which are useful for controlling your sound card
+# depends       : alsalib
+
+name=alsa-utils
+version=1.2.14    
+release=1
+source="https://www.alsa-project.org/files/pub/utils/alsa-utils-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --disable-alsaconf \
+    --disable-bat      \
+    --disable-xmlto    \
+    --with-curses=ncursesw 
+    make
+    alsactl init
+cat > $PKG/etc/asound.conf << "EOF"
+EOF
+    make DESTDIR=$PKG install
+    alsactl -L store
+    make DESTDIR=$PKG install-alsa
+}

@@ -40,7 +40,7 @@ cat > $PKG/usr/share/metainfo/org.linuxfromscratch.lfs.xml << EOF
     <name>The Linux From Scratch Editors</name>
     </developer>
     <releases>
-    <release version="r12.3-1173" type="development" date="2025-08-07">
+    <release version="r12.3-1211" type="development" date="2025-08-11">
     <description>
     <p>The development snapshot of the next LFS version.</p>
     </description>

@@ -15,6 +15,7 @@ build() {
     cd    build 
     ../configure --prefix=/usr          \
     --with-system-readline \
+    --with-system-zlib     \
     --with-python=/usr/bin/python3 
     make
     make DESTDIR=$PKG -C gdb/doc doxy

@@ -1,0 +1,27 @@
+# description   : The intel-media-driver package provides a VA API driver for Intel GPUs that are provided with Broadwell CPUs and higher
+# depends       : cmake gmmlib libva xorgbuildenvironment
+
+name=intel-media-driver
+version=25.2.6    
+release=1
+source="https://github.com/lfs-book/intel-media-driver/archive/v$version/intel-media-driver-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    grep -ri 'RegisterDevice(0x
+    '
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=$XORG_PREFIX \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5  \
+    -D INSTALL_DRIVER_SYSCONF=OFF        \
+    -D BUILD_TYPE=Release                \
+    -D MEDIA_BUILD_FATAL_WARNINGS=OFF    \
+    -G Ninja                             \
+    -W no-dev ..                         
+    ninja
+    DESTDIR=$PKG ninja install
+}

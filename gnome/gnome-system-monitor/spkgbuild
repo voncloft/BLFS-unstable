@@ -1,0 +1,24 @@
+# description   : The GNOME System Monitor package contains GNOME's replacement for gtop
+# depends       : adwaitaicontheme gtkmm itstool libgtop libadwaita librsvg
+
+name=gnome-system-monitor
+version=48.1    
+release=1
+source="https://download.gnome.org/sources/gnome-system-monitor/48/gnome-system-monitor-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    find . -name meson.build | xargs sed -i -e '/catch2/d' 
+    sed -i '152,162d' src/meson.build
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr       \
+    -D systemd=false    \
+    --buildtype=release \
+    ..                  
+    ninja
+    DESTDIR=$PKG ninja install
+}

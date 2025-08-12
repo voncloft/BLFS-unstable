@@ -1,0 +1,22 @@
+# description   : libxkbcommon is a keymap compiler and support library which processes a reduced subset of keymaps as defined by the XKB specification
+# depends       : xkeyboardconfig libxcb wayland waylandprotocols
+
+name=libxkbcommon
+version=1.11.0    
+release=1
+source="https://github.com/lfs-book/libxkbcommon/archive/v$version/libxkbcommon-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..             \
+    --prefix=/usr        \
+    --buildtype=release  \
+    -D enable-docs=false 
+    ninja
+    DESTDIR=$PKG ninja install
+}

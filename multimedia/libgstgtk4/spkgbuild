@@ -2,7 +2,7 @@
 # depends       : git gstpluginsbase gtk rustc
 
 name=libgstgtk4 from gst-plugins-rs
-version=1.26.4    
+version=1.26.5    
 release=1
 source="https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-$version/gst-plugins-rs-gstreamer-$version.tar.gz"
 

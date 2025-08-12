@@ -1,0 +1,20 @@
+# description   : The dvd+rw-tools package contains several utilities to master the DVD media, both +RW/+R and -R[W]
+# depends       : 
+
+name=dvd+rw-tools
+version=7.1    
+release=1
+source="https://anduin.linuxfromscratch.org/BLFS/dvd+rw-tools/dvd+rw-tools-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/dvd+rw-tools-$version-consolidated_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../dvd+rw-tools-$version-consolidated_fixes-1.patch
+    make DESTDIR=$PKG all rpl8 btcflash
+    make DESTDIR=$PKG prefix=/usr install 
+    install -v -m644 -D index.html \
+    /usr/share/doc/dvd+rw-tools-$version/index.html
+}

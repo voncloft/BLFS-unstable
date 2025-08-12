@@ -1,0 +1,19 @@
+# description   : gnome-connections is a VNC and RDP client for the GNOME Desktop
+# depends       : appstream freerdp gtkvnc itstool libhandy libsecret vala
+
+name=gnome-connections
+version=48.0    
+release=1
+source="https://download.gnome.org/sources/gnome-connections/48/gnome-connections-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

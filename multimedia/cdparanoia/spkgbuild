@@ -1,0 +1,20 @@
+# description   : The CDParanoia package contains a CD audio extraction tool
+# depends       : 
+
+name=cdparanoia-iii
+version=10.2    
+release=1
+source="https://www.linuxfromscratch.org/patches/blfs/svn/cdparanoia-III-$version-gcc_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../cdparanoia-III-$version-gcc_fixes-1.patch 
+    ./configure --prefix=/usr --mandir=/usr/share/man 
+    make DESTDIR=$PKG -j1
+    make DESTDIR=$PKG install 
+    chmod -v 755 /usr/lib/libcdda_*.so.0.$version 
+    rm -fv /usr/lib/libcdda_*.a
+}

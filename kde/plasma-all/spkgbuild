@@ -11,9 +11,9 @@ options="!checksum"
 build() {
     cd $name-$version
     
-    url=https://download.kde.org/stable/plasma/6.3.4/
+    url=https://download.kde.org/stable/plasma/6.4.4/
     wget -r -nH -nd -A '*.xz' -np $url
-cat > $PKGplasma-6.3.4.md5 << "EOF"
+cat > $PKGplasma-6.4.4.md5 << "EOF"
 EOF
     as_root()
     {
@@ -33,17 +33,6 @@ name=$(      echo $pkg |sed 's|-6.*$||')   # Isolate package name
 packagedir=$(echo $pkg |sed 's|\.tar.*||') # Source directory
 tar -xf $file
 pushd $packagedir
-# Fix some build issues with qt-6.9.0 and later
-case $name in
-breeze)
-sed -e '/QList/i #include <QDebug>' \
--i cursors/src/kcursorgen/kcursorgen.h
-;;
-plasma-vault)
-sed -e '/QFuture/i #include <QDebug>' \
--i kded/engine/commandresult.h
-;;
-esac
 mkdir build
 cd    build
 cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
@@ -57,7 +46,7 @@ as_root make install
 popd
 as_root rm -rf $packagedir
 as_root /sbin/ldconfig
-done < plasma-6.3.4.md5
+done < plasma-6.4.4.md5
 exit
 cat > $PKG~/.xinitrc << "EOF"
 EOF

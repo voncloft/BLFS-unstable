@@ -1,0 +1,15 @@
+# description   : No description available
+# depends       : 
+
+name=configuring the linux kernel for wireless
+version=
+release=1
+source=""
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    
+}

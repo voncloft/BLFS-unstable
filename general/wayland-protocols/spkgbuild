@@ -1,0 +1,19 @@
+# description   : The Wayland-Protocols package contains additional Wayland protocols that add functionality outside of protocols already in the Wayland core
+# depends       : wayland
+
+name=wayland-protocols
+version=1.45    
+release=1
+source="https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/$version/downloads/wayland-protocols-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release 
+    ninja
+    DESTDIR=$PKG ninja install
+}

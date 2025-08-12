@@ -1,0 +1,25 @@
+# description   : The Extra Cmake Modules package contains extra CMake modules used by KDE Frameworks and other packages
+# depends       : cmake qt
+
+name=extra-cmake-modules
+version=6.17.0    
+release=1
+source="https://download.kde.org/stable/frameworks/6.17/extra-cmake-modules-$version.tar.xz
+https://www.linuxfromscratch.org/patches/blfs/svn/extra-cmake-modules-$version-upstream_fix-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../extra-cmake-modules-$version-upstream_fix-1.patch
+    sed -i '/"lib64"/s/64//' kde-modules/KDEInstallDirsCommon.cmake 
+    sed -e '/PACKAGE_INIT/i set(SAVE_PACKAGE_PREFIX_DIR "${PACKAGE_PREFIX_DIR}")' \
+    -e '/^include/a set(PACKAGE_PREFIX_DIR "${SAVE_PACKAGE_PREFIX_DIR}")' \
+    -i ECMConfig.cmake.in 
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr -D BUILD_WITH_QT6=ON .. 
+    make
+    make DESTDIR=$PKG install
+}

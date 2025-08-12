@@ -1,0 +1,23 @@
+# description   : The Double-conversion package contains a library that facilitates binary-to-decimal and decimal-to-binary routines for IEEE doubles
+# depends       : cmake
+
+name=double-conversion
+version=3.3.1    
+release=1
+source="https://github.com/google/double-conversion/archive/v$version/double-conversion-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+    -D BUILD_SHARED_LIBS=ON             \
+    -D BUILD_TESTING=ON                 \
+    ..                                  
+    make
+    make DESTDIR=$PKG install
+}

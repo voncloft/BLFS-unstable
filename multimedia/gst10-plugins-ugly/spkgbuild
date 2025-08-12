@@ -1,0 +1,22 @@
+# description   : The GStreamer Ugly Plug-ins is a set of plug-ins considered by the GStreamer developers to have good quality and correct functionality, but distributing them might pose problems
+# depends       : gstpluginsbase liba52 libdvdread x264
+
+name=gst-plugins-ugly
+version=1.26.5    
+release=1
+source="https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D gpl=enabled      
+    ninja
+    DESTDIR=$PKG ninja install
+}

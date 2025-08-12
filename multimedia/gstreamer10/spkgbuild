@@ -1,0 +1,23 @@
+# description   : gstreamer is a streaming media framework that enables applications to share a common set of plugins for tasks such as video encoding and decoding, audio encoding and decoding, audio and video filters, audio visualisation, web streaming and anything else that streams in real-time or otherwise
+# depends       : glib
+
+name=gstreamer
+version=1.26.5    
+release=1
+source="https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup ..            \
+    --prefix=/usr       \
+    --buildtype=release \
+    -D gst_debug=false  
+    ninja
+    rm -rf /usr/bin/gst-* /usr/{lib,libexec}/gstreamer-1.0
+    DESTDIR=$PKG ninja install
+}

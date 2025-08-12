@@ -1,0 +1,24 @@
+# description   : The kdsoap-ws-discovery-client package contains a library that provides support for the WS-Discovery protocol, a recent protocol used to discover services available on a local network
+# depends       : doxygen extracmakemodules kdsoap
+
+name=kdsoap-ws-discovery-client
+version=0.4.0    
+release=1
+source="https://download.kde.org/stable/kdsoap-ws-discovery-client/kdsoap-ws-discovery-client-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr    \
+    -D CMAKE_BUILD_TYPE=Release     \
+    -D CMAKE_SKIP_INSTALL_RPATH=ON  \
+    -D QT_MAJOR_VERSION=6           \
+    -W no-dev .. 
+    make
+    make DESTDIR=$PKG install 
+    mv -v /usr/share/doc/KDSoapWSDiscoveryClient{,-$version}
+}

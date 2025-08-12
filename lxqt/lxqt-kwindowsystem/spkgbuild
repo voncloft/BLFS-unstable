@@ -1,0 +1,22 @@
+# description   : The kwindowsystem provides information about, and allows interaction with, the windowing system
+# depends       : extracmakemodules plasmawaylandprotocols qt xorglibraries
+
+name=kwindowsystem
+version=6.17.0 for lxqt    
+release=1
+source="https://download.kde.org/stable/frameworks/6.17/kwindowsystem-6.17.0.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_TESTING=OFF         \
+    -W no-dev ..                 
+    make
+    make DESTDIR=$PKG install
+}

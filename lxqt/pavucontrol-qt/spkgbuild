@@ -1,0 +1,21 @@
+# description   : pavucontrol-qt is the Qt port of the volume control utility pavucontrol, which is used to adjust audio levels in Pulseaudio
+# depends       : liblxqt pulseaudio glib
+
+name=pavucontrol-qt
+version=2.2.0    
+release=1
+source="https://github.com/lxqt/pavucontrol-qt/releases/download/$version/pavucontrol-qt-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_INSTALL_PREFIX=/usr \
+    ..                           
+    make
+    make DESTDIR=$PKG install
+}

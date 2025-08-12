@@ -1,0 +1,42 @@
+# description   : Thunderbird is a stand-alone mail/news client based on the Mozilla codebase
+# depends       : cbindgen gtk libarchive llvm nodejs pulseaudio alsalib python startupnotification libevent libvpx libwebp nasm nspr nss
+
+name=thunderbird
+version=140.1.1esr    
+release=1
+source="https://archive.mozilla.org/pub/thunderbird/releases/$version/source/thunderbird-$version.source.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+cat > $PKGmozconfig << "EOF"
+EOF
+    sed -e '1i\#![warn(dangerous_implicit_autorefs)]' \
+    -e $'s/\r$//'                                 \
+    -i third_party/rust/allocator-api2/src/stable/vec/mod.rs
+    mountpoint -q /dev/shm || mount -t tmpfs devshm /dev/shm
+    export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none 
+    export MOZBUILD_STATE_PATH=$(pwd)/mozbuild          
+    ./mach build
+    unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE 
+    unset MOZBUILD_STATE_PATH
+    MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install
+    mkdir -pv /usr/share/{applications,pixmaps} 
+cat > $PKG/usr/share/applications/thunderbird.desktop << "EOF" 
+    [Desktop Entry]
+    Name=Thunderbird Mail
+    Comment=Send and receive mail with Thunderbird
+    GenericName=Mail Client
+    Exec=thunderbird %u
+    Terminal=false
+    Type=Application
+    Icon=thunderbird
+    Categories=Network;Email;
+    MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;x-scheme-handler/mailto;
+    StartupNotify=true
+EOF
+    ln -sfv /usr/lib/thunderbird/chrome/icons/default/default256.png \
+    /usr/share/pixmaps/thunderbird.png
+}

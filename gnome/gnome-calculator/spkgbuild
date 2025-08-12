@@ -1,0 +1,19 @@
+# description   : GNOME Calculator is a powerful graphical calculator with financial, logical and scientific modes
+# depends       : gtksourceview5 itstool libadwaita libgee libsoup vala
+
+name=gnome-calculator
+version=48.1    
+release=1
+source="https://download.gnome.org/sources/gnome-calculator/48/gnome-calculator-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

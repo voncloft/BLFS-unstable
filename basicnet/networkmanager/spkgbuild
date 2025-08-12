@@ -1,0 +1,63 @@
+# description   : NetworkManager is a set of co-operative tools that make networking simple and straightforward
+# depends       : libndp curl dhcpcd glib iptables libpsl newt nss polkit pygobject vala wpasupplicant
+
+name=networkmanager
+version=1.54.0    
+release=1
+source="https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/releases/$version/downloads/NetworkManager-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    grep -rl '^#!.*python$' | xargs sed -i '1s/python/3/'
+    mkdir build 
+    cd    build 
+    meson setup ..                    \
+    --prefix=/usr               \
+    --buildtype=release         \
+    -D libaudit=no              \
+    -D nmtui=true               \
+    -D ovs=false                \
+    -D ppp=false                \
+    -D selinux=false            \
+    -D session_tracking=elogind \
+    -D modem_manager=false      \
+    -D systemdsystemunitdir=no  \
+    -D systemd_journal=false    \
+    -D nm_cloud_setup=false     \
+    -D qt=false                 
+    ninja
+cat > $PKG/etc/NetworkManager/conf.d/dhcp.conf << "EOF"
+EOF
+cat > $PKG/etc/NetworkManager/conf.d/no-dns-update.conf << "EOF"
+EOF
+    DESTDIR=$PKG ninja install 
+    mv -v /usr/share/doc/NetworkManager{,-$version}
+    for file in $(echo ../man/*.[1578]); do
+    section=${file##*.} 
+    install -vdm 755 /usr/share/man/man$section
+    install -vm 644 $file /usr/share/man/man$section/
+    done
+    cp -Rv ../docs/{api,libnm} /usr/share/doc/NetworkManager-$version
+cat >> /etc/NetworkManager/NetworkManager.conf << "EOF"
+    [main]
+    plugins=keyfile
+EOF
+cat > $PKG/etc/NetworkManager/conf.d/polkit.conf << "EOF"
+    [main]
+    auth-polkit=true
+EOF
+    groupadd -fg 86 netdev 
+    /usr/sbin/usermod -a -G netdev
+    <em class="replaceable"><code><username></code></em>
+cat > $PKG/usr/share/polkit-1/rules.d/org.freedesktop.NetworkManager.rules << "EOF"
+    polkit.addRule(function(action, subject) {
+    if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0  subject.isInGroup("netdev")) {
+    return polkit.Result.YES;
+}
+});
+EOF
+make DESTDIR=$PKG install-networkmanager
+}

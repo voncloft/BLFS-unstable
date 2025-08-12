@@ -57,6 +57,6 @@ EOF
     ln -sfv /usr/share/polkit-1 $KF6_PREFIX/share
     install -v -dm755                $KF6_PREFIX/share/icons 
     ln -sfv /usr/share/icons/hicolor $KF6_PREFIX/share/icons
-    mv /opt/kf6{,-6.13.0}
-    ln -sfv kf6-6.13.0 /opt/kf6
+    mv /opt/kf6{,-6.17.0}
+    ln -sfv kf6-6.17.0 /opt/kf6
 }

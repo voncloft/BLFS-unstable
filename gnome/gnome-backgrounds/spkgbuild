@@ -1,0 +1,18 @@
+# description   : The GNOME Backgrounds package contains a collection of graphics files which can be used as backgrounds in the GNOME Desktop environment
+# depends       : libjxl
+
+name=gnome-backgrounds
+version=48.2.1    
+release=1
+source="https://download.gnome.org/sources/gnome-backgrounds/48/gnome-backgrounds-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr ..
+    DESTDIR=$PKG ninja install
+}

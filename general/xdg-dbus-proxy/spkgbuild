@@ -1,0 +1,19 @@
+# description   : The xdg-dbus-proxy package contains a filtering proxy for D-Bus connections
+# depends       : glib
+
+name=xdg-dbus-proxy
+version=0.1.6    
+release=1
+source="https://github.com/flatpak/xdg-dbus-proxy/releases/download/$version/xdg-dbus-proxy-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    meson setup --prefix=/usr --buildtype=release .. 
+    ninja
+    DESTDIR=$PKG ninja install
+}

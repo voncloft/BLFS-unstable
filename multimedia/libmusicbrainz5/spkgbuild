@@ -1,0 +1,28 @@
+# description   : The libmusicbrainz package contains a library which allows you to access the data held on the MusicBrainz server
+# depends       : cmake libxml2 neon
+
+name=libmusicbrainz
+version=5.1.0    
+release=1
+source="https://github.com/metabrainz/libmusicbrainz/releases/download/release-$version/libmusicbrainz-$version.tar.gz
+https://www.linuxfromscratch.org/patches/blfs/svn/libmusicbrainz-$version-cmake_fixes-1.patch"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    patch -Np1 -i ../libmusicbrainz-$version-cmake_fixes-1.patch
+    sed -e 's/xmlErrorPtr /const xmlError */'     \
+    -i src/xmlParser.cc
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D CMAKE_POLICY_VERSION_MINIMUM=3.5 .. 
+    make
+    doxygen ../Doxyfile
+    make DESTDIR=$PKG install
+    rm -rf /usr/share/doc/libmusicbrainz-$version 
+    cp -vr docs/ /usr/share/doc/libmusicbrainz-$version
+}

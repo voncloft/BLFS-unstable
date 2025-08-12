@@ -1,0 +1,22 @@
+# description   : The lxqt-build-tools package provides several tools needed to build LXQt itself as well as other components maintained by the LXQt project
+# depends       : cmake qt
+
+name=lxqt-build-tools
+version=2.2.1    
+release=1
+source="https://github.com/lxqt/lxqt-build-tools/releases/download/$version/lxqt-build-tools-$version.tar.xz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    .. 
+    make
+    make DESTDIR=$PKG install 
+    rm -f /usr/share/cmake/lxqt2-build-tools/find-modules/FindXCB.cmake
+}

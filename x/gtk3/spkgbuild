@@ -2,17 +2,15 @@
 # depends       : atspi2core gdkpixbuf libepoxy pango adwaitaicontheme docbookxslnons hicoloricontheme isocodes libxkbcommon libxslt wayland waylandprotocols glib
 
 name=gtk
-version=3.24.49    
+version=3.24.50    
 release=1
-source="https://download.gnome.org/sources/gtk/3.24/gtk-$version.tar.xz
-https://www.linuxfromscratch.org/patches/blfs/svn/gtk-$version-upstream_fix-1.patch"
+source="https://download.gnome.org/sources/gtk/3.24/gtk-$version.tar.xz"
 
 options="!checksum"
 
 build() {
     cd $name-$version
     
-    patch -Np1 -i ../gtk-$version-upstream_fix-1.patch
     mkdir build 
     cd    build 
     meson setup ..            \

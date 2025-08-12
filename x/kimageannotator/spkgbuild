@@ -1,0 +1,23 @@
+# description   : kImageAnnotator is a tool for annotating images
+# depends       : kcolorpicker
+
+name=kimageannotator
+version=0.7.1    
+release=1
+source="https://github.com/ksnip/kImageAnnotator/archive/v$version/kImageAnnotator-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    mkdir build 
+    cd    build 
+    cmake -D CMAKE_INSTALL_PREFIX=/usr \
+    -D CMAKE_BUILD_TYPE=Release  \
+    -D BUILD_SHARED_LIBS=ON      \
+    -D BUILD_WITH_QT6=ON         \
+    .. 
+    make
+    make DESTDIR=$PKG install
+}

@@ -1,0 +1,20 @@
+# description   : The libqalculate package contains a library that provides functions for a multi-purpose calculator
+# depends       : curl icu libxml2
+
+name=libqalculate
+version=5.7.0    
+release=1
+source="https://github.com/Qalculate/libqalculate/releases/download/v$version/libqalculate-$version.tar.gz"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr    \
+    --disable-static \
+    --docdir=/usr/share/doc/libqalculate-$version 
+    make
+    make DESTDIR=$PKG install
+    rm -v /usr/lib/libqalculate.la
+}

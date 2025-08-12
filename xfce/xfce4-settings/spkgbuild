@@ -1,0 +1,17 @@
+# description   : The Xfce4 Settings package contains a collection of programs that are useful for adjusting your Xfce preferences
+# depends       : exo garcon gnomeicontheme lxdeicontheme libcanberra libnotify libxklavier
+
+name=xfce4-settings
+version=4.20.1    
+release=1
+source="https://archive.xfce.org/src/xfce/xfce4-settings/4.20/xfce4-settings-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    ./configure --prefix=/usr --sysconfdir=/etc 
+    make
+    make DESTDIR=$PKG install
+}

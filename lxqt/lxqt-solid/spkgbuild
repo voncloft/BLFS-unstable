@@ -2,9 +2,9 @@
 # depends       : extracmakemodules qt
 
 name=solid
-version=6.13.0 for lxqt    
+version=6.17.0 for lxqt    
 release=1
-source="https://download.kde.org/stable/frameworks/6.13/solid-6.13.0.tar.xz"
+source="https://download.kde.org/stable/frameworks/6.17/solid-6.17.0.tar.xz"
 
 options="!checksum"
 

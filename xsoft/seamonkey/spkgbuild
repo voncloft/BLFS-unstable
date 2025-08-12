@@ -2,7 +2,7 @@
 # depends       : cbindgen gtk libarchive python yasm zip icu libevent libwebp llvm nasm nspr nss pulseaudio
 
 name=seamonkey
-version=2.53.20    
+version=2.53.21    
 release=1
 source="https://archive.seamonkey-project.org/releases/$version/source/seamonkey-$version.source.tar.xz
 https://www.linuxfromscratch.org/patches/blfs/svn/seamonkey-$version-cxx17-1.patch"

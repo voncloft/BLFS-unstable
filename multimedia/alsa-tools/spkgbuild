@@ -1,0 +1,43 @@
+# description   : The ALSA Tools package contains advanced tools for certain sound cards
+# depends       : alsalib
+
+name=alsa-tools
+version=1.2.14    
+release=1
+source="https://www.alsa-project.org/files/pub/tools/alsa-tools-$version.tar.bz2"
+
+options="!checksum"
+
+build() {
+    cd $name-$version
+    
+    as_root()
+    {
+    if   [ $EUID = 0 ];        then $*
+    elif [ -x /usr/bin/sudo ]; then sudo $*
+    else                            su -c \\"$*\\"
+    fi
+}
+export -f as_root
+bash -e
+rm -rf qlo10k1 echomixer envy24control rmedigicontrol Makefile gitcompile
+for tool in *
+do
+case $tool in
+seq )
+tool_dir=seq/sbiload
+;;
+* )
+tool_dir=$tool
+;;
+esac
+pushd $tool_dir
+./configure --prefix=/usr
+make
+as_root make install
+as_root /sbin/ldconfig
+popd
+done
+unset tool tool_dir
+exit
+}
